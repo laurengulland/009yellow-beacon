@@ -38,7 +38,7 @@ void setup()
   
   // connect at 115200 so we can read the GPS fast enough and echo without dropping chars
   // also spit it out
-  Serial.begin(115200);
+  Serial.begin(9600);  //Change to 9600 for Serial connect to Rasberry Pi
   Serial.println("Adafruit GPS library basic test!");
      
   // 9600 NMEA is the default baud rate for Adafruit MTK GPS's- some use 4800
@@ -62,7 +62,7 @@ void setup()
   // Ask for firmware version
   GPSSerial.println(PMTK_Q_RELEASE);
 
-  //currLatLong = "null";
+  currLatLong = "null";
 }
 
 void loop() // run over and over again
@@ -108,8 +108,11 @@ void loop() // run over and over again
       Serial.print("Altitude: "); Serial.println(GPS.altitude);
       Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
 
-      currLatLong = String(fabs(GPS.latitudeDegrees), 6) + "deg" + GPS.lat + ", " + String(fabs(GPS.longitudeDegrees), 6) + "deg" + GPS.lon;
-      Serial.print("Output Processed LatLong String: "); Serial.println(currLatLong);
+      currLatLong = String(fabs(GPS.latitudeDegrees), 6) + GPS.lat + ", " + String(fabs(GPS.longitudeDegrees), 6) + GPS.lon;
     }
+    else {
+      currLatLong = "null";
+      }
+    Serial.print("Output Processed LatLong String: "); Serial.println(currLatLong);
   }
 }

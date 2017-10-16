@@ -42,8 +42,8 @@ void setup()
 
   radio.begin();            //Start the nRF24 module
 
-  radio.setPALevel(RF24_PA_LOW);  // "short range setting" - increase if you want more range AND have a good power supply
-  radio.setChannel(108);          // the higher channels tend to be more "open"
+  radio.setPALevel(RF24_PA_MAX);  // "short range setting" - increase if you want more range AND have a good power supply
+  radio.setChannel(120);          // the higher channels tend to be more "open"
 
   radio.openReadingPipe(0,PTXpipe);  //open reading or receive pipe
 
