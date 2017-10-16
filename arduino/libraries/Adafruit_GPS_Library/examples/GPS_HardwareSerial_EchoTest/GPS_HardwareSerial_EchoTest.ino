@@ -1,5 +1,3 @@
-#include <Adafruit_GPS.h>
-
 // Test code for Ultimate GPS Using Hardware Serial
 // (e.g. GPS for Leonardo, Flora or FeatherWing)
 //
@@ -17,12 +15,7 @@
 // and help support open source hardware & software! -ada
 
 
-
 // what's the name of the hardware serial port?
-// #include <SoftwareSerial.cpp>
-
-SoftwareSerial Serial1(2,3);
-
 #define GPSSerial Serial1
 
 
