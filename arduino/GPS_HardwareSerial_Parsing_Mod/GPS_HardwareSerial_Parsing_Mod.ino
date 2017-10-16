@@ -30,6 +30,7 @@ Adafruit_GPS GPS(&GPSSerial);
 
 uint32_t timer = millis();
 
+String currLatLong;
 
 void setup()
 {
@@ -60,6 +61,8 @@ void setup()
   
   // Ask for firmware version
   GPSSerial.println(PMTK_Q_RELEASE);
+
+  //currLatLong = "null";
 }
 
 void loop() // run over and over again
@@ -104,6 +107,9 @@ void loop() // run over and over again
       Serial.print("Angle: "); Serial.println(GPS.angle);
       Serial.print("Altitude: "); Serial.println(GPS.altitude);
       Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
+
+      currLatLong = String(fabs(GPS.latitudeDegrees), 6) + "deg" + GPS.lat + ", " + String(fabs(GPS.longitudeDegrees), 6) + "deg" + GPS.lon;
+      Serial.print("Output Processed LatLong String: "); Serial.println(currLatLong);
     }
   }
 }
