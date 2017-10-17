@@ -60,8 +60,8 @@ void setup()
   
   // connect at 115200 so we can read the GPS fast enough and echo without dropping chars
   // also spit it out
-  Serial.begin(115200);
-  Serial.println("Adafruit GPS library basic test!");
+  Serial.begin(9600);  //Change to 9600 for Serial connect to Raspberry Pi
+  Serial.println("GPS Transmission test!");
      
   // 9600 NMEA is the default baud rate for Adafruit MTK GPS's- some use 4800
   GPS.begin(9600);
@@ -125,7 +125,7 @@ void loop()
    if(millis() - timer > 1000) { // approximately every 1 second or so, print out the current stats
 
      if(GPS.fix){
-      currLatLong = String(fabs(GPS.latitudeDegrees), 6) + GPS.lat + ", " + String(fabs(GPS.longitudeDegrees), 6) + GPS.lon;
+      currLatLong = String(fabs(GPS.latitudeDegrees), 6) + GPS.lat + "," + String(fabs(GPS.longitudeDegrees), 6) + GPS.lon;
       }
      else{
       currLatLong = "null";
@@ -133,8 +133,10 @@ void loop()
       
 
      //byte randNumber = (byte)random(11); //generate random guess between 0 and 10
-     char charBuf[currLatLong.length()+1];
-     currLatLong.toCharArray(charBuf, currLatLong.length()+1);
+     //char charBuf[currLatLong.length()+1];
+     //currLatLong.toCharArray(charBuf, currLatLong.length()+1);
+     char charBuf[22];
+     currLatLong.toCharArray(charBuf, 22);
 
      radio.openWritingPipe(PTXpipe);        //open writing or transmit pipe
 

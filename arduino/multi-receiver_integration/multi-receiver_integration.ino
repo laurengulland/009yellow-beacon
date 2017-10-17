@@ -47,10 +47,10 @@ void loop()
 //    byte pipeNum = 0; //variable to hold which reading pipe sent data
 //    byte gotByte = 0; //used to store payload from transmit module
     char pipeNum = 0; //variable to hold which reading pipe sent data
-    char gotByte = 0; //used to store payload from transmit module
+    char gotByte[22] = ""; //used to store payload from transmit module
     while(radio.available(&pipeNum)){ //Check if received data
 //     radio.read( &gotByte, 1 ); //read one byte of data and store it in gotByte variable
-     radio.read( &gotByte, sizeof(pipeNum) ); //read one byte of data and store it in gotByte variable
+     radio.read( &gotByte, 22 ); //read one byte of data and store it in gotByte variable
 //     Serial.print("Received guess from transmitter: "); 
      Serial.println(pipeNum + 1); //print which pipe or transmitter this is from
      Serial.print("GPS data: ");
