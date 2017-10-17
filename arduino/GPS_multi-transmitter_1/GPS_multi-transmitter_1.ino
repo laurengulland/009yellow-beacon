@@ -46,7 +46,7 @@ Adafruit_GPS GPS(&GPSSerial);
      
 // Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
 // Set to 'true' if you want to debug and listen to the raw GPS sentences
-#define GPSECHO false
+#define GPSECHO true
 
 uint32_t timer = millis();
 
@@ -123,13 +123,17 @@ void loop()
   if (timer > millis()) timer = millis();
 
    if(millis() - timer > 1000) { // approximately every 1 second or so, print out the current stats
-
+    timer = millis(); // reset the timer
+    Serial.print("Fix: "); Serial.print((int)GPS.fix);
+    Serial.print(" quality: "); Serial.println((int)GPS.fixquality);
      if(GPS.fix){
       currLatLong = String(fabs(GPS.latitudeDegrees), 6) + GPS.lat + "," + String(fabs(GPS.longitudeDegrees), 6) + GPS.lon;
+      Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
       }
      else{
       currLatLong = "null";
       }
+
       
 
      //byte randNumber = (byte)random(11); //generate random guess between 0 and 10
