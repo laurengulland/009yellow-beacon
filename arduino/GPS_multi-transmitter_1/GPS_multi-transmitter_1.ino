@@ -21,7 +21,8 @@ const int pinCSN = 8; //This pin is used to tell the nRF24 whether the SPI commu
 
 RF24 radio(pinCE, pinCSN); // Create your nRF24 object or wireless SPI connection
 
-#define WHICH_NODE 2     // must be a number from 1 - 6 identifying the PTX node
+// WHEN PULL CODE, SCOUTS MUST BE DIFFERENT
+#define WHICH_NODE 1     // must be a number from 1 - 6 identifying the PTX node
 
 const uint64_t wAddress[] = {0x7878787878LL, 0xB3B4B5B6F1LL, 0xB3B4B5B6CDLL, 0xB3B4B5B6A3LL, 0xB3B4B5B60FLL, 0xB3B4B5B605LL};
 
@@ -127,11 +128,11 @@ void loop()
     Serial.print("Fix: "); Serial.print((int)GPS.fix);
     Serial.print(" quality: "); Serial.println((int)GPS.fixquality);
      if(GPS.fix){
-      currLatLong = "GPS" + String(WHICH_NODE,1) + "Loc" + String(fabs(GPS.latitudeDegrees), 6) + GPS.lat + "," + String(fabs(GPS.longitudeDegrees), 6) + GPS.lon + "Time" + String(GPS.hour,DEC) + ":" + String(GPS.minute,DEC) + ":" + String(GPS.seconds,DEC) + "." + String(GPS.milliseconds);
+      currLatLong = "G" + String(WHICH_NODE) + "L" + String(fabs(GPS.latitudeDegrees), 6) + GPS.lat + String(fabs(GPS.longitudeDegrees), 6) + GPS.lon + String(GPS.minute,DEC) + ":" + String(GPS.seconds,DEC) + "." + String(GPS.milliseconds);
       Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
       }
      else{
-      currLatLong = "GPS" + String(WHICH_NODE,1) + "null";
+      currLatLong = "GPS" + String(WHICH_NODE) + "null";
       }
 
       
@@ -139,8 +140,8 @@ void loop()
      //byte randNumber = (byte)random(11); //generate random guess between 0 and 10
      //char charBuf[currLatLong.length()+1];
      //currLatLong.toCharArray(charBuf, currLatLong.length()+1);
-     char charBuf[40];
-     currLatLong.toCharArray(charBuf, 40);
+     char charBuf[65];
+     currLatLong.toCharArray(charBuf, 65);
 
      radio.openWritingPipe(PTXpipe);        //open writing or transmit pipe
 
