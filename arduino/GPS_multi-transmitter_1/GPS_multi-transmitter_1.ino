@@ -127,11 +127,11 @@ void loop()
     Serial.print("Fix: "); Serial.print((int)GPS.fix);
     Serial.print(" quality: "); Serial.println((int)GPS.fixquality);
      if(GPS.fix){
-      currLatLong = String(fabs(GPS.latitudeDegrees), 6) + GPS.lat + "," + String(fabs(GPS.longitudeDegrees), 6) + GPS.lon;
+      currLatLong = "GPS" + String(WHICH_NODE,1) + "Loc" + String(fabs(GPS.latitudeDegrees), 6) + GPS.lat + "," + String(fabs(GPS.longitudeDegrees), 6) + GPS.lon + "Time" + String(GPS.hour,DEC) + ":" + String(GPS.minute,DEC) + ":" + String(GPS.seconds,DEC) + "." + String(GPS.milliseconds);
       Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
       }
      else{
-      currLatLong = "null";
+      currLatLong = "GPS" + String(WHICH_NODE,1) + "null";
       }
 
       
@@ -139,8 +139,8 @@ void loop()
      //byte randNumber = (byte)random(11); //generate random guess between 0 and 10
      //char charBuf[currLatLong.length()+1];
      //currLatLong.toCharArray(charBuf, currLatLong.length()+1);
-     char charBuf[22];
-     currLatLong.toCharArray(charBuf, 22);
+     char charBuf[40];
+     currLatLong.toCharArray(charBuf, 40);
 
      radio.openWritingPipe(PTXpipe);        //open writing or transmit pipe
 
