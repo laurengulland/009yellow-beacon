@@ -22,7 +22,7 @@ void setup()
 {
 //  randomSeed(analogRead(0)); //create unique seed value for random number generation
 //  daNumber = (byte)random(11); //Create random number that transmitters have to guess
-  Serial.begin(115200);  //start serial to communication
+  Serial.begin(9600);  //start serial to communication
 //  Serial.print("The number they are trying to guess is: "); 
 //  Serial.println(daNumber); //print the number that they have to guess
 //  Serial.println();
@@ -47,14 +47,17 @@ void loop()
 //    byte pipeNum = 0; //variable to hold which reading pipe sent data
 //    byte gotByte = 0; //used to store payload from transmit module
     char pipeNum = 0; //variable to hold which reading pipe sent data
-    char gotByte[22] = ""; //used to store payload from transmit module
+    char gotByte[65] = ""; //used to store payload from transmit module
     while(radio.available(&pipeNum)){ //Check if received data
 //     radio.read( &gotByte, 1 ); //read one byte of data and store it in gotByte variable
-     radio.read( &gotByte, 22 ); //read one byte of data and store it in gotByte variable
+     radio.read( &gotByte, 65); //read one byte of data and store it in gotByte variable
 //     Serial.print("Received guess from transmitter: "); 
-     Serial.println(pipeNum + 1); //print which pipe or transmitter this is from
-     Serial.print("GPS data: ");
-     Serial.println(gotByte); //print payload or the number the transmitter guessed
+//      Serial.print("Scout:");Serial.println(pipeNum +1);
+//     Serial.println("Scout" pipeNum + 1); //print which pipe or transmitter this is from
+//     Serial.print("GPS data: ");
+//       Serial.print("GPS data:");
+       Serial.println(gotByte);
+//     Serial.println("GPS data", gotByte); //print payload or the number the transmitter guessed
 //     if(gotByte != daNumber) { //if true they guessed wrong
 //      Serial.println("Fail!! Try again."); 
 //     }
