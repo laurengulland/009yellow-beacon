@@ -55,7 +55,7 @@ void loop()
 //      Serial.print("Scout:");Serial.println(pipeNum +1);
 //     Serial.println("Scout" pipeNum + 1); //print which pipe or transmitter this is from
 //     Serial.print("GPS data: ");
-//       Serial.print("GPS data:");
+//     Serial.print("GPS data:");
        Serial.println(gotByte);
 //     Serial.println("GPS data", gotByte); //print payload or the number the transmitter guessed
 //     if(gotByte != daNumber) { //if true they guessed wrong
@@ -65,7 +65,7 @@ void loop()
 //      if(sendCorrectNumber(pipeNum)) Serial.println("Correct! You're done."); //if true we successfully responded
 //      else Serial.println("Write failed"); //if true we failed responding
 //     }
-     Serial.println();
+     //Serial.println();
     }
 
    delay(200);    
