@@ -122,28 +122,33 @@ void loop() // run over and over again
     // a tricky thing here is if we print the NMEA sentence, or data
     // we end up not listening and catching other sentences!
     // so be very wary if using OUTPUT_ALLDATA and trytng to print out data
-    Serial.println(GPS.lastNMEA()); // this also sets the newNMEAreceived() flag to false
+//    Serial.println(GPS.lastNMEA()); // this also sets the newNMEAreceived() flag to false
     if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag to false
       return; // we can fail to parse a sentence in which case we should just wait for another
   }
   // if millis() or timer wraps around, we'll just reset it
   if (timer > millis()) timer = millis();
   if (timer1 > millis()) timer1 = millis();
-
+  if(XBeeSerial.available())
+    {
+      //Serial.print("Recieved Transmission: ");
+      //Serial.println(XBeeSerial.read());
+      Serial.print(XBeeSerial.read(),BYTE);
+    }
   // approximately every 0.5 seconds or so, print out the current stats
   if (millis() - timer > 500) {
     timer = millis(); // reset the timer
-    Serial.print("\nTime: ");
-    Serial.print(GPS.hour, DEC); Serial.print(':');
-    Serial.print(GPS.minute, DEC); Serial.print(':');
-    Serial.print(GPS.seconds, DEC); Serial.print('.');
-    Serial.println(GPS.milliseconds);
-    Serial.print("Date: ");
-    Serial.print(GPS.day, DEC); Serial.print('/');
-    Serial.print(GPS.month, DEC); Serial.print("/20");
-    Serial.println(GPS.year, DEC);
-    Serial.print("Fix: "); Serial.print((int)GPS.fix);
-    Serial.print(" quality: "); Serial.println((int)GPS.fixquality);
+//    Serial.print("\nTime: ");
+//    Serial.print(GPS.hour, DEC); Serial.print(':');
+//    Serial.print(GPS.minute, DEC); Serial.print(':');
+//    Serial.print(GPS.seconds, DEC); Serial.print('.');
+//    Serial.println(GPS.milliseconds);
+//    Serial.print("Date: ");
+//    Serial.print(GPS.day, DEC); Serial.print('/');
+//    Serial.print(GPS.month, DEC); Serial.print("/20");
+//    Serial.println(GPS.year, DEC);
+//    Serial.print("Fix: "); Serial.print((int)GPS.fix);
+//    Serial.print(" quality: "); Serial.println((int)GPS.fixquality);
     if (GPS.fix) {
 //      Serial.print("Location: ");
 //      Serial.print(GPS.latitude, 4); Serial.print(GPS.lat);
@@ -152,14 +157,14 @@ void loop() // run over and over again
 //      Serial.print("Speed (knots): "); Serial.println(GPS.speed);
 //      Serial.print("Angle: "); Serial.println(GPS.angle);
 //      Serial.print("Altitude: "); Serial.println(GPS.altitude);
-      Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
+//      Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
 
       currLatLong = String("GPS") + "Loc" + String(fabs(GPS.latitudeDegrees), 6) + GPS.lat + String(fabs(GPS.longitudeDegrees), 6) + GPS.lon;
     }
     else {
       currLatLong = String("GPS") + "Loc" + "null";
       }
-    Serial.print("Output Processed LatLong String: "); Serial.println(currLatLong);
+//    Serial.print("Output Processed LatLong String: "); Serial.println(currLatLong);
 
     timeString = String("Time") + String(GPS.minute,DEC) + ":" + String(GPS.seconds,DEC) + "." + String(GPS.milliseconds);
 
@@ -172,8 +177,8 @@ void loop() // run over and over again
     {
       heading = 360 + heading;
     }
-    Serial.print("Compass Heading: ");
-    Serial.println(heading);
+//    Serial.print("Compass Heading: ");
+//    Serial.println(heading);
 
     compassString = String("Heading") + String(heading) + "deg";
 
