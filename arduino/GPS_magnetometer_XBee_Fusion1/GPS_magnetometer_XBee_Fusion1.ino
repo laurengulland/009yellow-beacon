@@ -33,7 +33,7 @@ String stringOut;
 //Magnetometer Preamble
 
 /* Assign a unique ID to this sensor at the same time */
-Adafruit_LSM303_Mag_Unified mag = Adafruit_LSM303_Mag_Unified(12345);
+//Adafruit_LSM303_Mag_Unified mag = Adafruit_LSM303_Mag_Unified(12345);
 
 void displaySensorDetails(void)
 {
@@ -87,25 +87,25 @@ void setup()
 
   //Magnetometer Setup
 
-  #ifndef ESP8266
-    while (!Serial);     // will pause Zero, Leonardo, etc until serial console opens
-  #endif
-  //Serial.begin(9600);
-  Serial.println("Magnetometer Test"); Serial.println("");
-
-  /* Enable auto-gain */
-  mag.enableAutoRange(true);
-
-  /* Initialise the sensor */
-  if(!mag.begin())
-  {
-    /* There was a problem detecting the LSM303 ... check your connections */
-    Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
-    while(1);
-  }
+//  #ifndef ESP8266
+//    while (!Serial);     // will pause Zero, Leonardo, etc until serial console opens
+//  #endif
+//  //Serial.begin(9600);
+//  Serial.println("Magnetometer Test"); Serial.println("");
+//
+//  /* Enable auto-gain */
+//  mag.enableAutoRange(true);
+//
+//  /* Initialise the sensor */
+//  if(!mag.begin())
+//  {
+//    /* There was a problem detecting the LSM303 ... check your connections */
+//    Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
+//    while(1);
+//  }
 
   /* Display some basic information on this sensor */
-  displaySensorDetails();
+//  displaySensorDetails();
 
   XBeeSerial.begin(9600);
 }
@@ -168,21 +168,22 @@ void loop() // run over and over again
 
     timeString = String("Time") + String(GPS.minute,DEC) + ":" + String(GPS.seconds,DEC) + "." + String(GPS.milliseconds);
 
-    // Magnetometer Output
-    sensors_event_t event;
-    mag.getEvent(&event);
-    
-    float heading = (atan2(event.magnetic.y,event.magnetic.x) * 180) / Pi + 14.33; //Includes Magnetic Declination Correction
-    if (heading < 0)
-    {
-      heading = 360 + heading;
-    }
-//    Serial.print("Compass Heading: ");
-//    Serial.println(heading);
+//    // Magnetometer Output
+//    sensors_event_t event;
+//    mag.getEvent(&event);
+//    
+//    float heading = (atan2(event.magnetic.y,event.magnetic.x) * 180) / Pi + 14.33; //Includes Magnetic Declination Correction
+//    if (heading < 0)
+//    {
+//      heading = 360 + heading;
+//    }
+////    Serial.print("Compass Heading: ");
+////    Serial.println(heading);
+//
+//    compassString = String("Heading") + String(heading) + "deg";
 
-    compassString = String("Heading") + String(heading) + "deg";
-
-    stringOut = String(currLatLong) + timeString + compassString;
+//    stringOut = String(currLatLong) + timeString + compassString;
+      stringOut = String(currLatLong) + timeString;
 
 //    char charBuf[65];
 //    stringOut.toCharArray(charBuf, 65);
