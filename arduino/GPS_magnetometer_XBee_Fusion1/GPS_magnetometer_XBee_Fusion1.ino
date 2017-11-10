@@ -30,6 +30,16 @@ String timeString;
 String compassString;
 String stringOut;
 
+float min_x;
+float max_x;
+float min_y;
+float max_y;
+float min_z;
+float max_z;
+float calibrated_x;
+float calibrated_y;
+float calibrated_z;
+
 //Magnetometer Preamble
 
 /* Assign a unique ID to this sensor at the same time */
@@ -104,6 +114,16 @@ void setup()
 //    while(1);
 //  }
 
+  sensors_event_t event;
+  mag.getEvent(&event);
+
+  min_x = event.magnetic.x;
+  max_x = event.magnetic.x;
+  min_y = event.magnetic.y;
+  max_y = event.magnetic.y;
+  min_z = event.magnetic.z;
+  max_z = event.magnetic.z;
+  
   /* Display some basic information on this sensor */
 //  displaySensorDetails();
 
@@ -168,6 +188,7 @@ void loop() // run over and over again
 
     timeString = String("Time") + String(GPS.minute,DEC) + ":" + String(GPS.seconds,DEC) + "." + String(GPS.milliseconds);
 
+<<<<<<< HEAD
 //    // Magnetometer Output
 //    sensors_event_t event;
 //    mag.getEvent(&event);
@@ -184,6 +205,33 @@ void loop() // run over and over again
 
 //    stringOut = String(currLatLong) + timeString + compassString;
       stringOut = String(currLatLong) + timeString;
+=======
+    // Magnetometer Output
+    sensors_event_t event;
+    mag.getEvent(&event);
+
+    min_x=min(event.magnetic.x,min_x);
+    min_y=min(event.magnetic.y,min_y);
+    min_z=min(event.magnetic.z,min_z);
+    max_x=max(event.magnetic.x,max_x);
+    max_y=max(event.magnetic.y,max_y);
+    max_z=max(event.magnetic.z,max_z);
+    calibrated_x=event.magnetic.x-(max_x+min_x)/2;
+    calibrated_y=event.magnetic.y-(max_y+min_y)/2;
+    calibrated_z=event.magnetic.z-(max_z+min_z)/2;
+    
+    float heading = (atan2(calibrated_y,calibrated_x) * 180) / Pi + 14.63; //Includes Magnetic Declination Correction
+    if (heading < 0)
+    {
+      heading = 360 + heading;
+    }
+//    Serial.print("Compass Heading: ");
+//    Serial.println(heading);
+
+    compassString = String("Heading") + String(heading) + "deg";
+
+    stringOut = String(currLatLong) + timeString + compassString;
+>>>>>>> 92b8a03095c929059de101e6840ecc4f096c9cf5
 
 //    char charBuf[65];
 //    stringOut.toCharArray(charBuf, 65);
