@@ -27,6 +27,7 @@ int buttonLed = 16;
 
 int count = 0x00;
 
+volatile unsigned long last_interrupt;
 
 unsigned long latTX;
 unsigned long lonTX;
@@ -108,8 +109,9 @@ void setup()
   pinMode(statusLed, OUTPUT);
   pinMode(errorLed, OUTPUT);
   pinMode(buttonLed, OUTPUT);
+  digitalWrite(buttonPin, HIGH);
 
-  attachInterrupt(buttonPin,transmitWaypoint,RISING);
+  attachInterrupt(buttonPin,transmitWaypoint,FALLING);
 }
 
 void loop() // run over and over again
@@ -133,13 +135,13 @@ void loop() // run over and over again
 
   buttonValue = analogRead(buttonPin);
   Serial.println(buttonValue);
-  if (buttonValue > 950) {
-    digitalWrite(16, HIGH);
-  }
-  else {
-    digitalWrite(16,LOW);
-    Serial.print("off");
-  }
+//  if (buttonValue < 200) {
+//    digitalWrite(16, HIGH);
+//  }
+//  else {
+//    digitalWrite(16,LOW);
+//    Serial.print("off");
+//  }
   
   // approximately every 0.5 seconds or so, print out the current stats
   if (millis() - timer > 500) {
@@ -176,8 +178,8 @@ void loop() // run over and over again
 
   latTX = (long) (GPSlat*1000000);
   lonTX = (long) (GPSlon*1000000);
-  Serial.println(latTX);
-  Serial.println(lonTX);
+//  Serial.println(latTX);
+//  Serial.println(lonTX);
   
   payload[0] = latTX & 255;
   payload[1] = (latTX >> 8) & 255;  
@@ -224,6 +226,8 @@ void loop() // run over and over again
 }
 
 void transmitWaypoint() {
+  if (millis() - last_interrupt > 1000) {
+  digitalWrite(16, HIGH);
   char c = GPS.read();
   // if you want to debug, this is a good time to do it!
   latTX = (long) (GPSlat*1000000);
@@ -255,7 +259,7 @@ void transmitWaypoint() {
       if (txStatus.getDeliveryStatus() == SUCCESS) {
         // success.  time to celebrate
         flashLed(statusLed, 5, 50);
-        Serial.println("Success");
+        Serial.println("Success");B
       } else {
         // the remote XBee did not receive our packet. is it powered on?
         flashLed(errorLed, 3, 500);
@@ -268,5 +272,9 @@ void transmitWaypoint() {
     // local XBee did not provide a timely TX Status Response -- should not happen
     flashLed(errorLed, 2, 50);
   }
+  digitalWrite(16,LOW);
+  }
+  last_interrupt = millis();
+  
 }
 

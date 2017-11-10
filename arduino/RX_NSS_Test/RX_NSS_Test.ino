@@ -91,12 +91,12 @@ void loop() {
           nss.println(rx.getData()[i], HEX);
         }
         
-       for (int i = 0; i < xbee.getResponse().getFrameDataLength(); i++) {
-        nss.print("frame data [");
-        nss.print(i, DEC);
-        nss.print("] is ");
-        nss.println(xbee.getResponse().getFrameData()[i], HEX);
-      }
+//       for (int i = 0; i < xbee.getResponse().getFrameDataLength(); i++) {
+//        nss.print("frame data [");
+//        nss.print(i, DEC);
+//        nss.print("] is ");
+//        nss.println(xbee.getResponse().getFrameData()[i], HEX);
+//      }
       }
     } else if (xbee.getResponse().isError()) {
       nss.print("error code:");
