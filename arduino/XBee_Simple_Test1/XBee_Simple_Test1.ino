@@ -16,7 +16,7 @@ void loop()
   if(Serial.available())
   {
     Serial1.print(Serial.read(), BYTE);
-    Serial1.print("Memes");
+//    Serial1.print("Memes");
     Serial1.print(2, BYTE);
   }
 
