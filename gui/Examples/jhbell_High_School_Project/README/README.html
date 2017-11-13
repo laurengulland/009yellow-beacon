@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Force Field README</title>
+</head>
+
+<body>
+<h1 style="margin-bottom:.4em">README for Force Field</h1>
+<h3 style="margin-top:0em">by John Bell, IV</h3>
+<div>
+    <p>Force Field is a physics simulation app, capable of simulating the effects of the gravitational force, the
+    electric force, and the magnetic force.  The simulation focuses on the interactions of uniform, spherical bodies,
+    which are of nonzero, finite size and mass.  (The bodies may or may not be charged.)  The simulation uses a second-order left-hand Euler's Method to approximate
+    solutions to the Newton's Second Law second-order differential equation &#931F=ma.  Newton's Law of Gravitation and the Lorentz Force Law are used to determine &#931F.
+    All object collisions are inelastic and follow conservation of momentum, conservation of mass, and conservation of momentum.  The physics calulation environment is Newtonian
+    and non-relativistic.</p>
+    <p>Force Field is a GUI app, so its use after launching does not involve use of a command-line interface.</p>
+</div>
+<div>
+    <h2>Main Interface (Setup Mode)</h2>
+    <p><img src="main.png" alt="Main Screen: Setup Mode" width=625 height=500></p>
+    <p>This is the launch screen of the app.  The app has two primary modes, Setup Mode and Run Mode, as well as one secondary mode, Intervention Mode.  Setup Mode is started by default, and it allows the user to create bodies
+    and modify their initial conditions.  Run Mode activates the passage of time, implementing the chosen physics to simulate the motion of the bodies.</p>
+    <p><strong>Text Box Editing Instructions</strong><br>To begin editing a text box, click on it.  Use the backspace or delete keys to remove characters from the right side.
+    The text box input accepts the characters 1234567890-+.eE  (These characters are the elements of scientific notation.)  Once the intended floating-point number has been entered,
+    click out of the text box, preferably in the light blue background area.  (If a text input is not a legitimate floating-point number, it will be rejected.)</p>
+    <p style="margin-bottom:0.15em">In the bottom-right of the window you will find three text boxes surrounding the Run button:</p>
+    <table style="margin-left:2.5em">
+        <tbody>
+            <tr>
+                <td><strong>Scale</strong></td><td>This controls the spatial display scale of the simulation.  Its value gives the distance covered by one pixel.  (Since the simulation display
+                is 800x800 pixels, the default scale of 1 gives an 800m x 800m display.)  A scale bar is also provided in the bottom-left of the simulation window, for convenience.</td>
+            </tr>
+            <tr>
+                <td><strong>Time Step</strong></td><td>This controls the time step of the second-order Euler's Method governing simulation.  Note that, in order for the simulation to run,
+                (Time Step) must be less than (0.025 s)*(Time Scale).</td>
+            </tr>
+            <tr>
+                <td><strong>Time Scale</strong></td><td>This controls the ratio of simulation time to GUI time; For example, if (Time Scale) is 100, 100 seconds pass in the simulation
+                for every second the user percieves.  (Time Scale) is 1 by default (real-time simulation).</td>
+            </tr>
+        </tbody>
+    </table>
+    <h3 style="margin-bottom:0em">Buttons</h3>
+    <p><img src="addbodyoff.png" alt="Add Body Button" width=50 height=50> <strong>Add Body</strong>:  This button toggles the body-adding functionality of the app.  When activated, simply click within the bounds
+    of the blue simulation window to add a new body.</p>
+    <p><img src="gravityoff.png" alt="Toggle Gravity Button" width=50 height=50> <strong>Toggle Gravity</strong>:  This button toggles the effect of gravitational forces in the system.</p>
+    <p><img src="electricityoff.png" alt="Toggle Electrostatics Button" width=50 height=50> <strong>Toggle Electrostatics</strong>:  This button toggles the effect of electrostatic forces in the system.</p>
+    <p><img src="magnetismoff.png" alt="Toggle Magnetism Button" width=50 height=50> <strong>Toggle Magnetism</strong>:  This button toggles the effect of magnetic forces in the system.</p>
+    <p><img src="playsmall.png" alt="Run Button" width=77 height=50> <strong>Run</strong>:  This button initiates the simulation.</p>
+</div>
+<div>
+    <h2>Attribute Editor (Setup Mode)</h2>
+    <p><img src="attribute.png" alt="Attributes Screen: Setup Mode" width=625 height=500></p>
+    <p>Clicking on a body selects it and opens its attribute editor (AE).  The selected body's name is displayed at the top of the AE.  Also in the AE are the options to change each of the selected
+    body's two vector attributes and three scalar attributes, as well as the option to delete the selected body.</p>
+    <h3 style="margin-bottom:0em">Buttons</h3>
+    <p><img src="deletebody.png" alt="Delete Body Button" width=50 height=50> <strong>Delete Body</strong>:  This button deletes the selected body.</p>
+    <p><img src="movebodyoff.png" alt="Body Position Button" width=50 height=50> <strong>Body Position</strong>:  This button allows the user to edit the initial position of the selected body.
+    When Body Position is active, a body can also be relocated by dragging it with the mouse.</p>
+    <p><img src="bodyvelocityoff.png" alt="Body Velocity Button" width=50 height=50> <strong>Body Velocity</strong>:  This button allows the user to edit the initial velocity of the selected body.</p>
+    <p><img src="bodymassoff.png" alt="Body Mass Button" width=50 height=50> <strong>Body Mass</strong>:  This button allows the user to edit the mass of the selected body.  (This mass is both inertial and gravitational.)</p>
+    <p><img src="bodychargeoff.png" alt="Body Charge Button" width=50 height=50> <strong>Body Charge</strong>:  This button allows the user to edit the charge of the selected body. (This charge is used in determination of the Lorentz force.)</p>
+    <p><img src="bodyradiusoff.png" alt="Body Radius Button" width=50 height=50> <strong>Body Radius</strong>:  This button allows the user to edit the radius of the selected body.  (The radius is used for collision determination.)</p>
+</div>
+<div>
+    <h2>Run Mode</h2>
+    <p><img src="runmode.png" alt="Run Mode Screen" width=625 height=500></p>
+    <p>In Run Mode, the simulation is running, according to the physics chosen by the user.</p>
+    <h3 style="margin-bottom:0em">Buttons</h3>
+    <p><img src="pause.png" alt="Pause Button" width=77 height=50> <strong>Pause</strong>:  This button pauses the simulation and enters the temporary analog of Setup Mode, Intervention Mode.  All controls within Intervention Mode
+    (except the Reset button) are exactly the same as in Setup Mode.  Changes made in Intervention Mode will not be recovered upon Reset.</p>
+    <p><img src="reset.png" alt="Reset Button" width=77 height=50> <strong>Reset</strong>:  This button fully stops the simulation and resets the system state to the initial state specified by the most recent Setup Mode session.</p>
+</div>
+</body>
+</html>
