@@ -9,6 +9,7 @@ void setup() {
   payload[2] = 0x86; //_ X X _ _ _ _
   payload[3] = 0x02;  //X _ _ _ _ _ _
   payload[4] = 0x01;  //1 -> North 2-> South
+  //hex digits go into hex number, then convert
 //Longitude
   payload[5] = 0x7C; //_ _ _ _ _ X X
   payload[6] = 0xC4; //_ _ _ X X _ _
@@ -24,7 +25,7 @@ void setup() {
 void loop() {
   //Serial.println("Scout GPS"); //Some sort of marker to identify what kind of input we are passing. We can talk more about what we want later.
   Serial.write(0x7e);
-  Serial.write(0x0c);
+  Serial.write(0x0d);
   Serial.write(0x00);
   for(int i = 0; i < size_of_payload; i++)
   {
