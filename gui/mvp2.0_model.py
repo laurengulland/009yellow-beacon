@@ -31,7 +31,7 @@ class Scouts(object):
 
 		print("Creating file:", self.filename)
 		# Open a file in "w"rite mode
-		h5file = open_file(self.filename, mode="w", title="Test file")
+		h5file = open_file(self.filename, mode="a", title="Test file")
 		#create a tracks group
 		tracks_group = h5file.create_group("/", 'tracks', 'Scout Tracks')
 		print("Group '/tracks' created")
@@ -45,7 +45,7 @@ class Scouts(object):
 
 	def add_data_point(self,scout_id,time,gps_location,is_point_of_interest):
 
-		h5file = open_file(self.filename, mode="w", title="Test file")
+		h5file = open_file(self.filename, mode="a", title="Test file")
 		table = h5file.root.tracks.readout
 		row = table.row
 		# Fill the table with 10 particles
