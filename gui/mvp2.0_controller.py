@@ -25,10 +25,17 @@ class Controller(object):
         self.next_poi_id = 0 #keep track of unused poi ids
         #Load constants from json file (UNTESTED)
         json_data = json.load(open('mvp2.0_constants.json'))
+<<<<<<< HEAD
+        self.screen_width,self.screen_height = json_data["screen_width"],json_data["screen_height"]
+=======
         self.screen_width,self.screen_length = json_data["screen_width"],json_data["screen_length"]
         #initialize serial communication
         self.port = serial.Serial('COM4') #MUST SELECT CORRECT PORT ON TABLET
         time.sleep(1) #wait after establishing serial connection before proceeding
+<<<<<<< HEAD
+>>>>>>> 11ba360e723ba69410a0e500e78b353a30ab77de
+=======
+>>>>>>> 11ba360e723ba69410a0e500e78b353a30ab77de
 
     def construct_scout_displays(self,range=[(0,0),(1,1)]):
         #figure this function out
