@@ -28,6 +28,9 @@ class Controller(object):
         self.screen_width,self.screen_length = json_data["screen_width"],json_data["screen_length"]
         self.port = serial.Serial('COM4') #MUST SELECT CORRECT PORT ON TABLET
         time.sleep(1) #wait after establishing serial connection before proceeding
+<<<<<<< HEAD
+>>>>>>> 11ba360e723ba69410a0e500e78b353a30ab77de
+=======
 >>>>>>> 11ba360e723ba69410a0e500e78b353a30ab77de
 
     def construct_scout_displays(self,range=[(0,0),(1,1)]):
