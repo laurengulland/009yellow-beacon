@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 import time
 import json
+import serial
 
 from mvp2.0_view.py import GUI
 from mvp2.0_model.py import Scouts
@@ -18,9 +19,12 @@ class Controller(object):
         #set up all the variables!
         self.screen_location = [(0,0),(1,1)] #[(top left), (bottom right)]
         self.something = 0
+        self.hive_queue = []
         #Load constants from json file (UNTESTED)
         json_data = json.load(open('mvp2.0_constants.json'))
         self.screen_width,self.screen_length = json_data["screen_width"],json_data["screen_length"]
+        self.port = serial.Serial('COM4') #MUST SELECT CORRECT PORT ON TABLET
+        time.sleep(1) #wait after establishing serial connection before proceeding
 
     def construct_scout_displays(self,range=[(0,0),(1,1)]):
         #figure this function out
