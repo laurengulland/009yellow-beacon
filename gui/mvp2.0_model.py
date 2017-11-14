@@ -61,11 +61,13 @@ class Scouts(object):
 
 	# condition = '(name == b"Particle:      5") | (name == b"Particle:      7")'
 	def data_from_time(self,begin_time,last_time):
-		# names = [ x['name'] for x in table.where("""(TDCcount > 3) & (20 <= pressure) & (pressure < 50)""") ]
-		pass
+        data = helper_query('(time >= begin_time) & (time <= last_time)')
+		return data
 
 	def data_from_scout(self,scout_id):
-		pass
+        input_scout_id = scout_id # just in case
+        data = helper_query('scout_id == input_scout_id')
+        return data
 
 	def current_locations(self,number_of_scouts):
 		pass
@@ -86,6 +88,13 @@ class Scouts(object):
 		#     print(name, ':= %s, %s' % (table.colnames[name], table.colnames[name].shape))
 		print('end pretty print')
 		h5file.close()
+
+    def helper_query(condition):
+        h5file = open_file(self.filename, mode = "r")
+        table = h5file.root.tracks.readout
+        data = table.read_where(condition) # can also specify the columns you want here (condition, field='scout_id')
+        h5file.close()
+        return data     # returns a np ndarray
 
 
 if __name__ == '__main__':
