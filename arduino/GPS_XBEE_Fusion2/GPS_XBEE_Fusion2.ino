@@ -133,8 +133,8 @@ void loop() // run over and over again
   if (timer > millis()) timer = millis();
   if (timer1 > millis()) timer1 = millis();
 
-  buttonValue = analogRead(buttonPin);
-  Serial.println(buttonValue);
+//  buttonValue = analogRead(buttonPin);
+//  Serial.println(buttonValue);
 //  if (buttonValue < 200) {
 //    digitalWrite(16, HIGH);
 //  }
