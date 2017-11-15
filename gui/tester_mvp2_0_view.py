@@ -19,12 +19,12 @@ class Data_to_Display(object):
 
 	def __init__(self):
 		self.scout_id_list = [1] #ids of Scouts.  List of unique integers identifying the Scouts.
-		self.current_positions = {1:(200,200)} #list of most recent positions of the Scouts, corresponding to scout_id_list, regardless of whether they’re in range of the screen.
-		self.positions_list = {1:[(200,200), (180,300), (210,600)]} #list lists of positions of all scouts within frame, corresponds to the scout_id_list. 
+		self.current_positions = {1:(42.358393, -71.094907)} #list of most recent positions of the Scouts, corresponding to scout_id_list, regardless of whether they’re in range of the screen.
+		self.positions_list = {1:[(42.358393, -71.094907), (42.358320, -71.094311), (42.358060, -71.094740)]} #list lists of positions of all scouts within frame, corresponds to the scout_id_list. 
 		self.waypoint_ids = [1] #ids of waypoints. List of unique integers identifying the waypoints.
 		self.waypoint_types = {1:2} #type of waypoint, corresponding to waypoint_ids. If four buttons, each element will be an integer from one to four (inclusive)
 		self.waypoint_labels = {1:'clothing'} #labels corresponding to the waypoint_ids. May be a list of empty strings if unlabeled.
-		self.waypoint_positions = {1:(400,400)} #positions of the waypoints, corresponds to waypoint_ids.
+		self.waypoint_positions = {1:(42.358320, -71.094311)} #positions of the waypoints, corresponds to waypoint_ids.
 		self.waypoint_owners = {1:1}
 
 class Tester(object):
