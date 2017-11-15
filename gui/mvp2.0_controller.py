@@ -12,6 +12,11 @@ import serial
 from mvp2_0_view.py import GUI
 from mvp2.0_model.py import Scouts
 
+class ControllerState(object):
+    def __init__(self):
+        self.menu_active = False
+        self.selected_poi = 0
+
 class Controller(object):
     def __init__(self):
         #create model object
@@ -23,12 +28,89 @@ class Controller(object):
         self.poi_queue = [] #store as list of bytearray objects
         self.scouts = Scouts() #initialize model
         self.next_poi_id = 0 #keep track of unused poi ids
+        self.state = ControllerState()
         #Load constants from json file (UNTESTED)
         json_data = json.load(open('mvp2.0_constants.json'))
         self.screen_width,self.screen_height = json_data["screen_width"],json_data["screen_height"]
         #initialize serial communication
         self.port = serial.Serial('COM4') #MUST SELECT CORRECT PORT ON TABLET
         time.sleep(1) #wait after establishing serial connection before proceeding
+
+    def action_map(self):
+        '''
+        based on state, make options available
+        '''
+        if not self.state.menu_active:
+            return {
+                0: self.zoom_in,
+                1: self.zoom_out,
+                2: self.do_nothing,
+                3: self.toggle_menu,
+                4: self.do_nothing,
+                5: self.do_nothing,
+                (6,'up'): lambda: self.pan_vertical(True),
+                (6, 'down'): lambda: self.pan_vertical(False),
+                (6,'left'): lambda: self.pan_horizontal(False),
+                (6,'right'): lambda: self.pan_horizontal(True),
+                (7,'up'): self.do_nothing,
+                (7,'down'): self.do_nothing,
+                (7,'right'): self.do_nothing,
+                (7,'left'): self.do_nothing
+            }
+        else:
+            return {
+                0: self.zoom_in,
+                1: self.zoom_out,
+                2: self.do_nothing,
+                3: self.toggle_menu,
+                4: self.select_poi,
+                5: self.do_nothing,
+                (6,'up'): lambda: self.poi_scroll(False),
+                (6, 'down'): lambda: self.poi_scroll(True),
+                (6,'left'): self.do_nothing,
+                (6,'right'): self.do_nothing,
+                (7,'up'): self.do_nothing,
+                (7,'down'): self.do_nothing,
+                (7,'right'): self.do_nothing,
+                (7,'left'): self.do_nothing
+            }
+
+    def do_nothing(self):
+        #print('does nothing')
+        pass
+
+    def pan_vertical(self,positive):
+        #print('pan vert')
+        pass
+
+    def pan_horizontal(self, positive):
+        #print('pan horiz')
+        pass
+
+    def toggle_menu(self):
+        #print('toggle menu')
+        self.state.menu_active = (not self.state.menu_active)
+
+    def select_poi(self):
+        #print('select poi')
+        pass
+
+    def poi_scroll(self, positive):
+        #print('poi scroll')
+        if positive:
+            if self.state.selected_poi < self.next_poi_id-1:
+                self.state.selected_poi +=1
+        else:
+            if self.state.selected_poi>0:
+                self.state.selected_poi -=1
+
+    def zoom_in(self):
+        #print('zoom in')
+        pass
+
+    def zoom_out(self):
+        #print('zoom out')
+        pass
 
     def construct_scout_displays(self,range=[(0,0),(1,1)]):
         #figure this function out
@@ -69,6 +151,7 @@ class Controller(object):
         else:
             payload = self.get_scout_payload(content,trtime)
             self.add_payload_to_scout_queue(payload)
+        #TODO: trigger view update?
 
     def add_payload_to_scout_queue(self, payload):
         '''
@@ -148,24 +231,21 @@ class Controller(object):
         '''
         takes in content as a bytearray and calls the necessary function, which might be in controller or view
         '''
-        #need more information about what is being displayed (i.e. what the button press means)
-        #specifically, we need a menu_map that details what each button press would do at a given point in the UI
-        return #because menu_map does not exist
         if content[0]<6:
-            self.menu_map[content[0]]()
+            self.action_map()[content[0]]()
         else:
             x = content[2]
             y = content[4]
             if x>y:
                 if content[1] == 0x02:
-                    self.menu_map[(content[0],'left')]()
+                    self.action_map()[(content[0],'left')]()
                 else:
-                    self.menu_map[(content[0],'right')]()
+                    self.action_map()[(content[0],'right')]()
             else:
                 if content[3]==0x02:
-                    self.menu_map[(content[0],'down')]()
+                    self.action_map()[(content[0],'down')]()
                 else:
-                    self.menu_map[(content[0],'up')]()
+                    self.action_map()[(content[0],'up')]()
 
     def transmit_data(self):
         '''
@@ -184,6 +264,7 @@ class Controller(object):
         else:
             packet = self.scout_queue.pop(0)
         self.port.write(packet)
+        #TODO: do we need to tell the view we are sending data?
 
     def update_view(self):
         #update the view with the current range
@@ -209,3 +290,20 @@ class Scout_Display(object):
 if __name__ == '__main__':
     controller = Controller()
     controller.run()
+    # buttons testing
+    # controller.parse_button_presses(bytearray([0x00]))
+    # controller.parse_button_presses(bytearray([0x01]))
+    # controller.parse_button_presses(bytearray([0x04]))
+    # controller.parse_button_presses(bytearray([0x06,0x01,0xaa,0x01,0x00]))
+    # controller.parse_button_presses(bytearray([0x06,0x01,0x00,0x01,0xaa]))
+    # controller.parse_button_presses(bytearray([0x06,0x02,0xaa,0x01,0x00]))
+    # controller.parse_button_presses(bytearray([0x06,0x01,0x00,0x02,0xaa]))
+    # controller.parse_button_presses(bytearray([0x03]))
+    # controller.parse_button_presses(bytearray([0x00]))
+    # controller.parse_button_presses(bytearray([0x01]))
+    # controller.parse_button_presses(bytearray([0x04]))
+    # controller.parse_button_presses(bytearray([0x06,0x01,0xaa,0x01,0x00]))
+    # controller.parse_button_presses(bytearray([0x06,0x01,0x00,0x01,0xaa]))
+    # controller.parse_button_presses(bytearray([0x06,0x02,0xaa,0x01,0x00]))
+    # controller.parse_button_presses(bytearray([0x06,0x01,0x00,0x02,0xaa]))
+    # controller.parse_button_presses(bytearray([0x03]))
