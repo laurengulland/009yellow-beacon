@@ -8,7 +8,7 @@ class Data_to_Display(object):
 	def __init__(self):
 		scout_id_list = [1,2,3,4,5] #ids of Scouts.  List of unique integers identifying the Scouts.
 		current_positions = [(200,200),(420,180),(500,250),(600,-100),(800,-100)] #list of most recent positions of the Scouts, corresponding to scout_id_list, regardless of whether they’re in range of the screen.
-		positions_list = [[(200,200), (180,300), (210,600)],[(420,180),(400,300),(380,650)],[(550,500),(480,800)],[(600,100),(660,500)],[(800,-100),(820,300),(770,600)]] #list lists of positions of all scouts within frame, corresponds to the scout_id_list. 
+		positions_list = [[(200,200), (180,300), (210,600)],[(420,180),(400,300),(380,650)],[(550,500),(480,800)],[(600,100),(660,500)],[(800,-100),(820,300),(770,600)]] #list lists of positions of all scouts within frame, corresponds to the scout_id_list.
 		waypoint_ids = [1,2] #ids of waypoints. List of unique integers identifying the waypoints.
 		waypoint_types = [2,1] #type of waypoint, corresponding to waypoint_ids. If four buttons, each element will be an integer from one to four (inclusive)
 		waypoint_labels = ['clothing','hazard'] #labels corresponding to the waypoint_ids. May be a list of empty strings if unlabeled.
@@ -18,6 +18,7 @@ class Data_to_Display(object):
 class Tester(object):
 	def __init__(self):
 		self.gui = vw.GUI(1200,800)
+		self.step_rate = 1 #for da loopy loop
 
 	def run(self):
 		crashed = False
@@ -37,9 +38,18 @@ class Tester(object):
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					crashed = True
-			step_rate=1
-			time.sleep(step_rate)
-			it+=1*step_rate
+				elif event.type == pygame.KEYDOWN: #currently reads up/down/left/right from keyboard, eventually switch this over to Queen Buttons, however those work
+					self.gui.move_down()
+				elif event.type == pygame.KEYUP:
+					self.gui.move_up()
+				elif event.type == pygame.KEYLEFT:
+					self.gui.move_left()
+				elif event.type == pygame.KEYRIGHT:
+					self.gui.move_right()
+					#HACK: Make right key temporarily actuate Map, should be changed once we have a dedicated Menu button
+					self.gui.toggle_menu_state()
+			time.sleep(self.step_rate)
+			it+=1*self.step_rate
 			print(it)
 
 		pygame.quit()
