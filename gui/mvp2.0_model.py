@@ -11,23 +11,47 @@ class LocationPoint(IsDescription):
 class Data_to_Display(object): #object to be passed back in response to data_within_range().
 	def __init__(self):
 		self.scout_id_list = [] #ids of Scouts.  List of unique integers identifying the Scouts.
-		self.current_positions = [] #list of most recent positions of the Scouts, corresponding to scout_id_list, regardless of whether they’re in range of the screen.
-		self.positions_list = [] #list lists of positions of all scouts within frame, corresponds to the scout_id_list.
+		self.current_positions = {} #list of most recent positions of the Scouts, corresponding to scout_id_list, regardless of whether they’re in range of the screen.
+		self.positions_list = {} #list lists of positions of all scouts within frame, corresponds to the scout_id_list.
 		self.waypoint_ids = [] #ids of waypoints. List of unique integers identifying the waypoints.
 		self.waypoint_types = [] #type of waypoint, corresponding to waypoint_ids. If four buttons, each element will be an integer from one to four (inclusive)
-		self.waypoint_labels = [] #labels corresponding to the waypoint_ids. May be a list of empty strings if unlabeled.
-		self.waypoint_positions = [] #positions of the waypoints, corresponds to waypoint_ids.
+		self.waypoint_labels = {} #labels corresponding to the waypoint_ids. May be a list of empty strings if unlabeled.
+		self.waypoint_positions = {} #positions of the waypoints, corresponds to waypoint_ids.
 	#consider adding helper functions
-	def add_point(self,scout_id,location,is_current_position=False):
-		if scout_id in self.scout_id_list:
-			index = self.scout_id_list.index(scout_id)
-		else:
-			index = 0
-		pass
+
+    def add_scout_point(self,scout_id,location,is_current_position=False):
+        if is_current_position:
+            current_positions[scout_id] = location
+        if scout_id in positions_list:
+            positions_list[scout_id] = positions_list[scout_id].append(location)
+        else:
+            positions_list[scout_id] = [location]
+
+    def add_waypoint(self,waypoint_id,location,label):
+        waypoint_labels[waypoint_id] = label
+        waypoint_positions[waypoint_id] = location
+
+    # I (Karen) thinks it makes more sense to use dictionaries, so commented out list implementation
+    # def add_scout_point(self,scout_id,location,is_current_position=False):
+    #   if scout_id not in self.scout_id_list:
+ #            self.scout_id_list.append(scout_id)
+ #            self.current_positions.append(location)
+ #            self.positions_list.append([location])
+ #        else:
+ #            index = self.scout_id_list.index(scout_id)
+ #            if is_current_position:
+ #                self.current_positions[index] = location
+ #            self.positions_list[index].append(location)
+
+    # def add_waypoint(self,waypoint_id,location,label):
+ #        waypoint_ids.append(waypoint_id)
+ #        waypoint_labels.append(label)
+ #        waypoint_positions.append(location)
 
 class Scouts(object):
 	def __init__(self): #this should only be called once, as it will delete any previous file with this name
 		self.filename = "modeltestfile.h5"
+        self.data_display = Data_to_Display()
 
 		print("Creating file:", self.filename)
 		# Open a file in "w"rite mode
@@ -58,6 +82,13 @@ class Scouts(object):
 		# Flush the buffers for table, close file
 		table.flush()
 		h5file.close()
+        # update the data to display model
+        if is_point_of_interest:
+            waypoint_id = len(self.data_display.waypoint_positions.keys())
+            label = "label for this waypoint"
+            self.data_display.add_waypoint(waypoint_id, location, label)
+        else:
+            self.data_display.add_scout_point(scout_id, gps_location, true)
 
 	# condition = '(name == b"Particle:      5") | (name == b"Particle:      7")'
 	def data_from_time(self,begin_time,last_time):
@@ -65,8 +96,7 @@ class Scouts(object):
 		return data
 
 	def data_from_scout(self,scout_id):
-		input_scout_id = scout_id # just in case
-		data = self.helper_query('scout_id == ' + str(input_scout_id))
+		data = self.helper_query('scout_id == ' + str(scout_id))
 		return data
 
 	def current_locations(self,number_of_scouts):
