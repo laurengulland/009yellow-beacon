@@ -87,11 +87,12 @@ def hexCoordToString(hexString):
 listWaypoints = []
 listTracks = []
 
-# this code needs to be tested with serial inputs
-# ser = serial.Serial('/dev/ttyUSB0', 9600)
+# this below serial code needs to be tested with serial inputs
+ser = serial.Serial('/dev/ttyUSB0', 9600)
 while True:
  	inputHex = ser.read(80)
- 	# inputHex = '31 32 32 33 34 35 36 37 38 39 30 31 32 33 34 64 65 73 63 72 69 70 74 69 6f 6e'
+ 	#the above serial code needs to be tested
+
  	inputString = bytearray.fromhex(inputHex).decode()
  	parseGPS(inputString)
 
@@ -99,7 +100,7 @@ while True:
 # inpString = '0 34567 89012 3 4444 00567 89012 3 4444 34567 89012 1 4444'.replace(' ', '')
 # parseGPS(inpString) # 0 34567 89012 3 4444 0 00567 89012 3 4444 0 34567 89012 1 4444
 # print parseGPS('122345678901234description') # 1 22 34567 89012 3 4 description
-
+# inputHex = '31 32 32 33 34 35 36 37 38 39 30 31 32 33 34 64 65 73 63 72 69 70 74 69 6f 6e'
 
 
 
