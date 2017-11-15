@@ -14,9 +14,10 @@ class Data_to_Display(object): #object to be passed back in response to data_wit
 		self.current_positions = {} #list of most recent positions of the Scouts, corresponding to scout_id_list, regardless of whether they’re in range of the screen.
 		self.positions_list = {} #list lists of positions of all scouts within frame, corresponds to the scout_id_list.
 		self.waypoint_ids = [] #ids of waypoints. List of unique integers identifying the waypoints.
-		self.waypoint_types = [] #type of waypoint, corresponding to waypoint_ids. If four buttons, each element will be an integer from one to four (inclusive)
+		self.waypoint_types = {} #type of waypoint, corresponding to waypoint_ids. If four buttons, each element will be an integer from one to four (inclusive)
 		self.waypoint_labels = {} #labels corresponding to the waypoint_ids. May be a list of empty strings if unlabeled.
 		self.waypoint_positions = {} #positions of the waypoints, corresponds to waypoint_ids.
+		self.waypoint_owners = {} #
 	#consider adding helper functions
 
     def add_scout_point(self,scout_id,location,is_current_position=False):
@@ -27,9 +28,11 @@ class Data_to_Display(object): #object to be passed back in response to data_wit
         else:
             positions_list[scout_id] = [location]
 
-    def add_waypoint(self,waypoint_id,location,label):
+    def add_waypoint(self,waypoint_id,location,label,poi_type,scout_id):
         waypoint_labels[waypoint_id] = label
         waypoint_positions[waypoint_id] = location
+        waypoint_types[waypoint_id] = poi_type
+        waypoint_owners[waypoint_id] = scout_id
 
     # I (Karen) thinks it makes more sense to use dictionaries, so commented out list implementation
     # def add_scout_point(self,scout_id,location,is_current_position=False):
@@ -67,7 +70,7 @@ class Scouts(object):
 		table.flush()
 		h5file.close()
 
-	def add_data_point(self,scout_id,time,gps_location,is_point_of_interest):
+	def add_data_point(self,scout_id,time,gps_location,is_point_of_interest,poi_type=0):
 
 		h5file = open_file(self.filename, mode="a", title="Test file")
 		table = h5file.root.tracks.readout
@@ -86,7 +89,7 @@ class Scouts(object):
         if is_point_of_interest:
             waypoint_id = len(self.data_display.waypoint_positions.keys())
             label = "label for this waypoint"
-            self.data_display.add_waypoint(waypoint_id, location, label)
+            self.data_display.add_waypoint(waypoint_id, location, label, poi_type, scout_id)
         else:
             self.data_display.add_scout_point(scout_id, gps_location, true)
 

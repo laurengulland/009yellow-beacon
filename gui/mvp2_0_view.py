@@ -61,8 +61,43 @@ class MapDataStruct(object):
 		self.waypoint_list = []
 		self.scout_list = []
 
-	def update(self,testObj):
+	def update(self,inputObj):
+		scout_centers = {}
+		waypoint_centers = {}
+		chain_centers = {}
 
+		for idNum in inputObj.scout_id_list:
+			scout_centers[idNum] = self.coordinate_transform(inputObj.current_positions[idNum])
+			for point in inputObj.positions_list[idNum]:
+
+				if not (idNum in chain_centers):
+					chain_centers[idNum] = [self.coordinate_transform(point)]
+				else:
+					chain_centers[idNum].append(self.coordinate_transform(point))		
+		for idNum in inputObj.waypoint_ids:
+			waypoint_centers[idNum] = self.coordinate_transform(inputObj.waypoint_positions[idNum])
+
+
+		for idNum in inputObj.scout_id_list:
+			if(inputObj.current_positions[idNum] in inputObj.positions_list[idNum]):
+				scTemp = Scout(inputObj.current_positions[idNum],scout_centers[idNum],idNum)
+				self.scout_list.append(scTemp)
+			chTemp = Chain(chain_centers[idNum])
+			self.chain_list.append(chTemp)
+		for idNum in inputObj.waypoint_ids:
+			wpTemp = Waypoint(inputObj.waypoint_positions[idNum], waypoint_centers[idNum], inputObj.waypoint_types[idNum], idNum, inputObj.waypoint_labels[idNum])
+			self.waypoint_list.append(wpTemp)
+
+
+	def coordinate_transform(self,coords_In):
+		bl_corner = (42.35804,-71.0950567)
+		tr_corner = (42.35864,-71.0941733)
+		frame_dim = (800,800)
+
+		posOut = ( int(round((coords_In[1]-bl_corner[1])/(tr_corner[1]-bl_corner[1])*frame_dim[0])) , int(round((tr_corner[0]-coords_In[0])/(tr_corner[0]-bl_corner[0])*frame_dim[1])) )
+
+		#return posOut
+		return coords_In
 
 class Chain(object):
 	def __init__(self, points_list=[(0,0)]):
@@ -73,7 +108,7 @@ class Chain(object):
 
 	def render(self,surface):
 		if len(self.points_list)>1:
-			pygame.draw.lines(surface,black,False,self.points_list,7)
+			pygame.draw.lines(surface,blue,False,self.points_list,7)
 		for point_OP in self.points_list:
 			pygame.draw.circle(surface,black,point_OP,6,0)
 
@@ -82,9 +117,7 @@ class GUI(object):
 		self.display_width = display_width
 		self.display_height = display_height
 
-		self.scout_list = []
-		self.waypoint_list = []
-		self.chain_list = []
+		self.map_data = MapDataStruct()
 
 		#Initialize PyGame Display
 		pygame.init()
@@ -98,11 +131,11 @@ class GUI(object):
 		self.display.fill(yellow) #255,255,0 is Yellow!
 		self.display.blit(self.map_base,(0,0))
 
-		for chain in self.chain_list:
+		for chain in self.map_data.chain_list:
 			chain.render(self.display)
-		for waypoint in self.waypoint_list:
+		for waypoint in self.map_data.waypoint_list:
 			waypoint.render(self.display)
-		for scout in self.scout_list:
+		for scout in self.map_data.scout_list:
 			scout.render(self.display)
 
 
