@@ -13,8 +13,9 @@ spaceblue = (0x1B, 0x1B, 0x9E)
 editblue = (   0, 110, 173)
 
 class Scout(object):
-	def __init__(self, center=(0,0), id_num=0):
+	def __init__(self, true_pos=(0,0), center=(0,0), id_num=0):
 		self.center = center
+		self.true_pos = true_pos
 
 		pygame.init()
 		self.image = pygame.image.load('scout_icon.png')
@@ -29,8 +30,11 @@ class Scout(object):
 		surface.blit(((pygame.font.Font(None,35)).render(str(self.id_num),True,black)), (self.center[0]-6,self.center[1]-11))
 
 class Waypoint(object):
-	def __init__(self, center=(0,0), way_type=0, id_num=0):
+	def __init__(self, true_pos=(0,0), center=(0,0), way_type=0, id_num=0, description=''):
 		self.center = center
+		self.true_pos = true_pos
+
+		self.description = description
 
 		pygame.init()
 		if way_type==3:
@@ -50,6 +54,15 @@ class Waypoint(object):
 	def render(self,surface):
 		surface.blit(self.image, self.top_left)
 		surface.blit(((pygame.font.Font(None,35)).render(str(self.id_num),True,black)), (self.center[0]-6,self.center[1]-11))
+
+class MapDataStruct(object):
+	def __init__(self):
+		self.chain_list = []
+		self.waypoint_list = []
+		self.scout_list = []
+
+	def update(self,testObj):
+
 
 class Chain(object):
 	def __init__(self, points_list=[(0,0)]):

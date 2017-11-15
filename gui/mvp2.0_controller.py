@@ -9,7 +9,7 @@ import time
 import json
 import serial
 
-from mvp2.0_view.py import GUI
+from mvp2_0_view.py import GUI
 from mvp2.0_model.py import Scouts
 
 class Controller(object):

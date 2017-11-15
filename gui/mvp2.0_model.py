@@ -26,12 +26,12 @@ class Data_to_Display(object): #object to be passed back in response to data_wit
 		pass
 
 class Scouts(object):
-	def __init__(self):
+	def __init__(self): #this should only be called once, as it will delete any previous file with this name
 		self.filename = "modeltestfile.h5"
 
 		print("Creating file:", self.filename)
 		# Open a file in "w"rite mode
-		h5file = open_file(self.filename, mode="a", title="Test file")
+		h5file = open_file(self.filename, mode="w", title="Test file")
 		#create a tracks group
 		tracks_group = h5file.create_group("/", 'tracks', 'Scout Tracks')
 		print("Group '/tracks' created")
@@ -61,13 +61,13 @@ class Scouts(object):
 
 	# condition = '(name == b"Particle:      5") | (name == b"Particle:      7")'
 	def data_from_time(self,begin_time,last_time):
-        data = helper_query('(time >= begin_time) & (time <= last_time)')
+		data = self.helper_query('(time >= ' + str(begin_time) + ') & (time <= ' + str(last_time) + ')')
 		return data
 
 	def data_from_scout(self,scout_id):
-        input_scout_id = scout_id # just in case
-        data = helper_query('scout_id == input_scout_id')
-        return data
+		input_scout_id = scout_id # just in case
+		data = self.helper_query('scout_id == ' + str(input_scout_id))
+		return data
 
 	def current_locations(self,number_of_scouts):
 		pass
@@ -89,12 +89,12 @@ class Scouts(object):
 		print('end pretty print')
 		h5file.close()
 
-    def helper_query(condition):
-        h5file = open_file(self.filename, mode = "r")
-        table = h5file.root.tracks.readout
-        data = table.read_where(condition) # can also specify the columns you want here (condition, field='scout_id')
-        h5file.close()
-        return data     # returns a np ndarray
+	def helper_query(self,condition):
+		h5file = open_file(self.filename, mode = "r")
+		table = h5file.root.tracks.readout
+		data = table.read_where(condition) # can also specify the columns you want here (condition, field='scout_id')
+		h5file.close()
+		return data     # returns a np ndarray
 
 
 if __name__ == '__main__':
@@ -104,3 +104,5 @@ if __name__ == '__main__':
 	scouts.add_data_point(2,12,12000,True)
 	print('\n\n')
 	scouts.print_data()
+	print(scouts.data_from_scout(1))
+	print(scouts.data_from_time(0, 100000))
