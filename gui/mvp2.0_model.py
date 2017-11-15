@@ -21,6 +21,8 @@ class Data_to_Display(object): #object to be passed back in response to data_wit
 	#consider adding helper functions
 
     def add_scout_point(self,scout_id,location,is_current_position=False):
+        if scout_id not in scout_id_list:
+            scout_id_list.append(scout_id)
         if is_current_position:
             current_positions[scout_id] = location
         if scout_id in positions_list:
@@ -29,6 +31,7 @@ class Data_to_Display(object): #object to be passed back in response to data_wit
             positions_list[scout_id] = [location]
 
     def add_waypoint(self,waypoint_id,location,label,poi_type,scout_id):
+        waypoint_ids.append(waypoint_id)
         waypoint_labels[waypoint_id] = label
         waypoint_positions[waypoint_id] = location
         waypoint_types[waypoint_id] = poi_type
