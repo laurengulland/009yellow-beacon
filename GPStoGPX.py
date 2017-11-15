@@ -43,8 +43,8 @@ def parseGPS(GPSLine):
 	isPOI = True if int(line[0]) == 1 else False
 	if isPOI:
 		poi_id = line[1:3][::-1]
-		latitude = str(float(line[3:8][::-1])/10.**6)
-		longitude = str(float(line[8:13][::-1])/10.**6)
+		latitude = hexCoordToString(line[3:8][::-1])
+		longitude = hexCoordToString(line[8:13][::-1])
 		scout_id = line[13]
 		category = line[14]
 		description = line[15:]
@@ -54,8 +54,8 @@ def parseGPS(GPSLine):
 	else:
 		for i in range(min(5, len(line)//15)): # int division
 			start = i * 15
-			latitude = str(float(line[start + 1 : start + 6][::-1])/10.**6)
-			longitude = str(float(line[start + 6 : start + 11][::-1])/10.**6)
+			latitude = hexCoordToString(line[start + 1 : start + 6][::-1])
+			longitude = hexCoordToString(line[start + 6 : start + 11][::-1])
 			scout_id = line[start + 11]
 			timestamp = line[start + 12 : start + 16][::-1]
 
@@ -77,6 +77,8 @@ def writeToDisk(GPSString):
 	file.write(GPSString)
 	file.close()
 
+def hexCoordToString(hexString):
+	return str(float(hexString)/10.**6)
 
 
 
@@ -85,18 +87,20 @@ def writeToDisk(GPSString):
 listWaypoints = []
 listTracks = []
 
-# this code needs to be tested with serial inputs
+# this below serial code needs to be tested with serial inputs
 ser = serial.Serial('/dev/ttyUSB0', 9600)
 while True:
- 	inputBytes = ser.read(80)
- 	inputString = inputBytes.decode('utf-8')
+ 	inputHex = ser.read(80)
+ 	#the above serial code needs to be tested
+
+ 	inputString = bytearray.fromhex(inputHex).decode()
  	parseGPS(inputString)
 
 ## Code to test the above functions
 # inpString = '0 34567 89012 3 4444 00567 89012 3 4444 34567 89012 1 4444'.replace(' ', '')
 # parseGPS(inpString) # 0 34567 89012 3 4444 0 00567 89012 3 4444 0 34567 89012 1 4444
 # print parseGPS('122345678901234description') # 1 22 34567 89012 3 4 description
-
+# inputHex = '31 32 32 33 34 35 36 37 38 39 30 31 32 33 34 64 65 73 63 72 69 70 74 69 6f 6e'
 
 
 

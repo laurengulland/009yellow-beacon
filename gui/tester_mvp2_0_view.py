@@ -2,23 +2,36 @@ import time
 import pygame
 import mvp2_0_view as vw
 
+"""THIS CODE CONTAINS FAKE SIMULATION DATA FOR TESTING THE VIEW CLASSES"""
+
 class Data_to_Display(object):
 #All positions are GPS positions, of the format (position_n, position_e), where position is a signed float.
 
+	# def __init__(self):
+	# 	self.scout_id_list = [1,2,3,4,5] #ids of Scouts.  List of unique integers identifying the Scouts.
+	# 	self.current_positions = {1:(200,200),2:(420,180),3:(500,250),4:(600,-100),5:(800,-100)} #list of most recent positions of the Scouts, corresponding to scout_id_list, regardless of whether they’re in range of the screen.
+	# 	self.positions_list = {1:[(200,200), (180,300), (210,600)], 2:[(420,180),(400,300),(380,650)], 3:[(550,500),(480,800)], 4:[(600,100),(660,500)], 5:[(800,-100),(820,300),(770,600)]} #list lists of positions of all scouts within frame, corresponds to the scout_id_list.
+	# 	self.waypoint_ids = [1,2] #ids of waypoints. List of unique integers identifying the waypoints.
+	# 	self.waypoint_types = {1:2,2:1} #type of waypoint, corresponding to waypoint_ids. If four buttons, each element will be an integer from one to four (inclusive)
+	# 	self.waypoint_labels = {1:'clothing', 2:'hazard'} #labels corresponding to the waypoint_ids. May be a list of empty strings if unlabeled.
+	# 	self.waypoint_positions = {1:(400,400), 2:(600,600)} #positions of the waypoints, corresponds to waypoint_ids.
+	# 	self.waypoint_owners = {1:2,1:4}
+
 	def __init__(self):
-		scout_id_list = [1,2,3,4,5] #ids of Scouts.  List of unique integers identifying the Scouts.
-		current_positions = [(200,200),(420,180),(500,250),(600,-100),(800,-100)] #list of most recent positions of the Scouts, corresponding to scout_id_list, regardless of whether they’re in range of the screen.
-		positions_list = [[(200,200), (180,300), (210,600)],[(420,180),(400,300),(380,650)],[(550,500),(480,800)],[(600,100),(660,500)],[(800,-100),(820,300),(770,600)]] #list lists of positions of all scouts within frame, corresponds to the scout_id_list.
-		waypoint_ids = [1,2] #ids of waypoints. List of unique integers identifying the waypoints.
-		waypoint_types = [2,1] #type of waypoint, corresponding to waypoint_ids. If four buttons, each element will be an integer from one to four (inclusive)
-		waypoint_labels = ['clothing','hazard'] #labels corresponding to the waypoint_ids. May be a list of empty strings if unlabeled.
-		waypoint_positions = [(400,400), (600,600)] #positions of the waypoints, corresponds to waypoint_ids.
-		waypoint_owners = [2,4]
+		self.scout_id_list = [1] #ids of Scouts.  List of unique integers identifying the Scouts.
+		self.current_positions = {1:(42.358393, -71.094907)} #list of most recent positions of the Scouts, corresponding to scout_id_list, regardless of whether they’re in range of the screen.
+		self.positions_list = {1:[(42.358393, -71.094907), (42.358320, -71.094311), (42.358060, -71.094740)]} #list lists of positions of all scouts within frame, corresponds to the scout_id_list.
+		self.waypoint_ids = [1] #ids of waypoints. List of unique integers identifying the waypoints.
+		self.waypoint_types = {1:2} #type of waypoint, corresponding to waypoint_ids. If four buttons, each element will be an integer from one to four (inclusive)
+		self.waypoint_labels = {1:'clothing'} #labels corresponding to the waypoint_ids. May be a list of empty strings if unlabeled.
+		self.waypoint_positions = {1:(42.358320, -71.094311)} #positions of the waypoints, corresponds to waypoint_ids.
+		self.waypoint_owners = {1:1}
 
 class Tester(object):
 	def __init__(self):
 		self.gui = vw.GUI(1200,800)
 		self.step_rate = 1 #for da loopy loop
+		self.dtd = Data_to_Display()
 
 	def run(self):
 		crashed = False
@@ -27,12 +40,14 @@ class Tester(object):
 		while not crashed:
 			#HACK addition of new scouts
 			#after 2.5 seconds, add a scout. Normally this will be triggered by something else.
-			if it<=5 and it%1==0:
-				#self.add_scout(self.gui,(60*it,60*it),it)
-				lineList.append((60*it,60*it))
-				self.pos_scout(self.gui,(60*it,60*it),1)
+			# if it<=5 and it%1==0:
+			# 	#self.add_scout(self.gui,(60*it,60*it),it)
+			# 	lineList.append((60*it,60*it))
+			# 	self.pos_scout(self.gui,(60*it,60*it),1)
 
-			self.gui.chain_list = [vw.Chain(lineList)]
+			# self.gui.chain_list = [vw.Chain(lineList)]
+
+			self.gui.map_data.update(self.dtd)
 			self.gui.render()
 
 			for event in pygame.event.get():
