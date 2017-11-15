@@ -35,11 +35,11 @@ python -m pip install --user numexpr cython
 
 Install PyTables from local .whl File:
 ```bash
-python =m pip install --user tables-3.4.2-cp36-cp36m-win_amd64.whl
+python -m pip install --user tables-3.4.2-cp36-cp36m-win_amd64.whl
 ```
 32-bit must be installed for the Queen tablet itself:
 ```bash
-python =m pip install --user tables-3.4.2-cp36-cp36m-win32.whl
+python -m pip install --user tables-3.4.2-cp36-cp36m-win32.whl
 ```
 Note: This can only be done when in the root 009yellow-beacon directory.
 
