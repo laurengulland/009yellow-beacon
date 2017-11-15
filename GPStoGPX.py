@@ -1,21 +1,23 @@
-# listWaypoints: [point]
-# listTracks: [[point, point]]
+import serial
+import io
+
 CONST_HEADER = '<?xml version="1.0" encoding="UTF-8"?><gpx version="1.0">'
 CONST_TAIL = '</gpx>'
 
 class Point:
-     def __init__(self, latitude, longitude, time, name='', src=''):
+     def __init__(self, latitude, longitude, time, src, description=''):
          self.latitude = latitude
          self.longitude = longitude
          self.time = time
-         self.name = name
+         self.description = description
          self.src = src
 
 def toGPX (listWaypoints, listTracks):
 	waypointFullString = ''
 	for waypoint in listWaypoints:
 		waypointString = '<wpt lat="' + waypoint.latitude + '" lon="' + waypoint.longitude + '">'
-		waypointString += '<name>' + waypoint.name + '</name>'
+		waypointString += '<name>' + waypoint.description + '</name>'
+		waypointString += '<src>' + waypoint.src + '</src>'
 		waypointString += '</wpt>'
 		waypointFullString += waypointString
 
@@ -23,8 +25,8 @@ def toGPX (listWaypoints, listTracks):
 	for track in listTracks:
 		trackString = '<trk>'
 		trackString += '<src>' + track[0].src + '</src>'
-		if len(track[0].name) > 0:
-			trackString += '<name>' + track[0].name + '</name>'
+		if len(track[0].description) > 0:
+			trackString += '<name>' + track[0].description + '</name>'
 		trackString += '<trkseg>'
 		for trackpoint in track:
 			trackpointString = '<trkpt lat="' + trackpoint.latitude + '" lon="' + trackpoint.longitude + '">'
@@ -37,22 +39,65 @@ def toGPX (listWaypoints, listTracks):
 	return CONST_HEADER + waypointFullString + trackFullString + CONST_TAIL
 
 def parseGPS(GPSLine):
-	listWaypoints = []
-	listTracks = []
-	listArg = GPSLine.split()
-	latitude = listArg[0]
-	longitude = listArg[1]
-	time = listArg[2]
-	name = listArg[3]
-	src = listArg[4]
+	line = GPSLine
+	isPOI = True if int(line[0]) == 1 else False
+	if isPOI:
+		poi_id = line[1:3][::-1]
+		latitude = str(float(line[3:8][::-1])/10.**6)
+		longitude = str(float(line[8:13][::-1])/10.**6)
+		scout_id = line[13]
+		category = line[14]
+		description = line[15:]
 
-	waypoint = Point(latitude, longitude, time, name, src)
-	trackpoint = [Point(latitude, longitude, time, name, src)]
-	listWaypoints.append(waypoint)
-	listTracks.append(trackpoint)
-	return toGPX(listWaypoints, listTracks)
+		waypoint = Point(latitude, longitude, 0, scout_id, description)
+		listWaypoints.append(waypoint)
+	else:
+		for i in range(min(5, len(line)//15)): # int division
+			start = i * 15
+			latitude = str(float(line[start + 1 : start + 6][::-1])/10.**6)
+			longitude = str(float(line[start + 6 : start + 11][::-1])/10.**6)
+			scout_id = line[start + 11]
+			timestamp = line[start + 12 : start + 16][::-1]
 
-print parseGPS('12 34 12:00 test Karen')
+			trackpoint = Point(latitude, longitude, timestamp, scout_id, '')
+			isFound = False
+			for track in listTracks:
+				if track[0].src == scout_id:
+					track.append(trackpoint)
+					isFound = True
+			if not isFound:
+				listTracks.append([trackpoint])
+	
+	GPSString = toGPX(listWaypoints, listTracks)
+	writeToDisk(GPSString)
+	return GPSString
+
+def writeToDisk(GPSString):
+	file = open("testfile.gpx","w")
+	file.write(GPSString)
+	file.close()
+
+
+
+
+## Actual code that runs
+# these lists keep track of all the points
+listWaypoints = []
+listTracks = []
+
+# this code needs to be tested with serial inputs
+ser = serial.Serial('/dev/ttyUSB0', 9600)
+while True:
+ 	inputBytes = ser.read(80)
+ 	inputString = inputBytes.decode('utf-8')
+ 	parseGPS(inputString)
+
+## Code to test the above functions
+# inpString = '0 34567 89012 3 4444 00567 89012 3 4444 34567 89012 1 4444'.replace(' ', '')
+# parseGPS(inpString) # 0 34567 89012 3 4444 0 00567 89012 3 4444 0 34567 89012 1 4444
+# print parseGPS('122345678901234description') # 1 22 34567 89012 3 4 description
+
+
 
 
 			
