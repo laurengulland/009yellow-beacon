@@ -73,12 +73,12 @@ def parseGPS(GPSLine):
 	return GPSString
 
 def writeToDisk(GPSString):
-	file = open("testfile.gpx","w")
+	file = open("testfile.txt","w")
 	file.write(GPSString)
 	file.close()
 
 def hexCoordToString(hexString):
-	return string(float(hexString)/10.**6)
+	return str(float(hexString)/10.**6)
 
 
 
@@ -88,10 +88,11 @@ listWaypoints = []
 listTracks = []
 
 # this code needs to be tested with serial inputs
-ser = serial.Serial('/dev/ttyUSB0', 9600)
+# ser = serial.Serial('/dev/ttyUSB0', 9600)
 while True:
- 	inputBytes = ser.read(80)
- 	inputString = inputBytes.decode('utf-8') # int.from_bytes(b + hexString, byteorder='big'
+ 	inputHex = ser.read(80)
+ 	# inputHex = '31 32 32 33 34 35 36 37 38 39 30 31 32 33 34 64 65 73 63 72 69 70 74 69 6f 6e'
+ 	inputString = bytearray.fromhex(inputHex).decode()
  	parseGPS(inputString)
 
 ## Code to test the above functions
