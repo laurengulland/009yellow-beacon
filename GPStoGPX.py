@@ -73,7 +73,7 @@ def parseGPS(GPSLine):
 	return GPSString
 
 def writeToDisk(GPSString):
-	file = open("testfile.txt","w")
+	file = open("testfile.gpx","w")
 	file.write(GPSString)
 	file.close()
 
