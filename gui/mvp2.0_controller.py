@@ -9,6 +9,8 @@ import time
 import json
 import serial
 import pygame
+import threading
+from threading import Thread
 
 from mvp2_0_view import GUI
 from mvp2_0_model import Scouts
@@ -43,6 +45,7 @@ class Controller(object):
 		self.step_rate = .5 #for da loopy loop
 		#self.dtd = Data_to_Display()
 		self.last_time=time.time()
+		print('reaches end of initialization')
 
 	def action_map(self):
 		'''
@@ -278,13 +281,20 @@ class Controller(object):
 		#calls view.render()?
 		pass
 
+	def pump_gui(self, pit):
+		while True:
+			pygame.event.get_event()
+
 	def run(self):
 		crashed = False
 
 		while not crashed:
-			current_time = time.time()
-			print('time before parsing inputs:',current_time)
-			self.parse_inputs()
+			pit = Thread(target = self.parse_inputs)
+			guit = Thread(target = lambda: self.pump_gui(pit))
+			pit.start()
+			guit.start()
+			while pit.is_alive():
+				pass
 			current_time = time.time()
 			print('time after parsing inputs:',current_time)
 			if current_time-self.last_time > self.step_rate:
