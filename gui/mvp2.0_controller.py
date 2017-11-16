@@ -39,7 +39,7 @@ class Controller(object):
 		self.gui.render()
 
 		#initialize serial communication
-		self.port = serial.Serial('COM4') #MUST SELECT CORRECT PORT ON TABLET
+		self.port = serial.Serial('/dev/ttyACM0') #MUST SELECT CORRECT PORT ON TABLET
 
 		self.step_rate = .5 #for da loopy loop
 		#self.dtd = Data_to_Display()
@@ -131,6 +131,7 @@ class Controller(object):
 		'''
 		#Parse input and decide whether GPS or button is most accurate
 		packet = self.port.read(83)
+		print(packet.hex())
 		length = packet[1]
 		packtype = packet[2]
 		content = bytearray(packet[3:2+length])

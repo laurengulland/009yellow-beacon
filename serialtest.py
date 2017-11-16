@@ -35,13 +35,13 @@ def get_poi_packet(content, trtime, next_poi_id):
     packet[5] = int(poi_hex[0:2],16)
     packet[6:18] = content
     return packet
-    
+
 def get_scout_payload(content,trtime):
     payload = bytearray(15)
     payload[0:11]=content[0:11]
     payload[11:15] = time_int_to_bytearray(trtime)
     return payload
-    
+
 
 def time_int_to_bytearray(trtime):
     hexstring = hex(trtime)[2:]
@@ -51,10 +51,13 @@ def time_int_to_bytearray(trtime):
                int(hexstring[2:4],16),
                int(hexstring[0:2],16),
     ])
-    
-    
-next_poi_id = 241  
-port = serial.Serial('COM4')
+
+
+next_poi_id = 241
+port = serial.Serial('/dev/ttyACM0')
+while True:
+    print(port.read(1).hex())
+'''
 time.sleep(2)
 packet = port.read(83)
 port.close()
@@ -83,3 +86,4 @@ print(packtype)
 print(content.hex())
 print(lat)
 print(long)
+'''
