@@ -183,6 +183,7 @@ class GUI(object):
 		self.pg_disp.set_caption('Beacon Technical Review GUI')
 		self.map_base = pygame.image.load('sprites/kresge_map.png')
 		self.Menu = Menu(self.display_width,self.display_height,self.map_base.get_rect().size)
+		self.selected_waypoint = None
 
 	def render(self):
 		self.display.fill(BLACK)
@@ -257,6 +258,7 @@ class GUI(object):
 			pass
 
 	def toggle_menu_state(self):
+		#currently only toggles between
 		if self.gui_state=='Map':
 			self.gui_state=='Menu'
 		else:
