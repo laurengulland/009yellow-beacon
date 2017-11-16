@@ -54,15 +54,17 @@ class Tester(object):
 				if event.type == pygame.QUIT:
 					crashed = True
 				elif event.type == pygame.KEYDOWN: #currently reads up/down/left/right from keyboard, eventually switch this over to Queen Buttons, however those work
-					self.gui.move_down()
-				elif event.type == pygame.KEYUP:
-					self.gui.move_up()
-				elif event.type == pygame.KEYLEFT:
-					self.gui.move_left()
-				elif event.type == pygame.KEYRIGHT:
-					self.gui.move_right()
-					#HACK: Make right key temporarily actuate Map, should be changed once we have a dedicated Menu button
-					self.gui.toggle_menu_state()
+					if event.type == pygame.KEYDOWN:
+						if event.key == pygame.K_LEFT: #if left arrow pressed
+							self.gui.move_left()
+						if event.key == pygame.K_RIGHT: #if right arrow pressed
+							self.gui.move_right()
+							#HACK: Make right key temporarily actuate Map, should be changed once we have a dedicated Menu button
+							self.gui.toggle_menu_state()
+						if event.key == pygame.K_UP: #if up arrow pressed
+							self.gui.move_up()
+						if event.key == pygame.K_DOWN: #if down arrow pressed
+							self.gui.move_down()
 			time.sleep(self.step_rate)
 			it+=1*self.step_rate
 			print(it)
