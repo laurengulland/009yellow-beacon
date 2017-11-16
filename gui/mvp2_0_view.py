@@ -109,6 +109,8 @@ class MapDataStruct(object):
 			waypoint_centers[idNum] = self.coordinate_transform(inputObj.waypoint_positions[idNum])
 
 		for idNum in inputObj.scout_id_list:
+			if inputObj.current_positions[idNum] is None or inputObj.positions_list[idNum] is None:
+				continue
 			if(inputObj.current_positions[idNum] in inputObj.positions_list[idNum]):
 				scTemp = Scout(inputObj.current_positions[idNum],scout_centers[idNum],idNum)
 				self.scout_list.append(scTemp)

@@ -283,19 +283,20 @@ class Controller(object):
 
 	def pump_gui(self, pit):
 		while True:
-			pygame.event.get_event()
+			pygame.event.get()
 
 	def run(self):
 		crashed = False
 
 		while not crashed:
-			pit = Thread(target = self.parse_inputs)
-			guit = Thread(target = lambda: self.pump_gui(pit))
-			pit.start()
-			guit.start()
-			while pit.is_alive():
-				pass
+			# pit = Thread(target = self.parse_inputs)
+			# guit = Thread(target = lambda: self.pump_gui(pit))
+			# pit.start()
+			# guit.start()
+			# while pit.is_alive():
+			# 	pass
 			current_time = time.time()
+			self.parse_inputs()
 			print('time after parsing inputs:',current_time)
 			if current_time-self.last_time > self.step_rate:
 				print('actuated')
