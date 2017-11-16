@@ -122,10 +122,20 @@ class Menu(object):
 		sample_button_coords = (int(self.menu_dimensions[0]*.1)+self.menu_coords[0],int(self.menu_dimensions[1]*.4)+self.menu_coords[1])
 		sample_button_dimensions = (int(self.menu_dimensions[0]*.8),int(self.menu_dimensions[1]*.15))
 		self.sampleButton = Button(sample_button_coords,sample_button_dimensions,label="Test",sprite_filepath="sprites/scout_icon.png")
-	def render(self,surface): #,map_data):
-		# #dealing with only up to four waypoints yet, no scrolling features
-		# for waypoint in map_data.waypoint_list:
-		self.sampleButton.render(surface)
+	def render(self,surface,map_data):
+		#dealing with only up to four waypoints currently, no scrolling features
+		wp_count = 0
+		button_dimensions = (int(self.menu_dimensions[0]*.8),int(self.menu_dimensions[1]*.15))
+		for waypoint in map_data.waypoint_list:
+			# button_coords_x = int(self.menu_dimensions[0]*.1)+self.menu_coords[0]+
+			# button_coords_y = int(self.menu_dimensions[1]*.4)+self.menu_coords[1]
+			# Button = Button(button_coords, button_dimensions, label=)
+			print(waypoint)
+			wp_count+=1
+			if wp_count>=5: #stop after 5th button, it won't display anyway
+				break
+			Button.render(surface)
+		# self.sampleButton.render(surface)
 
 class Button(object):
 	def __init__(self,top_left,dimensions,label="",sprite_filepath=""):
@@ -185,17 +195,69 @@ class GUI(object):
 		for scout in self.map_data.scout_list:
 			scout.render(self.display)
 
-		self.Menu.render(self.display)
+		self.Menu.render(self.display,self.map_data)
 		self.pg_disp.update()
 
-	def pan_horizontal(self,delta_x):
-		pass
+	def move_left(self):
+		if self.gui_state == 'Menu':
+			#navigate within the menu (probably doesn't mean anything)
+			pass
+		elif self.gui_state == 'Map':
+			#pan left on the map (panning not implemented yet)
+			pass
+		elif self.gui_state == 'Keyboard':
+			#scroll through that keyboard son
+			pass
+		else: #not a valid state!
+			print('GUI_STATE NOT VALID.')
+			pass
 
-	def pan_vertical(self, delta_y):
-		pass
+	def move_right(self):
+		if self.gui_state == 'Menu':
+			#navigate within the menu (probably doesn't mean anything)
+			pass
+		elif self.gui_state == 'Map':
+			#pan left on the map (panning not implemented yet)
+			pass
+		elif self.gui_state == 'Keyboard':
+			#scroll through that keyboard son
+			pass
+		else: #not a valid state!
+			print('GUI_STATE NOT VALID.')
+			pass
 
-	def open_waypoint_menu(self):
-		pass
 
-	def close_waypoint_menu(self):
-		pass
+	def move_up(self):
+		if self.gui_state == 'Menu':
+			#navigate within the menu
+			self.menu.selected_poi -= 1
+
+		elif self.gui_state == 'Map':
+			#pan left on the map (panning not implemented yet)
+			pass
+		elif self.gui_state == 'Keyboard':
+			#scroll through that keyboard son
+			pass
+		else: #not a valid state!
+			print('GUI_STATE NOT VALID.')
+			pass
+
+	def move_down(self):
+		if self.gui_state == 'Menu':
+			#navigate within the menu
+			self.menu.selected_poi += 1
+		elif self.gui_state == 'Map':
+			#pan left on the map (panning not implemented yet)
+			pass
+		elif self.gui_state == 'Keyboard':
+			#scroll through that keyboard son
+			pass
+		else: #not a valid state!
+			print('GUI_STATE NOT VALID.')
+			pass
+
+	def toggle_menu_state(self):
+		if self.gui_state=='Map':
+			self.gui_state=='Menu'
+		else:
+			self.gui_state=='Map'
