@@ -296,6 +296,8 @@ class Controller(object):
 			#trigger update for view if necessary? ==> this should be handled by serial parsing
 			# initiate transmissions? ==> also handled by parsing
 		self.port.close()
+		pygame.quit()
+		quit()
 		#quit everythin on shutdown
 
 
