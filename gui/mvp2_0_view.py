@@ -1,16 +1,17 @@
 import pygame
 import time
 
-black    = (   0,   0,   0)
-white    = ( 255, 255, 255)
-green    = (   0, 255,   0)
-red      = ( 255,   0,   0)
-brown    = ( 150,  75,   0)
-blue     = (   0,   0, 255)
-yellow   = ( 255, 255,   0)
-backcolor = (0x9F, 0xAF, 0xF8)
-spaceblue = (0x1B, 0x1B, 0x9E)
-editblue = (   0, 110, 173)
+BLACK    = (   0,   0,   0)
+WHITE    = ( 255, 255, 255)
+GREEN    = (   0, 255,   0)
+RED      = ( 255,   0,   0)
+BROWN    = ( 150,  75,   0)
+BLUE     = (   0,   0, 255)
+YELLOW   = ( 255, 255,   0)
+BACKCOLOR = (0x9F, 0xAF, 0xF8)
+SPACEBLUE = (0x1B, 0x1B, 0x9E)
+EDITBLUE = (   0, 110, 173)
+DARKYELLOW = (200,200,0)
 
 class Scout(object):
 	def __init__(self, true_pos=(0,0), center=(0,0), id_num=0):
@@ -18,7 +19,7 @@ class Scout(object):
 		self.true_pos = true_pos
 
 		pygame.init()
-		self.image = pygame.image.load('scout_icon.png')
+		self.image = pygame.image.load('sprites/scout_icon.png')
 		#self.image = pygame.image.load('cuttlefish.png')
 		self.width,self.height = self.image.get_size()
 		self.top_left = (self.center[0]-self.width/2,self.center[1]-self.height/2)
@@ -27,7 +28,7 @@ class Scout(object):
 
 	def render(self,surface):
 		surface.blit(self.image, self.top_left)
-		surface.blit(((pygame.font.Font(None,35)).render(str(self.id_num),True,black)), (self.center[0]-6,self.center[1]-11))
+		surface.blit(((pygame.font.Font(None,35)).render(str(self.id_num),True,BLACK)), (self.center[0]-6,self.center[1]-11))
 
 class Waypoint(object):
 	def __init__(self, true_pos=(0,0), center=(0,0), way_type=0, id_num=0, description='',owner=0):
@@ -39,13 +40,13 @@ class Waypoint(object):
 
 		pygame.init()
 		if way_type==3:
-			self.image = pygame.image.load('waypoint_red.png')
+			self.image = pygame.image.load('sprites/waypoint_red.png')
 		elif way_type==2:
-			self.image = pygame.image.load('waypoint_blue.png')
+			self.image = pygame.image.load('sprites/waypoint_blue.png')
 		elif way_type==1:
-			self.image = pygame.image.load('waypoint_green.png')
+			self.image = pygame.image.load('sprites/waypoint_green.png')
 		else:
-			self.image = pygame.image.load('waypoint_purple.png')
+			self.image = pygame.image.load('sprites/waypoint_purple.png')
 
 		self.width,self.height = self.image.get_size()
 		self.top_left = (self.center[0]-self.width/2,self.center[1]-self.height/2)
@@ -54,7 +55,7 @@ class Waypoint(object):
 
 	def render(self,surface):
 		surface.blit(self.image, self.top_left)
-		surface.blit(((pygame.font.Font(None,35)).render(str(self.id_num),True,black)), (self.center[0]-6,self.center[1]-11))
+		surface.blit(((pygame.font.Font(None,35)).render(str(self.id_num),True,BLACK)), (self.center[0]-6,self.center[1]-11))
 
 class MapDataStruct(object):
 	def __init__(self):
@@ -74,7 +75,7 @@ class MapDataStruct(object):
 				if not (idNum in chain_centers):
 					chain_centers[idNum] = [self.coordinate_transform(point)]
 				else:
-					chain_centers[idNum].append(self.coordinate_transform(point))		
+					chain_centers[idNum].append(self.coordinate_transform(point))
 		for idNum in inputObj.waypoint_ids:
 			waypoint_centers[idNum] = self.coordinate_transform(inputObj.waypoint_positions[idNum])
 
@@ -101,16 +102,61 @@ class MapDataStruct(object):
 
 class Chain(object):
 	def __init__(self, points_list=[(0,0)]):
-
 		self.points_list=points_list
-
 		pygame.init()
 
 	def render(self,surface):
 		if len(self.points_list)>1:
-			pygame.draw.lines(surface,blue,False,self.points_list,7)
+			pygame.draw.lines(surface,BLUE,False,self.points_list,7)
 		for point_OP in self.points_list:
-			pygame.draw.circle(surface,black,point_OP,6,0)
+			pygame.draw.circle(surface,BLACK,point_OP,6,0)
+
+class Menu(object):
+	def __init__(self,screen_width,screen_height,map_size):
+		self.menu_coords = (map_size[0],0) #top left coordinates of menu are where map ends width-wise, and 0 for length-wise (top of screen = 0)
+		self.menu_dimensions = (screen_width-map_size[0],screen_height)
+
+		self.button_list = []
+
+
+		sample_button_coords = (int(self.menu_dimensions[0]*.1)+self.menu_coords[0],int(self.menu_dimensions[1]*.4)+self.menu_coords[1])
+		sample_button_dimensions = (int(self.menu_dimensions[0]*.8),int(self.menu_dimensions[1]*.15))
+		self.sampleButton = Button(sample_button_coords,sample_button_dimensions,label="Test",sprite_filepath="sprites/scout_icon.png")
+	def render(self,surface): #,map_data):
+		# #dealing with only up to four waypoints yet, no scrolling features
+		# for waypoint in map_data.waypoint_list:
+		self.sampleButton.render(surface)
+
+class Button(object):
+	def __init__(self,top_left,dimensions,label="",sprite_filepath=""):
+		"""top_left: tuple of (x,y) position denoting top_left corner
+		dimensions: tuple of (width, height) of button
+		"""
+		self.active = False
+		self.top_left_x, self.top_left_y = top_left
+		self.width, self.height = dimensions
+		self.label = label
+		if sprite_filepath != "":
+			self.sprite = pygame.image.load(sprite_filepath)
+		self.inactive_color = DARKYELLOW
+		self.active_color = YELLOW
+
+	def render(self,surface):
+		#Draw Background Yellow Box
+		pygame.draw.rect(surface, self.active_color, (self.top_left_x,self.top_left_y,self.width,self.height), 0)
+		#render sprite as icon for button
+		if self.sprite: #if there exists an icon for the button, draw it
+			sprite_pos = (self.top_left_x+int(self.width/4-self.sprite.get_rect().size[0]/2),self.top_left_y+int(self.height/2-self.sprite.get_rect().size[1]/2)) #this needs to be calculated somewhere
+			surface.blit(self.sprite,sprite_pos) #this needs to be display, not pg_display - not 100% sure how to pass in
+		#Render Text for label
+		self.render_text(surface,self.label,(self.top_left_x+int(self.width/2),self.top_left_y+int(self.height/2)),fontsize=30)
+
+	def render_text(self,surface,text,center_pos,fontsize=20):
+		text_object = pygame.font.Font('freesansbold.ttf',fontsize)
+		textSurface = text_object.render(text,True,BLACK)
+		textRect = textSurface.get_rect()
+		textRect.center = center_pos
+		surface.blit(textSurface,textRect)
 
 class GUI(object):
 	def __init__(self, display_width=1200, display_height=800):
@@ -125,10 +171,11 @@ class GUI(object):
 		self.display = self.pg_disp.set_mode((self.display_width,self.display_height))
 		#self.display = self.pg_disp.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT),flags=pygame.FULLSCREEN)
 		self.pg_disp.set_caption('Beacon Technical Review GUI')
-		self.map_base = pygame.image.load('kresge_map.png')
+		self.map_base = pygame.image.load('sprites/kresge_map.png')
+		self.Menu = Menu(self.display_width,self.display_height,self.map_base.get_rect().size)
 
 	def render(self):
-		self.display.fill(yellow) #255,255,0 is Yellow!
+		self.display.fill(BLACK)
 		self.display.blit(self.map_base,(0,0))
 
 		for chain in self.map_data.chain_list:
@@ -138,7 +185,7 @@ class GUI(object):
 		for scout in self.map_data.scout_list:
 			scout.render(self.display)
 
-
+		self.Menu.render(self.display)
 		self.pg_disp.update()
 
 	def pan_horizontal(self,delta_x):

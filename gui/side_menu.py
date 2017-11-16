@@ -73,8 +73,8 @@ class Menu_GUI(object):
         #Button highlight
 
         if x+width>mouse[0]>x and y+height>mouse[1]>y:
-            pygame.draw.rect(self.display, self.active_button_color, button_dimensions, 0)
-            pygame.draw.rect(self.display, BLACK, button_dimensions, 5)
+            pygame.draw.rect(self.display, self.active_button_color, dimensions, 0)
+            pygame.draw.rect(self.display, BLACK, dimensions, 5)
             if click[0] == 1 and action != None:
                 if buttontype == "main":
                     if action == "scoutlist":
@@ -124,7 +124,10 @@ class Menu_GUI(object):
     def side_menu(self):
         print('SIDE_MENU FUNCTION EVALUATING')
         self.display.fill(BLACK)
-
+        # scoutx = 400
+        # scouty = 100
+        # scoutxpos = 200
+        # scoutypos_init = 50
         self.draw_menu_button("     Scouts", scoutx, scoutypos_init, scoutxpos, scouty,DARKYELLOW , YELLOW, "scoutlist", "main")
         self.display_scout(scoutx+40,scoutypos_init+27)
         self.draw_menu_button("       POIs", scoutx, scoutypos_init+scouty, scoutxpos, scouty, DARKYELLOW, YELLOW, "POIlist", "main")
