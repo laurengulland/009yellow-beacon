@@ -152,7 +152,7 @@ class Menu(object):
 			#TEST ME, I'M UNTESTED!!
 			button_coords_x = int(self.menu_dimensions[0]*.1)+self.menu_coords[0]
 			button_coords_y = int(self.menu_dimensions[1]*.04)+self.menu_coords[1]
-			Butttttton = Button((button_coords_x,button_coords_y), button_dimensions, label="No POIs to display.")
+			Butttttton = Button((button_coords_x,button_coords_y), button_dimensions)#label="No POIs to display."
 			Butttttton.render(surface)
 		elif selected_waypoint_index==None: #if waypoint hasn't been selected, select the first one in the list.
 			selected_waypoint_index = 0
@@ -189,7 +189,7 @@ class Menu(object):
 			waypoint = map_data.waypoint_list[index]
 			button_coords_x = int(self.menu_dimensions[0]*.1)+self.menu_coords[0]
 			button_coords_y = int(self.menu_dimensions[1]*.04)+self.menu_coords[1]+wp_count*(.04*self.menu_dimensions[1]+button_dimensions[1])
-			Butttttton = Button((button_coords_x,button_coords_y), button_dimensions, label="POI #"+str(waypoint.id_num),active=(index==selected_waypoint_index and is_menu_open))
+			Butttttton = Button((button_coords_x,button_coords_y), button_dimensions, wayObj=waypoint,active=(index==selected_waypoint_index and is_menu_open))
 			if wp_count>=5: #stop after 5th waypoint, it won't fit on the screen anyway
 				break
 			Butttttton.render(surface)
@@ -198,14 +198,13 @@ class Menu(object):
 		#TO IMPLEMENT: consider adding arrows if some waypoints are off the screen!
 
 class Button(object):
-	def __init__(self,top_left,dimensions,label="",sprite_filepath="",active=False):
+	def __init__(self,top_left,dimensions,wayObj=None,sprite_filepath="",active=False):
 		"""top_left: tuple of (x,y) position denoting top_left corner
 		dimensions: tuple of (width, height) of button
 		"""
 		self.active = active
 		self.top_left_x, self.top_left_y = top_left
 		self.width, self.height = dimensions
-		self.label = label
 		if sprite_filepath != "":
 			self.sprite = pygame.image.load(sprite_filepath)
 		else:
@@ -213,9 +212,12 @@ class Button(object):
 		self.inactive_color = GREY
 		self.active_color = WHITE
 
+		self.is_waypoint = not (wayObj is None)
+		self.wayObj = wayObj
+
 	def render(self,surface):
 		#Draw Background Yellow Box
-		print(self.label,self.active)
+		#print(self.label,self.active)
 
 		if self.active:
 			pygame.draw.rect(surface, self.active_color, (self.top_left_x,self.top_left_y,self.width,self.height), 0)
@@ -226,7 +228,11 @@ class Button(object):
 			sprite_pos = (self.top_left_x+int(self.width/4-self.sprite.get_rect().size[0]/2),self.top_left_y+int(self.height/2-self.sprite.get_rect().size[1]/2)) #this needs to be calculated somewhere
 			surface.blit(self.sprite,sprite_pos) #this needs to be display, not pg_display - not 100% sure how to pass in
 		#Render Text for label
-		self.render_text(surface,self.label,(self.top_left_x+int(self.width/2),self.top_left_y+int(self.height/2)),fontsize=30)
+		if self.is_waypoint:
+			self.render_text(surface,"POI #",(self.top_left_x+int(self.width/10),self.top_left_y+int(self.height/5)),fontsize=15)
+			self.render_text(surface,str(self.wayObj.id_num),(self.top_left_x+int(self.width/10),self.top_left_y+int(self.height/2)),fontsize=60)
+		else:
+			self.render_text(surface,"No POIs to display.",(self.top_left_x+int(self.width/2),self.top_left_y+int(self.height/2)),fontsize=30)
 
 	def render_text(self,surface,text,center_pos,fontsize=20):
 		text_object = pygame.font.Font('freesansbold.ttf',fontsize)
@@ -274,7 +280,8 @@ class GUI(object):
 		for scout in self.map_data.scout_list:
 			scout.render(self.display)
 
-		self.selected_waypoint_index = self.Menu.render(self.display,self.map_data,self.selected_waypoint_index,self.gui_state=='Menu')
+		if self.gui_state=='Menu':
+			self.selected_waypoint_index = self.Menu.render(self.display,self.map_data,self.selected_waypoint_index,self.gui_state=='Menu')
 		self.pg_disp.update()
 
 	def move_left(self):
