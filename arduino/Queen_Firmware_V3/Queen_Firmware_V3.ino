@@ -8,7 +8,7 @@
 #include <Adafruit_GPS.h> //Adafruit GPS library
 
 //Variable Definition
-int scoutSerials[1][2] = {{0x13A200,0x41515876}}; //Serial numbers of all scout devices connected to queen, form of [SH,SL]
+int scoutSerials[1][2] = {{0x13A200,0x4164D65A}}; //Serial numbers of all scout devices connected to queen, form of [SH,SL]
 uint8_t accumlatedScoutData[83]; //Tablet sends single package of accumulated data
 uint8_t requestSX[83]; //Tablet requests SX transmission routine
 
@@ -114,7 +114,7 @@ void loop() {
 
 }
 
-void sendTeensy(uint8_t package[], uint8_t packet){
+void sendTeensy(uint8_t package[], uint8_t packet, uint8_t packagelength){
   uint8_t toSend[83];                           //Initialize package to be sent 
   for(int i=0;i<83;i++){ 
     toSend[i] = 0x00;                           //Fill package with 0s per communication protocol
@@ -127,11 +127,11 @@ void sendTeensy(uint8_t package[], uint8_t packet){
   if(toSend[2] == 0x00 or toSend[2] == 0x01){
     TabletSerial.print("Package Size: ");
     TabletSerial.println(sizeof(package));
-    for(int i=0;i<25;i++){
+    for(int i=0;i<packagelength;i++){
       toSend[i+3] = package[i];                 //Read payload into sending array
       TabletSerial.println(package[i]);
     }
-    toSend[1] = (sizeof(package)+1);              //Set length byte
+    toSend[1] = (packagelength+1);              //Set length byte
   }
   for(int i=0;i<sizeof(toSend);i++){
 //    TabletSerial.print("toSend: ");
@@ -146,26 +146,27 @@ void queryScout(int scoutSH, int scoutSL){
   ZBTxRequest zbTx = ZBTxRequest(addr64, request, sizeof(request)); //Build request
   ZBTxStatusResponse txStatus = ZBTxStatusResponse();               //Define response
   ZBRxResponse rx = ZBRxResponse();
-  uint8_t *payload;
+  uint8_t payload[25];
   
   xbee.send(zbTx);                                                  //Send request for information
-  TabletSerial.println("New Request");
+//  TabletSerial.println("New Request");
   flashLed(statusLed,1,100);
-  if(xbee.readPacket(2000)){                                        //Wait for 2 seconds to see if we get a response
+  if(xbee.readPacket(2000)){    //Wait for 2 seconds to see if we get a response
     if(xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE){     //Check that we got an appropriate response for our request
       xbee.readPacket(2000);                                        //Wait for 2 seconds for an information packet
-      TabletSerial.println("Reply Recieved");
+//      TabletSerial.println("Reply Recieved");
       if(xbee.getResponse().getApiId() == ZB_RX_RESPONSE){          //Check that we have an appropriate response
-        TabletSerial.println("Right Reply Recieved");
+//        TabletSerial.println("Right Reply Recieved");
         xbee.getResponse().getZBRxResponse(rx);                     //Read response
         flashLed(statusLed,5,50);
-        payload = new uint8_t(rx.getDataLength());                  //Define payload array size
+//        TabletSerial.println(rx.getDataLength());
+//        TabletSerial.println(".");
         for(int i = 0; i < rx.getDataLength(); i++){
           payload[i] = rx.getData()[i];                             //Read payload into array
-          TabletSerial.print("Recieved: ");
-          TabletSerial.println(payload[i]);
+//          TabletSerial.print("Recieved: ");
+//          TabletSerial.println(payload[i]);
         }
-        sendTeensy(payload,0x01);                                   //Send payload to Teensy
+        sendTeensy(payload,0x01,rx.getDataLength());                                   //Send payload to Teensy
       }
     }
   }

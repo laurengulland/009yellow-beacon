@@ -12,8 +12,8 @@ XBee xbee = XBee(); //Create XBee object
 XBeeResponse response = XBeeResponse();
 ZBRxResponse rx = ZBRxResponse();
 
-//uint8_t payload[25] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-uint8_t payload[5] = {0,0,0,0,0};
+uint8_t payload[25] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+//uint8_t payload[13] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
 XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x41515876);
 ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
 ZBTxStatusResponse txStatus = ZBTxStatusResponse();
@@ -34,11 +34,11 @@ float Pi = 3.14159;
 
 int count = 0x00;
 
-volatile float GPSlat = 42.047843;
-volatile float GPSlon = 21.308923;
+float GPSlat = 42.047843;
+float GPSlon = 21.308923;
 
-volatile unsigned long latTX;
-volatile unsigned long lonTX;
+unsigned long latTX;
+unsigned long lonTX;
 
 String currLatLong;
 String timeString;
@@ -87,7 +87,7 @@ void setup() {
   pinMode(statusLed, OUTPUT);
   pinMode(buttonPin, INPUT);
   digitalWrite(buttonPin, HIGH);
-//  attachInterrupt(buttonPin,markWaypoint,FALLING);
+  attachInterrupt(buttonPin,markWaypoint,FALLING);
 }
 
 void loop() {
@@ -112,29 +112,29 @@ void loop() {
           payload[2] = (latTX >> 16) & 255;
           payload[3] = (latTX >> 24) & 255;
           payload[4] = 0x01;
-//          payload[5] = lonTX & 255;
-//          payload[6] = (lonTX >> 8) & 255;  
-//          payload[7] = (lonTX >> 16) & 255;
-//          payload[8] = (lonTX >> 24) & 255;
-//          payload[9] = 0x01;
-//          payload[10] = 0x01;
-//          payload[11] = 0x01;
-//          payload[12] = count;
-//          count += 1;
-//          if (count == 0xFF) {
-//            count = 0x00;
-//          }
-//          if(poiPayload[11]!=0x00){
-//            for(int i=0;i<12;i++){
-//              payload[i+13] = poiPayload[i];
-//              poiPayload[i] = 0;
-//            }
-//          }
+          payload[5] = lonTX & 255;
+          payload[6] = (lonTX >> 8) & 255;  
+          payload[7] = (lonTX >> 16) & 255;
+          payload[8] = (lonTX >> 24) & 255;
+          payload[9] = 0x01;
+          payload[10] = 0x01;
+          payload[11] = 0x01;
+          payload[12] = count;
+          count += 1;
+          if (count == 0xFF) {
+            count = 0x00;
+          }
+          if(poiPayload[11]!=0x00){
+            for(int i=0;i<12;i++){
+              payload[i+13] = poiPayload[i];
+              poiPayload[i] = 0;
+            }
+          }
           xbee.send(zbTx);
           Serial.println("Reply Sent");
-//          for(int i=0;i<sizeof(payload);i++){
-//            payload[i] = 0x00;
-//          }
+          for(int i=0;i<25;i++){
+            payload[i] = 0x00;
+          }
           flashLed(statusLed,5,50);
       }
     }
@@ -150,6 +150,11 @@ void markWaypoint(){
     }
     //float GPSlat = GPS.latitude;
     //float GPSlon = GPS.longitude;
+    float GPSlat = 42.047843;
+    float GPSlon = 21.308923;
+    
+    unsigned long latTX;
+    unsigned long lonTX;
     Serial.println("Button Pushed");
     latTX = (long) (GPSlat*1000000);
     lonTX = (long) (GPSlon*1000000);

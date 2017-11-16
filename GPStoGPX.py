@@ -94,8 +94,8 @@ while True:
  	#the above serial code needs to be tested
 
  	inputString = bytearray.fromhex(inputHex).decode()
- 	parseGPS(inputString)
-
+ 	printString = parseGPS(inputString)
+ 	print (printString)
 ## Code to test the above functions
 # inpString = '0 34567 89012 3 4444 00567 89012 3 4444 34567 89012 1 4444'.replace(' ', '')
 # parseGPS(inpString) # 0 34567 89012 3 4444 0 00567 89012 3 4444 0 34567 89012 1 4444
