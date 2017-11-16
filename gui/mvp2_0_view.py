@@ -64,6 +64,9 @@ class MapDataStruct(object):
 		self.scout_list = []
 
 	def update(self,inputObj):
+		self.chain_list = []
+		self.waypoint_list = []
+		self.scout_list = []
 		scout_centers = {}
 		waypoint_centers = {}
 		chain_centers = {}
@@ -116,16 +119,28 @@ class Menu(object):
 		self.menu_coords = (map_size[0],0) #top left coordinates of menu are where map ends width-wise, and 0 for length-wise (top of screen = 0)
 		self.menu_dimensions = (screen_width-map_size[0],screen_height)
 
-		self.button_list = []
+	def render(self,surface,map_data):
+		#dealing with only up to five waypoints currently, no scrolling features
+		print('rendering buttons====')
+		wp_count = 0
+		button_dimensions = (int(self.menu_dimensions[0]*.8),int(self.menu_dimensions[1]*.15))
+		for waypoint in map_data.waypoint_list:
+			button_coords_x = int(self.menu_dimensions[0]*.1)+self.menu_coords[0]
+			button_coords_y = int(self.menu_dimensions[1]*.04)+self.menu_coords[1]+wp_count*(.04*self.menu_dimensions[1]+button_dimensions[1])
+			Butttttton = Button((button_coords_x,button_coords_y), button_dimensions, label="POI #"+str(waypoint.id_num))
+			if wp_count>=5: #stop after 5th button, it won't display anyway
+				break
+			Butttttton.render(surface)
+			print(wp_count,waypoint.id_num)
+			wp_count+=1
+		if len(map_data.waypoint_list)==0: #if no waypoints, render a button saying so.
+			#TEST ME, I'M UNTESTED!!
+			button_coords_x = int(self.menu_dimensions[0]*.1)+self.menu_coords[0]
+			button_coords_y = int(self.menu_dimensions[1]*.04)+self.menu_coords[1]
+			Butttttton = Button((button_coords_x,button_coords_y), button_dimensions, label="No POIs to display.")
+			Butttttton.render(surface)
+		#TO IMPLEMENT: consider adding arrows if some waypoints are off the screen!
 
-
-		sample_button_coords = (int(self.menu_dimensions[0]*.1)+self.menu_coords[0],int(self.menu_dimensions[1]*.4)+self.menu_coords[1])
-		sample_button_dimensions = (int(self.menu_dimensions[0]*.8),int(self.menu_dimensions[1]*.15))
-		self.sampleButton = Button(sample_button_coords,sample_button_dimensions,label="Test",sprite_filepath="sprites/scout_icon.png")
-	def render(self,surface): #,map_data):
-		# #dealing with only up to four waypoints yet, no scrolling features
-		# for waypoint in map_data.waypoint_list:
-		self.sampleButton.render(surface)
 
 class Button(object):
 	def __init__(self,top_left,dimensions,label="",sprite_filepath=""):
@@ -138,6 +153,8 @@ class Button(object):
 		self.label = label
 		if sprite_filepath != "":
 			self.sprite = pygame.image.load(sprite_filepath)
+		else:
+			self.sprite = None
 		self.inactive_color = DARKYELLOW
 		self.active_color = YELLOW
 
@@ -145,7 +162,7 @@ class Button(object):
 		#Draw Background Yellow Box
 		pygame.draw.rect(surface, self.active_color, (self.top_left_x,self.top_left_y,self.width,self.height), 0)
 		#render sprite as icon for button
-		if self.sprite: #if there exists an icon for the button, draw it
+		if self.sprite is not None: #if there exists an icon for the button, draw it
 			sprite_pos = (self.top_left_x+int(self.width/4-self.sprite.get_rect().size[0]/2),self.top_left_y+int(self.height/2-self.sprite.get_rect().size[1]/2)) #this needs to be calculated somewhere
 			surface.blit(self.sprite,sprite_pos) #this needs to be display, not pg_display - not 100% sure how to pass in
 		#Render Text for label
@@ -173,6 +190,7 @@ class GUI(object):
 		self.pg_disp.set_caption('Beacon Technical Review GUI')
 		self.map_base = pygame.image.load('sprites/kresge_map.png')
 		self.Menu = Menu(self.display_width,self.display_height,self.map_base.get_rect().size)
+		self.selected_waypoint = None
 
 	def render(self):
 		self.display.fill(BLACK)
@@ -185,17 +203,70 @@ class GUI(object):
 		for scout in self.map_data.scout_list:
 			scout.render(self.display)
 
-		self.Menu.render(self.display)
+		self.Menu.render(self.display,self.map_data)
 		self.pg_disp.update()
 
-	def pan_horizontal(self,delta_x):
-		pass
+	def move_left(self):
+		if self.gui_state == 'Menu':
+			#navigate within the menu (probably doesn't mean anything)
+			pass
+		elif self.gui_state == 'Map':
+			#pan left on the map (panning not implemented yet)
+			pass
+		elif self.gui_state == 'Keyboard':
+			#scroll through that keyboard son
+			pass
+		else: #not a valid state!
+			print('GUI_STATE NOT VALID.')
+			pass
 
-	def pan_vertical(self, delta_y):
-		pass
+	def move_right(self):
+		if self.gui_state == 'Menu':
+			#navigate within the menu (probably doesn't mean anything)
+			pass
+		elif self.gui_state == 'Map':
+			#pan left on the map (panning not implemented yet)
+			pass
+		elif self.gui_state == 'Keyboard':
+			#scroll through that keyboard son
+			pass
+		else: #not a valid state!
+			print('GUI_STATE NOT VALID.')
+			pass
 
-	def open_waypoint_menu(self):
-		pass
 
-	def close_waypoint_menu(self):
-		pass
+	def move_up(self):
+		if self.gui_state == 'Menu':
+			#navigate within the menu
+			self.menu.selected_poi -= 1
+
+		elif self.gui_state == 'Map':
+			#pan left on the map (panning not implemented yet)
+			pass
+		elif self.gui_state == 'Keyboard':
+			#scroll through that keyboard son
+			pass
+		else: #not a valid state!
+			print('GUI_STATE NOT VALID.')
+			pass
+
+	def move_down(self):
+		if self.gui_state == 'Menu':
+			#navigate within the menu
+			self.menu.selected_poi += 1
+		elif self.gui_state == 'Map':
+			#pan left on the map (panning not implemented yet)
+			pass
+		elif self.gui_state == 'Keyboard':
+			#scroll through that keyboard son
+			pass
+		else: #not a valid state!
+			print('GUI_STATE NOT VALID.')
+			pass
+
+	def toggle_menu_state(self):
+		#currently only toggles between
+		if self.gui_state=='Map':
+			self.gui_state=='Menu'
+		else:
+			self.gui_state=='Map'
