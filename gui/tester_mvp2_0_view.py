@@ -21,17 +21,18 @@ class Data_to_Display(object):
 		self.scout_id_list = [1] #ids of Scouts.  List of unique integers identifying the Scouts.
 		self.current_positions = {1:(42.358393, -71.094907)} #list of most recent positions of the Scouts, corresponding to scout_id_list, regardless of whether they’re in range of the screen.
 		self.positions_list = {1:[(42.358393, -71.094907), (42.358320, -71.094311), (42.358060, -71.094740)]} #list lists of positions of all scouts within frame, corresponds to the scout_id_list.
-		self.waypoint_ids = [1,2] #ids of waypoints. List of unique integers identifying the waypoints.
-		self.waypoint_types = {1:2,2:3} #type of waypoint, corresponding to waypoint_ids. If four buttons, each element will be an integer from one to four (inclusive)
-		self.waypoint_labels = {1:'clothing',2:'hazard'} #labels corresponding to the waypoint_ids. May be a list of empty strings if unlabeled.
-		self.waypoint_positions = {1:(42.358320, -71.094311),2:(42.358310, -71.094301)} #positions of the waypoints, corresponds to waypoint_ids.
-		self.waypoint_owners = {1:1,2:1}
+		self.waypoint_ids = [1,2,3,4,5,6,7] #ids of waypoints. List of unique integers identifying the waypoints.
+		self.waypoint_types = {1:2,2:3,3:1,4:2,5:4,6:1,7:2} #type of waypoint, corresponding to waypoint_ids. If four buttons, each element will be an integer from one to four (inclusive)
+		self.waypoint_labels = {1:'clothing',2:'hazard',3:'clothing',4:'hazard',5:'clothing',6:'hazard',7:'clothing'} #labels corresponding to the waypoint_ids. May be a list of empty strings if unlabeled.
+		self.waypoint_positions = {1:(42.358320, -71.094311),2:(42.358310, -71.094301),3:(42.358300, -71.094291),4:(42.358290, -71.094281),5:(42.358280, -71.094271),6:(42.358270, -71.094261),7:(42.358260, -71.094251)} #positions of the waypoints, corresponds to waypoint_ids.
+		self.waypoint_owners = {1:1,2:1,3:2,3:2,4:1,5:2,6:1,7:1}
 
 class Tester(object):
 	def __init__(self):
 		self.gui = vw.GUI(1200,800)
-		self.step_rate = 1 #for da loopy loop
+		self.step_rate = .5 #for da loopy loop
 		self.dtd = Data_to_Display()
+		self.last_time=time.time()
 
 	def run(self):
 		crashed = False
@@ -46,9 +47,12 @@ class Tester(object):
 			# 	self.pos_scout(self.gui,(60*it,60*it),1)
 
 			# self.gui.chain_list = [vw.Chain(lineList)]
-
-			self.gui.map_data.update(self.dtd)
-			self.gui.render()
+			current_time = time.time()
+			if current_time-self.last_time > self.step_rate:
+				print('actuated')
+				self.gui.map_data.update(self.dtd)
+				self.gui.render()
+				self.last_time = time.time()
 
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
@@ -65,9 +69,8 @@ class Tester(object):
 							self.gui.move_up()
 						if event.key == pygame.K_DOWN: #if down arrow pressed
 							self.gui.move_down()
-			time.sleep(self.step_rate)
-			it+=1*self.step_rate
-			print(it)
+			# time.sleep(self.step_rate)
+			it+=1 #*self.step_rate
 
 		pygame.quit()
 		quit()

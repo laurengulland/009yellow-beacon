@@ -38,6 +38,8 @@ XBeeAddress64 hiveAddr64 = XBeeAddress64(0x13A200,0x41515876);
 
 int statusLed = 13;
 
+volatile unsigned long last_interrupt;
+
 void flashLed(int pin, int times, int wait) {
 
   for (int i = 0; i < times; i++) {
