@@ -122,7 +122,7 @@ class MapDataStruct(object):
 
 
 	def coordinate_transform(self,coords_In):
-		print('COORD TRANSFORM: coords_in =',coords_In,type(coords_In))
+		#print('COORD TRANSFORM: coords_in =',coords_In,type(coords_In))
 		bl_corner = (42.35804,-71.0950567)
 		tr_corner = (42.35864,-71.0941733)
 		frame_dim = (800,800)

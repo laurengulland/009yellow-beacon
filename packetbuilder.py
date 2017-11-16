@@ -73,13 +73,13 @@ def packets_to_c(packets):
 print(packets_to_c([
     gps_scout_packet(42.358340,-71.094600,0,False),
     gps_scout_packet(42.358360,-71.094620,0,False),
-    gps_scout_packet(42.358380,-71.094640,0,False),
-    gps_scout_packet(42.358380,-71.094660,0,False),
-    gps_scout_packet(42.358380,-71.094680,0,False),
-    gps_scout_packet(42.358360,-71.094700,0,False),
-    gps_scout_packet(42.358340,-71.094700,0,False),
+    gps_scout_packet(42.358380,-71.094640,0,True),
     gps_scout_packet(42.358380,-71.094660,0,True),
-    #button_press_packet(0),
+    gps_scout_packet(42.358380,-71.094660,0,True),
+    gps_scout_packet(42.358370,-71.094650,0,True),
+    button_press_packet(1),
+    button_press_packet(1),
+    button_press_packet(1)
     #joystick_packet('up'),
     #hive_data_request_packet()
 ]))
