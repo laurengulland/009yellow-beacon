@@ -82,12 +82,10 @@ def writeToDisk(GPSString):
     file.close()
 
 def hexCoordToString(hexString):
-    print(hexString)
     hexarray = []
     for i in range(5):
         hexarray.append(hexString[2*i:2*i+2])
     numarray = hexarray[0:4][::-1]
-    print(numarray)
     numstring = ''.join(numarray[0:4])
     output = int(numstring,16)
     output = float(output)/(10**6)
@@ -111,7 +109,7 @@ listTracks = []
 
 # this below serial code needs to be tested with serial inputs
 ser = serial.Serial('COM4', 9600)
-for i in range(2):
+while True:
     readin = ser.read(80)
     #the above serial code needs to be tested
 
