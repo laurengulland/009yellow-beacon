@@ -20,7 +20,8 @@ class Data_to_Display(object): #object to be passed back in response to data_wit
 		self.waypoint_owners = {} #
 	#consider adding helper functions
 
-	def add_scout_point(self,scout_id,(location_n,location_e),is_current_position=False):
+	def add_scout_point(self,scout_id,location_tuple,is_current_position=False):
+		location_n,location_e = location_tuple
 		if scout_id not in scout_id_list:
 			scout_id_list.append(scout_id)
 		if is_current_position:
@@ -30,10 +31,11 @@ class Data_to_Display(object): #object to be passed back in response to data_wit
 		else:
 			positions_list[scout_id] = [(location_n,location_e)]
 
-	def add_waypoint(self,waypoint_id,(location_n,location_e),label,poi_type,scout_id):
+	def add_waypoint(self,waypoint_id,location_tuple,label,poi_type,scout_id):
+		location_n,location_e=location_tuple
 		waypoint_ids.append(waypoint_id)
 		waypoint_labels[waypoint_id] = label
-		waypoint_positions[waypoint_id] = (location_n),location_e)
+		waypoint_positions[waypoint_id] = (location_n,location_e)
 		waypoint_types[waypoint_id] = poi_type
 		waypoint_owners[waypoint_id] = scout_id
 
@@ -73,8 +75,8 @@ class Scouts(object):
 		table.flush()
 		h5file.close()
 
-	def add_data_point(self,scout_id,time,(gps_location_n,gps_location_e),is_point_of_interest,poi_type=0):
-
+	def add_data_point(self,scout_id,time,gps_tuple,is_point_of_interest,poi_type=0):
+		gps_location_n,gps_location_e=gps_tuple
 		h5file = open_file(self.filename, mode="a", title="Test file")
 		table = h5file.root.tracks.readout
 		row = table.row
@@ -136,9 +138,9 @@ class Scouts(object):
 
 if __name__ == '__main__':
 	scouts = Scouts()
-	scouts.add_data_point(1,10,(2000,1000)),False)
+	scouts.add_data_point(1,10,(45,45),False)
 	scouts.print_data()
-	scouts.add_data_point(2,12,(20000,12000)),True)
+	scouts.add_data_point(2,12,(45,45),True)
 	print('\n\n')
 	scouts.print_data()
 	print(scouts.data_from_scout(1))

@@ -270,7 +270,6 @@ class Controller(object):
 		else:
 			packet = self.scout_queue.pop(0)
 		self.port.write(packet)
-		#TODO: do we need to tell the view we are sending data?
 
 	def update_view(self):
 		#update the view with the current range
@@ -313,7 +312,9 @@ class Scout_Display(object):
 
 if __name__ == '__main__':
 	controller = Controller()
-	controller.run()
+	while True:
+		pass
+	#controller.run()
 	# buttons testing
 	# controller.parse_button_presses(bytearray([0x00]))
 	# controller.parse_button_presses(bytearray([0x01]))
