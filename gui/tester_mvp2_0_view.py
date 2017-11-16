@@ -10,7 +10,7 @@ class Data_to_Display(object):
 	# def __init__(self):
 	# 	self.scout_id_list = [1,2,3,4,5] #ids of Scouts.  List of unique integers identifying the Scouts.
 	# 	self.current_positions = {1:(200,200),2:(420,180),3:(500,250),4:(600,-100),5:(800,-100)} #list of most recent positions of the Scouts, corresponding to scout_id_list, regardless of whether they’re in range of the screen.
-	# 	self.positions_list = {1:[(200,200), (180,300), (210,600)], 2:[(420,180),(400,300),(380,650)], 3:[(550,500),(480,800)], 4:[(600,100),(660,500)], 5:[(800,-100),(820,300),(770,600)]} #list lists of positions of all scouts within frame, corresponds to the scout_id_list. 
+	# 	self.positions_list = {1:[(200,200), (180,300), (210,600)], 2:[(420,180),(400,300),(380,650)], 3:[(550,500),(480,800)], 4:[(600,100),(660,500)], 5:[(800,-100),(820,300),(770,600)]} #list lists of positions of all scouts within frame, corresponds to the scout_id_list.
 	# 	self.waypoint_ids = [1,2] #ids of waypoints. List of unique integers identifying the waypoints.
 	# 	self.waypoint_types = {1:2,2:1} #type of waypoint, corresponding to waypoint_ids. If four buttons, each element will be an integer from one to four (inclusive)
 	# 	self.waypoint_labels = {1:'clothing', 2:'hazard'} #labels corresponding to the waypoint_ids. May be a list of empty strings if unlabeled.
@@ -20,7 +20,7 @@ class Data_to_Display(object):
 	def __init__(self):
 		self.scout_id_list = [1] #ids of Scouts.  List of unique integers identifying the Scouts.
 		self.current_positions = {1:(42.358393, -71.094907)} #list of most recent positions of the Scouts, corresponding to scout_id_list, regardless of whether they’re in range of the screen.
-		self.positions_list = {1:[(42.358393, -71.094907), (42.358320, -71.094311), (42.358060, -71.094740)]} #list lists of positions of all scouts within frame, corresponds to the scout_id_list. 
+		self.positions_list = {1:[(42.358393, -71.094907), (42.358320, -71.094311), (42.358060, -71.094740)]} #list lists of positions of all scouts within frame, corresponds to the scout_id_list.
 		self.waypoint_ids = [1] #ids of waypoints. List of unique integers identifying the waypoints.
 		self.waypoint_types = {1:2} #type of waypoint, corresponding to waypoint_ids. If four buttons, each element will be an integer from one to four (inclusive)
 		self.waypoint_labels = {1:'clothing'} #labels corresponding to the waypoint_ids. May be a list of empty strings if unlabeled.
@@ -30,6 +30,7 @@ class Data_to_Display(object):
 class Tester(object):
 	def __init__(self):
 		self.gui = vw.GUI(1200,800)
+		self.step_rate = 1 #for da loopy loop
 		self.dtd = Data_to_Display()
 
 	def run(self):
@@ -52,9 +53,18 @@ class Tester(object):
 			for event in pygame.event.get():
 				if event.type == pygame.QUIT:
 					crashed = True
-			step_rate=1
-			time.sleep(step_rate)
-			it+=1*step_rate
+				elif event.type == pygame.KEYDOWN: #currently reads up/down/left/right from keyboard, eventually switch this over to Queen Buttons, however those work
+					self.gui.move_down()
+				elif event.type == pygame.KEYUP:
+					self.gui.move_up()
+				elif event.type == pygame.KEYLEFT:
+					self.gui.move_left()
+				elif event.type == pygame.KEYRIGHT:
+					self.gui.move_right()
+					#HACK: Make right key temporarily actuate Map, should be changed once we have a dedicated Menu button
+					self.gui.toggle_menu_state()
+			time.sleep(self.step_rate)
+			it+=1*self.step_rate
 			print(it)
 
 		pygame.quit()
