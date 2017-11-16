@@ -39,7 +39,7 @@ class Controller(object):
 		self.gui.render()
 
 		#initialize serial communication
-		self.port = serial.Serial('COM7') #MUST SELECT CORRECT PORT ON TABLET
+		self.port = serial.Serial('/dev/ttyACM0') #MUST SELECT CORRECT PORT ON TABLET
 
 		self.step_rate = .5 #for da loopy loop
 		#self.dtd = Data_to_Display()
@@ -156,7 +156,7 @@ class Controller(object):
 		self.scouts.add_data_point(scout_id, trtime,(lat,lon),is_poi)
 		# add to queue
 		if is_poi:
-			poi_queue.append(self.get_poi_packet(content))
+			self.poi_queue.append(self.get_poi_packet(content))
 		else:
 			payload = self.get_scout_payload(content,trtime)
 			if payload is not None:

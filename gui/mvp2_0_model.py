@@ -27,16 +27,17 @@ class Data_to_Display(object): #object to be passed back in response to data_wit
 		if is_current_position:
 			self.current_positions[scout_id] = location_tuple
 		if scout_id in self.positions_list:
-			self.positions_list[scout_id] = self.positions_list[scout_id].append(location_tuple)
+			print(self.positions_list[scout_id], type(self.positions_list[scout_id]))
+			self.positions_list[scout_id] = self.positions_list[scout_id]=self.positions_list[scout_id]+[(location_tuple)]
 		else:
 			self.positions_list[scout_id] = [location_tuple]
 
 	def add_waypoint(self,waypoint_id,location_tuple,label,poi_type,scout_id):
-		waypoint_ids.append(waypoint_id)
-		waypoint_labels[waypoint_id] = label
-		waypoint_positions[waypoint_id] = location_tuple
-		waypoint_types[waypoint_id] = poi_type
-		waypoint_owners[waypoint_id] = scout_id
+		self.waypoint_ids.append(waypoint_id)
+		self.waypoint_labels[waypoint_id] = label
+		self.waypoint_positions[waypoint_id] = location_tuple
+		self.waypoint_types[waypoint_id] = poi_type
+		self.waypoint_owners[waypoint_id] = scout_id
 
 	# I (Karen) thinks it makes more sense to use dictionaries, so commented out list implementation
 	# def add_scout_point(self,scout_id,location,is_current_position=False):
