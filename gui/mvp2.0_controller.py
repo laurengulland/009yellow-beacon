@@ -25,7 +25,6 @@ class Controller(object):
 		#create model object
 		#create gui object
 		#set up all the variables!
-
 		self.screen_location = [(0,0),(1,1)] #[(top left), (bottom right)]
 		self.something = 0
 		self.scout_queue = [] #store as list of bytearray objects
@@ -40,7 +39,7 @@ class Controller(object):
 		self.gui.render()
 
 		#initialize serial communication
-		self.port = serial.Serial('/dev/ttyACM0') #MUST SELECT CORRECT PORT ON TABLET
+		self.port = serial.Serial('COM7') #MUST SELECT CORRECT PORT ON TABLET
 
 		self.step_rate = .5 #for da loopy loop
 		#self.dtd = Data_to_Display()
@@ -283,7 +282,7 @@ class Controller(object):
 
 	def pump_gui(self, pit):
 		while True:
-			pygame.event.get_event()
+			pygame.event.get()
 
 	def run(self):
 		crashed = False
