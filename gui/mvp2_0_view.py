@@ -98,8 +98,9 @@ class MapDataStruct(object):
 
 		for idNum in inputObj.scout_id_list:
 			scout_centers[idNum] = self.coordinate_transform(inputObj.current_positions[idNum])
+			if inputObj.positions_list[idNum] is None:
+				continue
 			for point in inputObj.positions_list[idNum]:
-
 				if not (idNum in chain_centers):
 					chain_centers[idNum] = [self.coordinate_transform(point)]
 				else:
@@ -119,6 +120,7 @@ class MapDataStruct(object):
 
 
 	def coordinate_transform(self,coords_In):
+		print('COORD TRANSFORM: coords_in =',coords_In,type(coords_In))
 		bl_corner = (42.35804,-71.0950567)
 		tr_corner = (42.35864,-71.0941733)
 		frame_dim = (800,800)

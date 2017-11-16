@@ -5,7 +5,8 @@ class LocationPoint(IsDescription):
 	label = StringCol(16)     # 16-character String
 	scout_id = Int64Col()
 	time = Int64Col()
-	gps_location = Float64Col()
+	gps_location_n = Float64Col()
+	gps_location_e = Float64Col()
 	is_point_of_interest = BoolCol()
 
 class Data_to_Display(object): #object to be passed back in response to data_within_range().
@@ -21,21 +22,19 @@ class Data_to_Display(object): #object to be passed back in response to data_wit
 	#consider adding helper functions
 
 	def add_scout_point(self,scout_id,location_tuple,is_current_position=False):
-		location_n,location_e = location_tuple
-		if scout_id not in scout_id_list:
-			scout_id_list.append(scout_id)
+		if scout_id not in self.scout_id_list:
+			self.scout_id_list.append(scout_id)
 		if is_current_position:
-			current_positions = (location_n,location_e)
-		if scout_id in positions_list:
-			positions_list[scout_id] = positions_list[scout_id].append((location_n,location_e))
+			self.current_positions[scout_id] = location_tuple
+		if scout_id in self.positions_list:
+			self.positions_list[scout_id] = self.positions_list[scout_id].append(location_tuple)
 		else:
-			positions_list[scout_id] = [(location_n,location_e)]
+			self.positions_list[scout_id] = [location_tuple]
 
 	def add_waypoint(self,waypoint_id,location_tuple,label,poi_type,scout_id):
-		location_n,location_e=location_tuple
 		waypoint_ids.append(waypoint_id)
 		waypoint_labels[waypoint_id] = label
-		waypoint_positions[waypoint_id] = (location_n,location_e)
+		waypoint_positions[waypoint_id] = location_tuple
 		waypoint_types[waypoint_id] = poi_type
 		waypoint_owners[waypoint_id] = scout_id
 
@@ -58,7 +57,7 @@ class Data_to_Display(object): #object to be passed back in response to data_wit
 
 class Scouts(object):
 	def __init__(self): #this should only be called once, as it will delete any previous file with this name
-		self.filename = "modeltestfile.h5"
+		self.filename = "modeltestfile_2.h5"
 		self.data_display = Data_to_Display()
 
 		print("Creating file:", self.filename)
@@ -97,7 +96,7 @@ class Scouts(object):
 			label = "label for this waypoint"
 			self.data_display.add_waypoint(waypoint_id, (gps_location_n,gps_location_e), label, poi_type, scout_id)
 		else:
-			self.data_display.add_scout_point(scout_id, (gps_location_n,gps_location_e), true)
+			self.data_display.add_scout_point(scout_id, (gps_location_n,gps_location_e), True)
 
 	# condition = '(name == b"Particle:      5") | (name == b"Particle:      7")'
 	def data_from_time(self,begin_time,last_time):

@@ -35,9 +35,10 @@ class Controller(object):
 		json_data = json.load(open('mvp2.0_constants.json'))
 		self.screen_width,self.screen_height = json_data["screen_width"],json_data["screen_height"]
 		self.gui = GUI(self.screen_width,self.screen_height)
+		self.gui.render()
 
 		#initialize serial communication
-		self.port = serial.Serial('COM4') #MUST SELECT CORRECT PORT ON TABLET
+		self.port = serial.Serial('/dev/ttyACM0') #MUST SELECT CORRECT PORT ON TABLET
 
 		self.step_rate = .5 #for da loopy loop
 		#self.dtd = Data_to_Display()
@@ -156,7 +157,8 @@ class Controller(object):
 			poi_queue.append(self.get_poi_packet(content))
 		else:
 			payload = self.get_scout_payload(content,trtime)
-			self.add_payload_to_scout_queue(payload)
+			if payload is not None:
+				self.add_payload_to_scout_queue(payload)
 		#TODO: trigger view update?
 
 	def add_payload_to_scout_queue(self, payload):
@@ -280,9 +282,11 @@ class Controller(object):
 		crashed = False
 
 		while not crashed:
-			self.parse_inputs()
-
 			current_time = time.time()
+			print('time before parsing inputs:',current_time)
+			self.parse_inputs()
+			current_time = time.time()
+			print('time after parsing inputs:',current_time)
 			if current_time-self.last_time > self.step_rate:
 				print('actuated')
 				self.gui.map_data.update(self.scouts.data_display)
@@ -312,9 +316,7 @@ class Scout_Display(object):
 
 if __name__ == '__main__':
 	controller = Controller()
-	while True:
-		pass
-	#controller.run()
+	controller.run()
 	# buttons testing
 	# controller.parse_button_presses(bytearray([0x00]))
 	# controller.parse_button_presses(bytearray([0x01]))
