@@ -170,6 +170,7 @@ void loop() {
       SXxbee.send(zbTx);
       delay(100);
     }
+    count = 0;
   }
   count += 1;
   //***END HIVE TRANSMISSION***
