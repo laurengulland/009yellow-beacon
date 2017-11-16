@@ -36,6 +36,7 @@ class Waypoint(object):
 		self.center = center
 		self.true_pos = true_pos
 		self.owner = owner
+		self.way_type = way_type
 
 		self.description = description
 
@@ -230,9 +231,30 @@ class Button(object):
 		#Render Text for label
 		if self.is_waypoint:
 			self.render_text(surface,"POI #",(self.top_left_x+int(self.width/10),self.top_left_y+int(self.height/5)),fontsize=15)
-			self.render_text(surface,str(self.wayObj.id_num),(self.top_left_x+int(self.width/10),self.top_left_y+int(self.height/2)),fontsize=60)
+			self.render_text(surface,str(self.wayObj.id_num),(self.top_left_x+int(self.width/10),self.top_left_y+int(1.1*self.height/2)),fontsize=60)
+			self.render_text(surface,"Type "+str(self.wayObj.way_type)+" POI",(self.top_left_x+int(self.width/2),self.top_left_y+int(self.height/5)),fontsize=15)
+			self.render_text(surface,str(self.wayObj.description),(self.top_left_x+int(self.width/2),self.top_left_y+int(self.height/5*2)),fontsize=15)
+			self.render_text(surface,"Found by Scout #" + str(self.wayObj.owner),(self.top_left_x+int(self.width/2),self.top_left_y+int(self.height/5*3)),fontsize=15)
+			self.render_text(surface,self.coord_builder(self.wayObj.true_pos),(self.top_left_x+int(self.width/2),self.top_left_y+int(self.height/5*4)),fontsize=15)
 		else:
 			self.render_text(surface,"No POIs to display.",(self.top_left_x+int(self.width/2),self.top_left_y+int(self.height/2)),fontsize=30)
+
+	def coord_builder(self,coords):
+		lati = coords[0]
+		longi = coords[1]
+		latMag = abs(lati)
+		longMag = abs(longi)
+		if lati > 0:
+			nsLabel = "N"
+		else:
+			nsLabel = "S"
+		if lati > 0:
+			ewLabel = "E"
+		else:
+			ewLabel = "W"
+		stringOut = str(latMag) + " N, " + str(longMag) + " W"
+		return stringOut
+
 
 	def render_text(self,surface,text,center_pos,fontsize=20):
 		text_object = pygame.font.Font('freesansbold.ttf',fontsize)
