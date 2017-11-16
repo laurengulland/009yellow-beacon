@@ -57,6 +57,29 @@ class Waypoint(object):
 		surface.blit(self.image, self.top_left)
 		surface.blit(((pygame.font.Font(None,35)).render(str(self.id_num),True,BLACK)), (self.center[0]-6,self.center[1]-11))
 
+class Waypoint_Highlighter(object):
+	def __init__(self, center=(0,0)):
+		self.center = center
+
+		pygame.init()
+		self.image = pygame.image.load('sprites/waypoint_selection_white.png')
+
+		self.width,self.height = self.image.get_size()
+		self.top_left = (self.center[0]-self.width/2,self.center[1]-self.height/2)
+
+		self.exist = False
+
+	def update(self,new_center,new_exist):
+		self.center = new_center
+		self.top_left = (self.center[0]-self.width/2,self.center[1]-self.height/2)
+		self.exist = new_exist
+
+	def render(self,surface):
+		if self.exist:
+			surface.blit(self.image, self.top_left)
+		else:
+			pass
+
 class MapDataStruct(object):
 	def __init__(self):
 		self.chain_list = []
@@ -192,6 +215,10 @@ class GUI(object):
 		self.Menu = Menu(self.display_width,self.display_height,self.map_base.get_rect().size)
 		self.selected_waypoint = None
 
+		self.gui_state = 'Menu'
+
+		self.waypoint_hl = Waypoint_Highlighter()
+
 	def render(self):
 		self.display.fill(BLACK)
 		self.display.blit(self.map_base,(0,0))
@@ -199,7 +226,14 @@ class GUI(object):
 		for chain in self.map_data.chain_list:
 			chain.render(self.display)
 		for waypoint in self.map_data.waypoint_list:
+			if (self.gui_state == 'Menu') and (waypoint.id_num == self.selected_waypoint):
+				self.waypoint_hl.update(waypoint.center,True)
+				self.waypoint_hl.render(self.display)
 			waypoint.render(self.display)
+		if not(self.gui_state == 'Menu'):
+			self.waypoint_hl.update((0,0),False)
+			self.waypoint_hl.render(self.display)
+
 		for scout in self.map_data.scout_list:
 			scout.render(self.display)
 
