@@ -39,7 +39,7 @@ class Controller(object):
 		self.gui.render()
 
 		#initialize serial communication
-		self.port = serial.Serial('COM4') #MUST SELECT CORRECT PORT ON TABLET
+		self.port = serial.Serial('COM9') #MUST SELECT CORRECT PORT ON TABLET
 
 		self.step_rate = .5 #for da loopy loop
 		#self.dtd = Data_to_Display()
@@ -170,6 +170,8 @@ class Controller(object):
 		if there's room in the last bytearray, add it there
 		otherwise, create a new packet
 		'''
+		print('adding')
+		print(len(payload))
 		if len(payload)!=15:
 			raise Exception
 		if self.scout_queue == [] or self.scout_queue[-1][1]>75:
@@ -179,10 +181,12 @@ class Controller(object):
 			packet[2] = 0x03
 			packet[3] = 0x00
 			packet[4:19] = payload
+			self.scout_queue.append(packet)
 		else:
-			packet = self.scout_queue[-1]
+			packet = self.scout_queue.pop()
 			packet[packet[1]+2:packet[1]+17] = payload
 			packet[1] = packet[1]+15
+			self.scout_queue.append(packet)
 
 	def get_poi_packet(self,content):
 		'''
@@ -209,6 +213,7 @@ class Controller(object):
 		payload = bytearray(15)
 		payload[0:11] = content[0:11]
 		payload[11:15] = self.time_int_to_bytearray(trtime)
+		return payload
 
 	def time_int_to_bytearray(self,trtime):
 		'''
@@ -265,8 +270,11 @@ class Controller(object):
 		sends scout packets first, then poi.
 		sends no-content packet if nothing to send.
 		'''
+		print('transmitting')
+		print(self.scout_queue)
 		if self.scout_queue == []:
 			if self.poi_queue == []:
+				print('transmission done')
 				packet = bytearray(83)
 				packet[0]=0x7e
 				packet[1]=1
