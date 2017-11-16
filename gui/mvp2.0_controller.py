@@ -289,6 +289,9 @@ class Controller(object):
 				self.gui.map_data.update(self.scouts.data_display)
 				self.gui.render()
 				self.last_time = time.time()
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					crashed = True
 
 
 		#LOOOOOOP:
