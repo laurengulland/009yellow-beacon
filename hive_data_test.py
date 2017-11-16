@@ -74,10 +74,21 @@ def hive_poi_packet(poi_id,lat,lon,scout_id,category=1,description=''):
     out = out + number_to_packet_hex(lat) + number_to_packet_hex(lon)+'0'+str(scout_id)+'0'+str(category)
     return packet_from_hex_string(fill_hex_string(out + bytes(description,'ascii').hex()))
     
+lat1=42.359051
+lon1=-71.091324
+lat0 = 42.358340
+lon0 =-71.094600
+t = 1510717000
 print(packets_to_c(
     [hive_scouts_packet([
-    [42.359051,-71.091324,1,1510717000],
-    [42.358340,-71.094600,0,1510717000],
-    [42.359151,-71.091224,1,1510717010],
-    [42.358240,-71.094700,0,1510717010]]),
+    [lat1,lon1,1,t],
+    [lat0,lon0,0,t],
+    [lat1+0.0001,lon1+0.0001,1,t+10],
+    [lat0-0.0001,lon0-0.0001,0,t+10]]),
+    hive_scouts_packet([
+    [lat1+0.0002,lon1+0.0002,1,t+20],
+    [lat0-0.0002,lon0-0.0002,0,t+20],
+    [lat1+0.0003,lon1+0.0003,1,t+30],
+    [lat0-0.0003,lon0-0.0003,0,t+30]
+    ]),
     hive_poi_packet(0,42.358340,-71.094600,0,1,'')]))
