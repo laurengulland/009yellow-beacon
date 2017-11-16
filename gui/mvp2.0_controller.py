@@ -34,7 +34,6 @@ class Controller(object):
         self.screen_width,self.screen_height = json_data["screen_width"],json_data["screen_height"]
         #initialize serial communication
         self.port = serial.Serial('COM4') #MUST SELECT CORRECT PORT ON TABLET
-        time.sleep(1) #wait after establishing serial connection before proceeding
 
     def action_map(self):
         '''
@@ -89,7 +88,8 @@ class Controller(object):
 
     def toggle_menu(self):
         #print('toggle menu')
-        self.state.menu_active = (not self.state.menu_active)
+        if self.next_poi_id >0:
+            self.state.menu_active = (not self.state.menu_active)
 
     def select_poi(self):
         #print('select poi')
@@ -272,11 +272,13 @@ class Controller(object):
         pass
 
     def run(self):
-        pass
+        while True:
+            self.parse_inputs()
         #LOOOOOOP:
             #read inputs from serial, send to parse_inputs()
-            #trigger update for view if necessary?
-            # initiate transmissions?
+            #trigger update for view if necessary? ==> this should be handled by serial parsing
+            # initiate transmissions? ==> also handled by parsing
+        self.port.close()
         #quit everythin on shutdown
 
 
