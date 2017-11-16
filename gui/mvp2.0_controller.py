@@ -39,7 +39,7 @@ class Controller(object):
 		self.gui.render()
 
 		#initialize serial communication
-		self.port = serial.Serial('/dev/ttyACM0') #MUST SELECT CORRECT PORT ON TABLET
+		self.port = serial.Serial('COM4') #MUST SELECT CORRECT PORT ON TABLET
 
 		self.step_rate = .5 #for da loopy loop
 		#self.dtd = Data_to_Display()
@@ -147,20 +147,22 @@ class Controller(object):
 		parses payload of gps input
 		'''
 		trtime = int(time.time()) #time since epoch rounded to the second
-		lat = self.get_signed_coord(content[0:5])
-		lon = self.get_signed_coord(content[5:10])
-		scout_id = content[10]
 		poi = content[11]
-		is_poi = poi != 0x00
+		is_poi = poi == 0x01
+		slat = self.get_signed_coord(content[0:5])
+		slon = self.get_signed_coord(content[5:10])
+		scout_id = content[10]
 		# add to model
-		self.scouts.add_data_point(scout_id, trtime,(lat,lon),is_poi)
+		self.scouts.add_data_point(scout_id, trtime,(slat,slon),False)
+		payload = self.get_scout_payload(content[0:11],trtime)
+		if payload is not None:
+			self.add_payload_to_scout_queue(payload)
 		# add to queue
 		if is_poi:
-			self.poi_queue.append(self.get_poi_packet(content))
-		else:
-			payload = self.get_scout_payload(content,trtime)
-			if payload is not None:
-				self.add_payload_to_scout_queue(payload)
+			plat = self.get_signed_coord(content[12:17])
+			plon = self.get_signed_coord(content[17:22])
+			self.poi_queue.append(self.get_poi_packet(content[12:23]))
+			self.scouts.add_data_point(scout_id,trtime,(plat,plon),True)
 		#TODO: trigger view update?
 
 	def add_payload_to_scout_queue(self, payload):
@@ -197,7 +199,7 @@ class Controller(object):
 			poi_hex = '0'+poi_hex
 		packet[4] = int(poi_hex[2:],16)
 		packet[5] = int(poi_hex[0:2],16)
-		packet[6:18] = content
+		packet[6:17] = content
 		return packet
 
 	def get_scout_payload(self,content,trtime):

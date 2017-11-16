@@ -54,9 +54,10 @@ def time_int_to_bytearray(trtime):
 
 
 next_poi_id = 241
-port = serial.Serial('/dev/ttyACM0')
-while True:
-    print(port.read(1).hex())
+port = serial.Serial('COM4')
+for i in range(1):
+    print(port.read(83).hex())
+port.close()
 '''
 time.sleep(2)
 packet = port.read(83)
