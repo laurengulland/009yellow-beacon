@@ -144,7 +144,7 @@ class Menu(object):
 		self.menu_dimensions = (screen_width-map_size[0],screen_height)
 		self.waypoint_render_indices = []
 
-	def render(self,surface,map_data,selected_waypoint_index):
+	def render(self,surface,map_data,selected_waypoint_index,is_menu_open):
 		#dealing with only up to five waypoints currently, no scrolling features
 		wp_count = 0
 		button_dimensions = (int(self.menu_dimensions[0]*.8),int(self.menu_dimensions[1]*.15))
@@ -189,7 +189,7 @@ class Menu(object):
 			waypoint = map_data.waypoint_list[index]
 			button_coords_x = int(self.menu_dimensions[0]*.1)+self.menu_coords[0]
 			button_coords_y = int(self.menu_dimensions[1]*.04)+self.menu_coords[1]+wp_count*(.04*self.menu_dimensions[1]+button_dimensions[1])
-			Butttttton = Button((button_coords_x,button_coords_y), button_dimensions, label="POI #"+str(waypoint.id_num),active=(index==selected_waypoint_index))
+			Butttttton = Button((button_coords_x,button_coords_y), button_dimensions, label="POI #"+str(waypoint.id_num),active=(index==selected_waypoint_index and is_menu_open))
 			if wp_count>=5: #stop after 5th waypoint, it won't fit on the screen anyway
 				break
 			Butttttton.render(surface)
@@ -254,8 +254,6 @@ class GUI(object):
 
 		self.gui_state = 'Menu'
 
-		self.gui_state = 'Menu'
-
 		self.waypoint_hl = Waypoint_Highlighter()
 
 	def render(self):
@@ -276,7 +274,7 @@ class GUI(object):
 		for scout in self.map_data.scout_list:
 			scout.render(self.display)
 
-		self.selected_waypoint_index = self.Menu.render(self.display,self.map_data,self.selected_waypoint_index)
+		self.selected_waypoint_index = self.Menu.render(self.display,self.map_data,self.selected_waypoint_index,self.gui_state=='Menu')
 		self.pg_disp.update()
 
 	def move_left(self):
