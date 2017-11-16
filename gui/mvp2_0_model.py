@@ -20,22 +20,22 @@ class Data_to_Display(object): #object to be passed back in response to data_wit
 		self.waypoint_owners = {} #
 	#consider adding helper functions
 
-	def add_scout_point(self,scout_id,location,is_current_position=False):
+	def add_scout_point(self,scout_id,(location_n,location_e),is_current_position=False):
 		if scout_id not in scout_id_list:
-			self.scout_id_list.append(scout_id)
+			scout_id_list.append(scout_id)
 		if is_current_position:
-			self.current_positions[scout_id] = location
+			current_positions = (location_n,location_e)
 		if scout_id in positions_list:
-			self.positions_list[scout_id] = positions_list[scout_id].append(location)
+			positions_list[scout_id] = positions_list[scout_id].append((location_n,location_e))
 		else:
-			self.positions_list[scout_id] = [location]
+			positions_list[scout_id] = [(location_n,location_e)]
 
-	def add_waypoint(self,waypoint_id,location,label,poi_type,scout_id):
-		self.waypoint_ids.append(waypoint_id)
-		self.waypoint_labels[waypoint_id] = label
-		self.waypoint_positions[waypoint_id] = location
-		self.waypoint_types[waypoint_id] = poi_type
-		self.waypoint_owners[waypoint_id] = scout_id
+	def add_waypoint(self,waypoint_id,(location_n,location_e),label,poi_type,scout_id):
+		waypoint_ids.append(waypoint_id)
+		waypoint_labels[waypoint_id] = label
+		waypoint_positions[waypoint_id] = (location_n),location_e)
+		waypoint_types[waypoint_id] = poi_type
+		waypoint_owners[waypoint_id] = scout_id
 
 	# I (Karen) thinks it makes more sense to use dictionaries, so commented out list implementation
 	# def add_scout_point(self,scout_id,location,is_current_position=False):
@@ -73,7 +73,7 @@ class Scouts(object):
 		table.flush()
 		h5file.close()
 
-	def add_data_point(self,scout_id,time,gps_location,is_point_of_interest,poi_type=0):
+	def add_data_point(self,scout_id,time,(gps_location_n,gps_location_e),is_point_of_interest,poi_type=0):
 
 		h5file = open_file(self.filename, mode="a", title="Test file")
 		table = h5file.root.tracks.readout
@@ -82,7 +82,8 @@ class Scouts(object):
 		row['label'] = 'LocationPoint: %6d' % (scout_id)
 		row['scout_id'] = scout_id
 		row['time'] = time
-		row['gps_location'] = gps_location
+		row['gps_location_n'] = gps_location_n
+		row['gps_location_e'] = gps_location_e
 		row['is_point_of_interest'] = is_point_of_interest
 		row.append()
 		# Flush the buffers for table, close file
@@ -92,9 +93,9 @@ class Scouts(object):
 		if is_point_of_interest:
 			waypoint_id = len(self.data_display.waypoint_positions.keys())
 			label = "label for this waypoint"
-			self.data_display.add_waypoint(waypoint_id, location, label, poi_type, scout_id)
+			self.data_display.add_waypoint(waypoint_id, (gps_location_n,gps_location_e), label, poi_type, scout_id)
 		else:
-			self.data_display.add_scout_point(scout_id, gps_location, true)
+			self.data_display.add_scout_point(scout_id, (gps_location_n,gps_location_e), true)
 
 	# condition = '(name == b"Particle:      5") | (name == b"Particle:      7")'
 	def data_from_time(self,begin_time,last_time):
@@ -135,9 +136,9 @@ class Scouts(object):
 
 if __name__ == '__main__':
 	scouts = Scouts()
-	scouts.add_data_point(1,10,2000,False)
+	scouts.add_data_point(1,10,(2000,1000)),False)
 	scouts.print_data()
-	scouts.add_data_point(2,12,12000,True)
+	scouts.add_data_point(2,12,(20000,12000)),True)
 	print('\n\n')
 	scouts.print_data()
 	print(scouts.data_from_scout(1))
