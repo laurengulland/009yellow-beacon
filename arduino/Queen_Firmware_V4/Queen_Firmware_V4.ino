@@ -24,7 +24,7 @@ XBee xbee = XBee(); //Create XBee object
 XBee SXxbee = XBee();
 XBeeResponse response = XBeeResponse();
 
-XBeeAddress64 hiveAddr64 = XBeeAddress64(0x13A200,0x41515876);
+XBeeAddress64 hiveAddr64 = XBeeAddress64(0x13A200,0x414FF2A7);
 
 ////GPS Preamble
 //#define GPSSerial Serial2 //Teensy Ports 9/RX2 and 10/TX2
@@ -77,42 +77,40 @@ void loop() {
 //    queryScout(scoutSerials[i][0],scoutSerials[i][1]);  //Pass each serial number of scout into queryScout function
 //  }
   //***END QUERY***  
-  delay(1000);
-  Serial.println("Begin");
+  delay(5000);
   //***SEND DATA TO HIVE OVER SX***
 //  if(count == 5){
     while(1==1){                                  //Maintain loop until broken when request is returned by an empty packet
-      TabletSerial.println("Initialize");
       sendTeensy({},0x02,0x00);                        //Request SX packet from Tablet
       uint8_t payload[80];
       while(TabletSerial.available()<83){
         delay(5);
       }
-      if(TabletSerial.read() == 0x7E){            //Start from start byte ***May not work***
+//      if(TabletSerial.read() == 0x7E){            //Start from start byte ***May not work***
         byte discard = TabletSerial.read();       //Read start byte from serial and discard
         uint8_t lengthByte = TabletSerial.read(); //Read length byte
         uint8_t typeByte = TabletSerial.read();   //Read type byte
         
         if(lengthByte==0x01 && typeByte==0x03){
+          for(int i=0;i<80;i++){
+            byte discard = TabletSerial.read();
+          }
           break;                                  //Terminates reading loop when tablet passes an empty payload array
         }
         
-        if(typeByte == 0x03){
-          for(int i = 0;i<80;i++){    //Run through all remaining bytes inside of the length
-            payload[i] = TabletSerial.read();
-          }
+        for(int i = 0;i<80;i++){    //Run through all remaining bytes inside of the length
+          payload[i] = TabletSerial.read();
         }
-      }
+//      }
       ZBTxRequest zbTx = ZBTxRequest(hiveAddr64, payload, sizeof(payload));
       ZBTxStatusResponse txStatus = ZBTxStatusResponse();
   
       SXxbee.send(zbTx);
   
-        if(SXxbee.readPacket(500)){
-          if(SXxbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE){
-            SXxbee.getResponse().getZBTxStatusResponse(txStatus);
-          }
-        }
+//        if(SXxbee.readPacket(500)){
+//          if(SXxbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE){
+//              flashLed(statusLed,5,50);          }
+//        }
       
     }
 //  count = -1;
@@ -125,7 +123,6 @@ void loop() {
 }
 
 void sendTeensy(uint8_t package[], uint8_t packet, uint8_t packagelength){
-  Serial.println(packet);
   uint8_t toSend[83];                           //Initialize package to be sent 
   for(int i=0;i<83;i++){ 
     toSend[i] = 0x00;                           //Fill package with 0s per communication protocol
@@ -146,8 +143,8 @@ void sendTeensy(uint8_t package[], uint8_t packet, uint8_t packagelength){
   }
   cli();
   for(int i=0;i<sizeof(toSend);i++){
-    TabletSerial.print("toSend: ");
-    TabletSerial.println(toSend[i]);
+//    TabletSerial.print("toSend: ");
+//    TabletSerial.println(toSend[i]);
     TabletSerial.write(toSend[i]);              //Write packet to Serial
   }
   sei();
