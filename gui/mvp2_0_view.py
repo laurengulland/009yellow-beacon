@@ -265,7 +265,7 @@ class GUI(object):
 		for chain in self.map_data.chain_list:
 			chain.render(self.display)
 		for waypoint in self.map_data.waypoint_list:
-			if (self.gui_state == 'Menu') and (waypoint.id_num == self.selected_waypoint):
+			if (self.gui_state == 'Menu') and self.selected_waypoint_index is not None and (waypoint.id_num == self.map_data.waypoint_list[self.selected_waypoint_index].id_num):
 				self.waypoint_hl.update(waypoint.center,True)
 				self.waypoint_hl.render(self.display)
 			waypoint.render(self.display)
