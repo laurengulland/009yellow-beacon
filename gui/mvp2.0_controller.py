@@ -39,7 +39,7 @@ class Controller(object):
 		self.gui.render()
 
 		#initialize serial communication
-		self.port = serial.Serial('/dev/ttyACM0') #MUST SELECT CORRECT PORT ON TABLET
+		self.port = serial.Serial('COM4') #MUST SELECT CORRECT PORT ON TABLET
 
 		self.step_rate = .5 #for da loopy loop
 		#self.dtd = Data_to_Display()
@@ -50,7 +50,7 @@ class Controller(object):
 		'''
 		based on state, make options available
 		'''
-		if not self.state.menu_active:
+		if self.gui.gui_state != 'Menu':
 			return {
 				0: self.zoom_in,
 				1: self.zoom_out,
@@ -99,8 +99,7 @@ class Controller(object):
 
 	def toggle_menu(self):
 		#print('toggle menu')
-		if self.next_poi_id >0:
-			self.state.menu_active = (not self.state.menu_active)
+		self.gui.toggle_menu_state()
 
 	def select_poi(self):
 		#print('select poi')
@@ -109,9 +108,9 @@ class Controller(object):
 	def poi_scroll(self, positive):
 		#print('poi scroll')
 		if positive:
-			self.move_down()
+			self.gui.move_down()
 		else:
-			self.move_up()
+			self.gui.move_up()
 
 	def zoom_in(self):
 		#print('zoom in')
