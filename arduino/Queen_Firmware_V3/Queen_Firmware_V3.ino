@@ -37,6 +37,8 @@ XBeeAddress64 hiveAddr64 = XBeeAddress64(0x13A200,0x41515876);
 #define TabletSerial Serial //USB Serial
 
 int statusLed = 13;
+int button1 = 3;
+int button2 = 4;
 
 void flashLed(int pin, int times, int wait) {
 
@@ -58,12 +60,18 @@ void setup() {
   SXxbee.setSerial(SXSerial);
   TabletSerial.begin(9600);
   pinMode(statusLed,OUTPUT);
+  pinMode(button1,INPUT);
+  pinMode(button2,INPUT);
+  digitalWrite(button1,HIGH);
+  digitalWrite(button2,HIGH);
+  attachInterrupt(button1,buttonPress,FALLING);
+  attachInterrupt(button2,buttonPress,FALLING);
 }
 
 void loop() {
   //***QUERY SCOUTS FOR LOCATION DATA***
   for(int i=0;i<1;i++){
-    TabletSerial.println("New Query");
+//    TabletSerial.println("New Query");
     queryScout(scoutSerials[i][0],scoutSerials[i][1]);  //Pass each serial number of scout into queryScout function
   }
   //***END QUERY***  
@@ -110,7 +118,7 @@ void loop() {
 //  count += 1;
 //  //***END HIVE TRANSMISSION***
   delay(5000);                                 //Delay 30 seconds before querying scouts again
-  TabletSerial.println("New Loop");
+//  TabletSerial.println("New Loop");
 
 }
 
@@ -125,19 +133,21 @@ void sendTeensy(uint8_t package[], uint8_t packet, uint8_t packagelength){
     toSend[1] = 0x01;                          //Set length byte to 1 for SX request type
   }
   if(toSend[2] == 0x00 or toSend[2] == 0x01){
-    TabletSerial.print("Package Size: ");
-    TabletSerial.println(sizeof(package));
+//    TabletSerial.print("Package Size: ");
+//    TabletSerial.println(sizeof(package));
     for(int i=0;i<packagelength;i++){
       toSend[i+3] = package[i];                 //Read payload into sending array
-      TabletSerial.println(package[i]);
+//      TabletSerial.println(package[i]);
     }
     toSend[1] = (packagelength+1);              //Set length byte
   }
+  cli();
   for(int i=0;i<sizeof(toSend);i++){
 //    TabletSerial.print("toSend: ");
 //    TabletSerial.println(toSend[i]);
     TabletSerial.write(toSend[i]);              //Write packet to Serial
   }
+  sei();
 }
 
 void queryScout(int scoutSH, int scoutSL){
@@ -170,5 +180,28 @@ void queryScout(int scoutSH, int scoutSL){
       }
     }
   }
+}
+
+void buttonPress(){
+  uint8_t toSend[83];                           //Initialize package to be sent 
+  for(int i=0;i<83;i++){ 
+    toSend[i] = 0x00;                           //Fill package with 0s per communication protocol
+  }
+  toSend[0] = 0x7E;
+  toSend[1] = 0x01;
+  toSend[2] = 0x01;
+  if(digitalRead(3)==LOW){
+    toSend[3] = 0x00;
+  }
+  else if(digitalRead(4)==LOW){
+    toSend[3] = 0x01;
+  }
+  cli();
+  for(int i=0;i<sizeof(toSend);i++){
+//    TabletSerial.print("toSend: ");
+//    TabletSerial.println(toSend[i]);
+    TabletSerial.write(toSend[i]);              //Write packet to Serial
+  }
+  sei();
 }
 
