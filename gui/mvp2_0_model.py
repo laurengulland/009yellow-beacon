@@ -5,7 +5,8 @@ class LocationPoint(IsDescription):
 	label = StringCol(16)     # 16-character String
 	scout_id = Int64Col()
 	time = Int64Col()
-	gps_location = Float64Col()
+	gps_location_n = Float64Col()
+	gps_location_e = Float64Col()
 	is_point_of_interest = BoolCol()
 
 class Data_to_Display(object): #object to be passed back in response to data_within_range().

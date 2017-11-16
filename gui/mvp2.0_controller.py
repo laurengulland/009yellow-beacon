@@ -9,6 +9,8 @@ import time
 import json
 import serial
 import pygame
+import threading
+from threading import Thread
 
 from mvp2_0_view import GUI
 from mvp2_0_model import Scouts
@@ -35,6 +37,7 @@ class Controller(object):
 		json_data = json.load(open('mvp2.0_constants.json'))
 		self.screen_width,self.screen_height = json_data["screen_width"],json_data["screen_height"]
 		self.gui = GUI(self.screen_width,self.screen_height)
+		self.gui.render()
 
 		#initialize serial communication
 		self.port = serial.Serial('COM4') #MUST SELECT CORRECT PORT ON TABLET
@@ -42,6 +45,7 @@ class Controller(object):
 		self.step_rate = .5 #for da loopy loop
 		#self.dtd = Data_to_Display()
 		self.last_time=time.time()
+		print('reaches end of initialization')
 
 	def action_map(self):
 		'''
@@ -276,11 +280,21 @@ class Controller(object):
 		#calls view.render()?
 		pass
 
+	def pump_gui(self, pit):
+		while True:
+			pygame.event.get_event()
+
 	def run(self):
 		crashed = False
 
 		while not crashed:
-			self.parse_inputs()
+			pit = Thread(target = self.parse_inputs)
+			guit = Thread(target = lambda: self.pump_gui(pit))
+			pit.start()
+			guit.start()
+			while pit.is_alive():
+				pass
+
 
 			current_time = time.time()
 			if current_time-self.last_time > self.step_rate:
@@ -312,9 +326,7 @@ class Scout_Display(object):
 
 if __name__ == '__main__':
 	controller = Controller()
-	while True:
-		pass
-	#controller.run()
+	controller.run()
 	# buttons testing
 	# controller.parse_button_presses(bytearray([0x00]))
 	# controller.parse_button_presses(bytearray([0x01]))
