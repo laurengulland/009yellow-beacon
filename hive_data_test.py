@@ -25,7 +25,7 @@ def packets_to_c(packets):
     string = 'void setup() {Serial.begin(9600);} '
     string = string + ' void loop() { '
     for packet in packets:
-        string =string+' { '+packet+' for(int i = 0; i < 83; i++) {Serial.write(packet[i]);} delay(5000); } '
+        string =string+' { '+packet+' for(int i = 0; i < 80; i++) {Serial.write(packet[i]);} delay(5000); } '
     string = string + ' } '
     return string
     
