@@ -48,31 +48,31 @@ class Controller(object):
                 3: self.toggle_menu,
                 4: self.do_nothing,
                 5: self.do_nothing,
-                (6,'up'): lambda: self.pan_vertical(True),
-                (6, 'down'): lambda: self.pan_vertical(False),
-                (6,'left'): lambda: self.pan_horizontal(False),
-                (6,'right'): lambda: self.pan_horizontal(True),
-                (7,'up'): self.do_nothing,
-                (7,'down'): self.do_nothing,
-                (7,'right'): self.do_nothing,
-                (7,'left'): self.do_nothing
+                #(6,'up'): lambda: self.pan_vertical(True),
+                #(6, 'down'): lambda: self.pan_vertical(False),
+                #(6,'left'): lambda: self.pan_horizontal(False),
+                #(6,'right'): lambda: self.pan_horizontal(True),
+                #(7,'up'): self.do_nothing,
+                #(7,'down'): self.do_nothing,
+                #(7,'right'): self.do_nothing,
+                #(7,'left'): self.do_nothing
             }
         else:
             return {
-                0: self.zoom_in,
-                1: self.zoom_out,
+                0: lambda: self.poi_scroll(False), #eventually be zoom in
+                1: lambda: self.poi_scroll(True), #eventually be zoom out
                 2: self.do_nothing,
                 3: self.toggle_menu,
                 4: self.select_poi,
                 5: self.do_nothing,
-                (6,'up'): lambda: self.poi_scroll(False),
-                (6, 'down'): lambda: self.poi_scroll(True),
-                (6,'left'): self.do_nothing,
-                (6,'right'): self.do_nothing,
-                (7,'up'): self.do_nothing,
-                (7,'down'): self.do_nothing,
-                (7,'right'): self.do_nothing,
-                (7,'left'): self.do_nothing
+                #(6,'up'): lambda: self.poi_scroll(False),
+                #(6, 'down'): lambda: self.poi_scroll(True),
+                #(6,'left'): self.do_nothing,
+                #(6,'right'): self.do_nothing,
+                #(7,'up'): self.do_nothing,
+                #(7,'down'): self.do_nothing,
+                #(7,'right'): self.do_nothing,
+                #(7,'left'): self.do_nothing
             }
 
     def do_nothing(self):
