@@ -10,7 +10,7 @@ import json
 import serial
 
 from mvp2_0_view.py import GUI
-from mvp2.0_model.py import Scouts
+from mvp2_0_model.py import Scouts
 
 class ControllerState(object):
     def __init__(self):

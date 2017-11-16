@@ -30,9 +30,10 @@ class Scout(object):
 		surface.blit(((pygame.font.Font(None,35)).render(str(self.id_num),True,black)), (self.center[0]-6,self.center[1]-11))
 
 class Waypoint(object):
-	def __init__(self, true_pos=(0,0), center=(0,0), way_type=0, id_num=0, description=''):
+	def __init__(self, true_pos=(0,0), center=(0,0), way_type=0, id_num=0, description='',owner=0):
 		self.center = center
 		self.true_pos = true_pos
+		self.owner = owner
 
 		self.description = description
 
@@ -77,7 +78,6 @@ class MapDataStruct(object):
 		for idNum in inputObj.waypoint_ids:
 			waypoint_centers[idNum] = self.coordinate_transform(inputObj.waypoint_positions[idNum])
 
-
 		for idNum in inputObj.scout_id_list:
 			if(inputObj.current_positions[idNum] in inputObj.positions_list[idNum]):
 				scTemp = Scout(inputObj.current_positions[idNum],scout_centers[idNum],idNum)
@@ -85,7 +85,7 @@ class MapDataStruct(object):
 			chTemp = Chain(chain_centers[idNum])
 			self.chain_list.append(chTemp)
 		for idNum in inputObj.waypoint_ids:
-			wpTemp = Waypoint(inputObj.waypoint_positions[idNum], waypoint_centers[idNum], inputObj.waypoint_types[idNum], idNum, inputObj.waypoint_labels[idNum])
+			wpTemp = Waypoint(inputObj.waypoint_positions[idNum], waypoint_centers[idNum], inputObj.waypoint_types[idNum], idNum, inputObj.waypoint_labels[idNum], inputObj.waypoint_owners[idNum])
 			self.waypoint_list.append(wpTemp)
 
 
@@ -96,8 +96,8 @@ class MapDataStruct(object):
 
 		posOut = ( int(round((coords_In[1]-bl_corner[1])/(tr_corner[1]-bl_corner[1])*frame_dim[0])) , int(round((tr_corner[0]-coords_In[0])/(tr_corner[0]-bl_corner[0])*frame_dim[1])) )
 
-		#return posOut
-		return coords_In
+		return posOut
+		#return coords_In
 
 class Chain(object):
 	def __init__(self, points_list=[(0,0)]):

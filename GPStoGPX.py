@@ -78,7 +78,7 @@ def writeToDisk(GPSString):
 	file.close()
 
 def hexCoordToString(hexString):
-	return string(float(hexString)/10.**6)
+	return str(float(hexString)/10.**6)
 
 
 
@@ -87,18 +87,20 @@ def hexCoordToString(hexString):
 listWaypoints = []
 listTracks = []
 
-# this code needs to be tested with serial inputs
+# this below serial code needs to be tested with serial inputs
 ser = serial.Serial('/dev/ttyUSB0', 9600)
 while True:
- 	inputBytes = ser.read(80)
- 	inputString = inputBytes.decode('utf-8') # int.from_bytes(b + hexString, byteorder='big'
- 	parseGPS(inputString)
+ 	inputHex = ser.read(80)
+ 	#the above serial code needs to be tested
 
+ 	inputString = bytearray.fromhex(inputHex).decode()
+ 	printString = parseGPS(inputString)
+ 	print (printString)
 ## Code to test the above functions
 # inpString = '0 34567 89012 3 4444 00567 89012 3 4444 34567 89012 1 4444'.replace(' ', '')
 # parseGPS(inpString) # 0 34567 89012 3 4444 0 00567 89012 3 4444 0 34567 89012 1 4444
 # print parseGPS('122345678901234description') # 1 22 34567 89012 3 4 description
-
+# inputHex = '31 32 32 33 34 35 36 37 38 39 30 31 32 33 34 64 65 73 63 72 69 70 74 69 6f 6e'
 
 
 
