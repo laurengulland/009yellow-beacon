@@ -1,13 +1,14 @@
 /*
  * Queen Serial: SH -> 0x13A200, SL -> 0x41515876
  * Scout 1 Serial: SH -> 0x13A200, SL -> 0x4164D65A
+ * Scout 2 Serial: SH -> 0x13A200, SL -> 0x41515879
  */
 
 //Libraries
 #include <XBee.h> //XBee library
 
 //Variable Definition
-int scoutSerials[1][2] = {{0x13A200,0x4164D65A}}; //Serial numbers of all scout devices connected to queen, form of [SH,SL]
+int scoutSerials[2][2] = {{0x13A200,0x4164D65A},{0x13A200,0x41515879}}; //Serial numbers of all scout devices connected to queen, form of [SH,SL]
 uint8_t accumlatedScoutData[83]; //Tablet sends single package of accumulated data
 uint8_t requestSX[83]; //Tablet requests SX transmission routine
 
@@ -129,7 +130,7 @@ void queryScout(int scoutSH, int scoutSL){
         for(int i = 0; i < rx.getDataLength(); i++){
           payload[i] = rx.getData()[i];                             //Read payload into array
         }
-        sendTeensy(payload,0x01,rx.getDataLength());                                   //Send payload to Teensy
+        sendTeensy(payload,0x00,rx.getDataLength());                                   //Send payload to Teensy
       }
     }
   }
@@ -137,7 +138,7 @@ void queryScout(int scoutSH, int scoutSL){
 
 void loop() {
   //***QUERY SCOUTS FOR LOCATION DATA***
-  for(int i=0;i<1;i++){
+  for(int i=0;i<2;i++){
     queryScout(scoutSerials[i][0],scoutSerials[i][1]);  //Pass each serial number of scout into queryScout function
   }
   //***END QUERY***  
