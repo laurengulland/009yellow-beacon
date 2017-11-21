@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Fritter </title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    </head> 
+    
+    
+   <body>
+    <h1>Fritter</h1>
+    <div id="user">Hi {{user}} </div>
+    <form action="logout" method="post">
+    <button type="submit" class="btn btn-primary" id="logoutButton" >Logout</button>
+    </form>
+
+       
+    <form class="form-inline" action="loggedin/post" method="post">
+        <div class="form-group row">
+          <label for="tweetInput" class="col-xs-2 col-form-label"></label>
+          <div class="col-xs-10">
+            <input class="form-control" name="tweetInput" type="text" value="Artisanal kale" id="tweetInput">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="tweetButton">Tweet</button>
+    </form>
+    
+    <div id="tweetsFeed">The FreetFeed</div>
+
+    <div class="tweetDiv">
+    <!--    var theData = {tweets: [{tweetID: 1, author: Jo, tweet: hi}]-->
+        {{#each tweetsList}}
+            <div class="tweet" id={{tweetID}}>
+                <div class="tweetAuthor">{{tweetAuthor}}</div>
+                <div class="tweetBody">{{tweet}}</div>
+                    {{#if isCurrentUser}}
+                        <form method="post" action="loggedin/:tweetid">
+                            <input type="hidden" name="tweetid" value={{tweetID}}/>
+                            <button type="submit" class="btn btn-primary" id='"del"+{{tweetID}}'>X</button>
+                        </form>
+                    {{else}}
+                    {{/if}}
+            </div>
+        {{/each}}
+    </div>
+
+    
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.runtime.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="/javascripts/controller.js"></script>
+    
+   </body>
+</html>
