@@ -28,7 +28,7 @@ Install serial for connection to Teensy (?) (I didn't actually write the part th
 python -m pip install --user serial
 ```
 
-## Installing PyTables and its prerequisites:
+## Installing PyTables and its prerequisites (possibly out-of-date):
 
 Install HDF5:
 Install HDF5 for HDF Group website: [installation_link]https://www.hdfgroup.org/downloads/hdf5/
@@ -54,3 +54,9 @@ Specifically, there are DLL files in `C:\\Users\[Owner]\AppData\Roaming\Python\L
 Copy them to `C:\\Users\[Owner]\AppData\Roaming\Python\Python36\site-packages\tables\`.
 
 This should fix the error `ImportError: Could not load any of ['hdf5.dll', 'hdf5dll.dll'], please ensure that it can be found in the system path`.  If it does not, contact John Bell.
+
+## For map importing code:
+Install `requests` and `pillow` (PIL fork for Python 3) packages:
+```bash
+python -m pip install --user requests pillow
+```

@@ -71,10 +71,10 @@ def packets_to_c(packets):
 #packet_from_hex_string('7e0d000b598602017cc43c040201010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')
 #print(packet_from_hex_string(button_press_hex_string(0)))
 print(packets_to_c([
-    gps_scout_packet(42.358340,-71.094600,0,False),
-    gps_scout_packet(42.358360,-71.094620,0,False),
-    gps_scout_packet(42.358380,-71.094640,0,False),
-    gps_scout_packet(42.358380,-71.094660,0,False),
+    gps_scout_packet(42.358306, -71.094515,0,True),
+    gps_scout_packet(42.358306, -71.094515,0,True),
+    gps_scout_packet(42.358306, -71.094515,0,False),
+    gps_scout_packet(42.358306, -71.094515,0,False),
     gps_scout_packet(42.358380,-71.094680,0,False),
     gps_scout_packet(42.358360,-71.094700,0,False),
     gps_scout_packet(42.358340,-71.094700,0,False),
