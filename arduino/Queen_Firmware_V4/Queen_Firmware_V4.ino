@@ -19,12 +19,12 @@ int count = 0; //Counter to track repetitions of searching cycles
 
 //XBee Preamble
 #define XBeeSerial Serial1 //Teensy Ports 0/RX1 and 1/TX1
-#define SXSerial Serial2   //Teensy Ports 9/RX2 and 10/TX2
+#define SXSerial Serial3   //Teensy Ports 9/RX2 and 10/TX2
 XBee xbee = XBee(); //Create XBee object
 XBee SXxbee = XBee();
 XBeeResponse response = XBeeResponse();
 
-XBeeAddress64 hiveAddr64 = XBeeAddress64(0x13A200,0x414FF2A7);
+XBeeAddress64 hiveAddr64 = XBeeAddress64(0x0013A200,0x414FF2A7);
 
 ////GPS Preamble
 //#define GPSSerial Serial2 //Teensy Ports 9/RX2 and 10/TX2
@@ -100,12 +100,15 @@ void loop() {
         
         for(int i = 0;i<80;i++){    //Run through all remaining bytes inside of the length
           payload[i] = TabletSerial.read();
+//          SXSerial.print(payload[i],BYTE);
+//          delay(50);
         }
 //      }
       ZBTxRequest zbTx = ZBTxRequest(hiveAddr64, payload, sizeof(payload));
       ZBTxStatusResponse txStatus = ZBTxStatusResponse();
   
       SXxbee.send(zbTx);
+      delay(100);
   
 //        if(SXxbee.readPacket(500)){
 //          if(SXxbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE){
@@ -113,6 +116,8 @@ void loop() {
 //        }
       
     }
+//    uint8_t trial[3];
+//    sendTeensy(,0x00,0x03);
 //  count = -1;
 //  }
 //  count += 1;

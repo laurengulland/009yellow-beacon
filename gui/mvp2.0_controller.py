@@ -39,7 +39,7 @@ class Controller(object):
 		self.gui.render()
 
 		#initialize serial communication
-		self.port = serial.Serial('COM7') #MUST SELECT CORRECT PORT ON TABLET
+		self.port = serial.Serial('COM9') #MUST SELECT CORRECT PORT ON TABLET
 
 		self.step_rate = .5 #for da loopy loop
 		#self.dtd = Data_to_Display()
@@ -50,7 +50,7 @@ class Controller(object):
 		'''
 		based on state, make options available
 		'''
-		if not self.state.menu_active:
+		if self.gui.gui_state != 'Menu':
 			return {
 				0: self.zoom_in,
 				1: self.zoom_out,
@@ -99,8 +99,7 @@ class Controller(object):
 
 	def toggle_menu(self):
 		#print('toggle menu')
-		if self.next_poi_id >0:
-			self.state.menu_active = (not self.state.menu_active)
+		self.gui.toggle_menu_state()
 
 	def select_poi(self):
 		#print('select poi')
@@ -109,9 +108,9 @@ class Controller(object):
 	def poi_scroll(self, positive):
 		#print('poi scroll')
 		if positive:
-			self.move_down()
+			self.gui.move_down()
 		else:
-			self.move_up()
+			self.gui.move_up()
 
 	def zoom_in(self):
 		#print('zoom in')
@@ -132,6 +131,7 @@ class Controller(object):
 		'''
 		#Parse input and decide whether GPS or button is most accurate
 		packet = self.port.read(83)
+		print(packet.hex())
 		length = packet[1]
 		packtype = packet[2]
 		content = bytearray(packet[3:2+length])
@@ -147,20 +147,22 @@ class Controller(object):
 		parses payload of gps input
 		'''
 		trtime = int(time.time()) #time since epoch rounded to the second
-		lat = self.get_signed_coord(content[0:5])
-		lon = self.get_signed_coord(content[5:10])
-		scout_id = content[10]
 		poi = content[11]
-		is_poi = poi != 0x00
+		is_poi = poi == 0x01
+		slat = self.get_signed_coord(content[0:5])
+		slon = self.get_signed_coord(content[5:10])
+		scout_id = content[10]
 		# add to model
-		self.scouts.add_data_point(scout_id, trtime,(lat,lon),is_poi)
+		self.scouts.add_data_point(scout_id, trtime,(slat,slon),False)
+		payload = self.get_scout_payload(content[0:11],trtime)
+		if payload is not None:
+			self.add_payload_to_scout_queue(payload)
 		# add to queue
 		if is_poi:
-			poi_queue.append(self.get_poi_packet(content))
-		else:
-			payload = self.get_scout_payload(content,trtime)
-			if payload is not None:
-				self.add_payload_to_scout_queue(payload)
+			plat = self.get_signed_coord(content[12:17])
+			plon = self.get_signed_coord(content[17:22])
+			self.poi_queue.append(self.get_poi_packet(content[12:23]))
+			self.scouts.add_data_point(scout_id,trtime,(plat,plon),True)
 		#TODO: trigger view update?
 
 	def add_payload_to_scout_queue(self, payload):
@@ -168,6 +170,8 @@ class Controller(object):
 		if there's room in the last bytearray, add it there
 		otherwise, create a new packet
 		'''
+		print('adding')
+		print(len(payload))
 		if len(payload)!=15:
 			raise Exception
 		if self.scout_queue == [] or self.scout_queue[-1][1]>75:
@@ -177,10 +181,12 @@ class Controller(object):
 			packet[2] = 0x03
 			packet[3] = 0x00
 			packet[4:19] = payload
+			self.scout_queue.append(packet)
 		else:
-			packet = self.scout_queue[-1]
+			packet = self.scout_queue.pop()
 			packet[packet[1]+2:packet[1]+17] = payload
 			packet[1] = packet[1]+15
+			self.scout_queue.append(packet)
 
 	def get_poi_packet(self,content):
 		'''
@@ -197,7 +203,7 @@ class Controller(object):
 			poi_hex = '0'+poi_hex
 		packet[4] = int(poi_hex[2:],16)
 		packet[5] = int(poi_hex[0:2],16)
-		packet[6:18] = content
+		packet[6:17] = content
 		return packet
 
 	def get_scout_payload(self,content,trtime):
@@ -207,6 +213,7 @@ class Controller(object):
 		payload = bytearray(15)
 		payload[0:11] = content[0:11]
 		payload[11:15] = self.time_int_to_bytearray(trtime)
+		return payload
 
 	def time_int_to_bytearray(self,trtime):
 		'''
@@ -263,8 +270,11 @@ class Controller(object):
 		sends scout packets first, then poi.
 		sends no-content packet if nothing to send.
 		'''
+		print('transmitting')
+		print(self.scout_queue)
 		if self.scout_queue == []:
 			if self.poi_queue == []:
+				print('transmission done')
 				packet = bytearray(83)
 				packet[0]=0x7e
 				packet[1]=1

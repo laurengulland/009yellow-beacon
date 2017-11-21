@@ -35,11 +35,10 @@ def joystick_packet(direction):
     return packet_from_hex_string(fill_hex_string(string))
 
 def gps_scout_packet(lat,long,scoutnum,poi=False):
-    if poi:
-        poi = '1'
+    if not poi: 
+        return packet_from_hex_string(fill_hex_string('7e1a00'+number_to_packet_hex(lat)+number_to_packet_hex(long)+'0'+str(scoutnum)))
     else:
-        poi = '0'
-    return packet_from_hex_string(fill_hex_string('7e0d00'+number_to_packet_hex(lat)+number_to_packet_hex(long)+'0'+str(scoutnum)+'0'+poi))
+        return packet_from_hex_string(fill_hex_string('7e1a00'+number_to_packet_hex(lat)+number_to_packet_hex(long)+'0'+str(scoutnum)+'01'+number_to_packet_hex(lat)+number_to_packet_hex(long)+'0'+str(scoutnum)))
 
 def number_to_packet_hex(number):
     if number<0:
@@ -71,6 +70,7 @@ def packets_to_c(packets):
 #packet_from_hex_string('7e0d000b598602017cc43c040201010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')
 #print(packet_from_hex_string(button_press_hex_string(0)))
 print(packets_to_c([
+<<<<<<< HEAD
     gps_scout_packet(42.358306, -71.094515,0,True),
     gps_scout_packet(42.358306, -71.094515,0,True),
     gps_scout_packet(42.358306, -71.094515,0,False),
@@ -80,6 +80,17 @@ print(packets_to_c([
     gps_scout_packet(42.358340,-71.094700,0,False),
     gps_scout_packet(42.358380,-71.094660,0,True),
     #button_press_packet(0),
+=======
+    gps_scout_packet(42.358340,-71.094600,0,True),
+    gps_scout_packet(42.358360,-71.094620,0,True),
+#    gps_scout_packet(42.358380,-71.094640,0,True),
+#    gps_scout_packet(42.358380,-71.094660,0,True),
+#    gps_scout_packet(42.358380,-71.094660,0,True),
+#    gps_scout_packet(42.358370,-71.094650,0,True),
+#    button_press_packet(1),
+#    button_press_packet(1),
+#    button_press_packet(1)
+>>>>>>> 9bd78054138babaeb47c082642be0ee911fa333f
     #joystick_packet('up'),
     #hive_data_request_packet()
 ]))

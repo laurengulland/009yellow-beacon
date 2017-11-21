@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Fritter </title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    </head> 
+    
+    
+   <body>
+    <h1>Fritter</h1>
+
+<!-- name, password       -->
+    
+    <form class="form-inline" action="login" method="post">
+        <div class="form-group row">
+          <label for="loginInput" class="col-xs-2 col-form-label">Log in</label>
+          <div class="col-xs-10">
+            <input class="form-control" name="name" type="text" value="John Doe" id="loginInput">
+          </div>
+          <div class="col-xs-10">
+            <input class="form-control" name="password" type="text" value="password" id="loginInput">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="loginButton">Log in</button>
+    </form>
+       
+    <form class="form-inline" action="register" method="post">
+        <div class="form-group row">
+          <label for="loginInput" class="col-xs-2 col-form-label">Register now</label>
+          <div class="col-xs-10">
+            <input class="form-control" name="name" type="text" value="John Doe" id="loginInput">
+          </div>
+          <div class="col-xs-10">
+            <input class="form-control" name="password" type="text" value="password" id="loginInput">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="registerButton">Register </button>
+    </form>
+       
+    
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.runtime.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    
+   </body>
+</html>
