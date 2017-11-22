@@ -126,6 +126,10 @@ void loop() {
         latdir = 0x02;
       }     
     }
+    else {
+      latTX = (long) 42358340;
+      lonTX = (long) 71094600;
+    }
   xbee.readPacket();
   if(xbee.getResponse().isAvailable()){
     if(xbee.getResponse().getApiId() == ZB_RX_RESPONSE){
