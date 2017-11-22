@@ -22,6 +22,9 @@ while packetqueue != []:
     if packet[2] == 0x02:
         port.write(packetqueue.pop(0))
         print('Sending new packet')
+    if packet[2] == 0x00:
+        packet[2] == 0x03
+        packetqueue.append(packet)
 while 1==1:
     packet = port.read(83)
     print(packet.hex())
