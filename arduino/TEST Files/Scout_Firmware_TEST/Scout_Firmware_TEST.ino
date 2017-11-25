@@ -37,8 +37,16 @@ int count = 0x00;
 float GPSlat = 42.358340;
 float GPSlon = 71.094600;
 
-unsigned long latTX;
-unsigned long lonTX;
+volatile unsigned long latTX;
+volatile unsigned long lonTX;
+
+volatile uint8_t longdir;
+volatile uint8_t latdir;
+
+String GPSLatitudeRead;
+String GPSLongitudeRead;
+float latitude;
+float longitude;
 
 String currLatLong;
 String timeString;
@@ -91,32 +99,54 @@ void setup() {
 }
 
 void loop() {
+  char c = GPS.read();
+    if (GPS.newNMEAreceived()) {
+      if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag to false
+        return; // we can fail to parse a sentence in which case we should just wait for another
+    }
+    if(GPS.fix){
+      String GPSLatituderead = String(fabs(GPS.latitudeDegrees),6);
+      String GPSLongituderead = String(fabs(GPS.longitudeDegrees),6);
+      float longitude = GPSLongituderead.toFloat();
+      float latitude = GPSLatituderead.toFloat();
+      latTX = (long) (latitude*1000000);
+      lonTX = (long) (longitude*1000000);
+      String longdirs = GPS.lon;
+      if(longdirs=="E"){
+        longdir = 0x01;
+      }
+      else if(longdirs=="W"){
+        longdir = 0x02;
+      }
+      String latdirs = GPS.lat;
+      if(latdirs=="N"){
+        latdir = 0x01;
+      }
+      else if(latdirs=="S"){
+        latdir = 0x02;
+      }     
+    }
+    else {
+      latTX = (long) 42358340;
+      lonTX = (long) 71094600;
+    }
   xbee.readPacket();
   if(xbee.getResponse().isAvailable()){
     if(xbee.getResponse().getApiId() == ZB_RX_RESPONSE){
       flashLed(statusLed, 1,100);
       xbee.getResponse().getZBRxResponse(rx);
       if(rx.getDataLength() == 5){
-        char c = GPS.read();
-        if (GPS.newNMEAreceived()) {
-            if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag to false
-              return; // we can fail to parse a sentence in which case we should just wait for another
-          }
-//          float GPSlat = GPS.latitude;
-//          float GPSlon = GPS.longitude;
           Serial.println("Request Recieved");
-          latTX = (long) (GPSlat*1000000);
-          lonTX = (long) (GPSlon*1000000);
           payload[0] = latTX & 255;
           payload[1] = (latTX >> 8) & 255;  
           payload[2] = (latTX >> 16) & 255;
           payload[3] = (latTX >> 24) & 255;
-          payload[4] = 0x01;
+          payload[4] = latdir;
           payload[5] = lonTX & 255;
           payload[6] = (lonTX >> 8) & 255;  
           payload[7] = (lonTX >> 16) & 255;
           payload[8] = (lonTX >> 24) & 255;
-          payload[9] = 0x02;
+          payload[9] = longdir;
           payload[10] = 0x01;
           payload[11] = 0x00;
 
@@ -140,34 +170,20 @@ void loop() {
 
 void markWaypoint(){
   if (millis() - last_interrupt > 1000){
-    char c = GPS.read();
-    if (GPS.newNMEAreceived()) {
-      if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag to false
-        return; // we can fail to parse a sentence in which case we should just wait for another
-    }
-    //float GPSlat = GPS.latitude;
-    //float GPSlon = GPS.longitude;
-    float GPSlat = 42.047843;
-    float GPSlon = 21.308923;
-    
-    unsigned long latTX;
-    unsigned long lonTX;
     Serial.println("Button Pushed");
-    latTX = (long) (GPSlat*1000000);
-    lonTX = (long) (GPSlon*1000000);
     poiPayload[0] = latTX & 255;
     poiPayload[1] = (latTX >> 8) & 255;  
     poiPayload[2] = (latTX >> 16) & 255;
     poiPayload[3] = (latTX >> 24) & 255;
-    poiPayload[4] = 0x01;
+    poiPayload[4] = latdir;
     poiPayload[5] = lonTX & 255;
     poiPayload[6] = (lonTX >> 8) & 255;  
     poiPayload[7] = (lonTX >> 16) & 255;
     poiPayload[8] = (lonTX >> 24) & 255;
-    poiPayload[9] = 0x01;
+    poiPayload[9] = longdir;
     poiPayload[10] = 0x01;
   //  payload[13] = latTX & 255;
-  //  payload[14] = (latTX >> 8) & 255;  
+  //  payload[14] = (latTX >> 8) & 255;   
   //  payload[15] = (latTX >> 16) & 255;
   //  payload[16] = (latTX >> 24) & 255;
   //  payload[17] = 0x01;

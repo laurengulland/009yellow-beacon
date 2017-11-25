@@ -1,0 +1,48 @@
+.gameBoard {
+    background-color: bisque;
+    height: 600px;
+    width: 600px;
+    margin: 0 auto;
+}
+
+.allbuttons {
+    margin: 30px auto 0px auto;
+    display: table;
+}
+
+.stripe {
+    background-color: aquamarine;
+    width: 600px;
+    height: 20px;
+}
+
+.cell {
+    background-color: darkgray;
+    width: 20px;
+    height: 20px;
+    float: left;
+    position: relative;
+}
+
+h1 {
+    font-family: Helvetica, sans-serif;
+    text-align: center;
+    color: darkgray;
+}
+
+html {
+    background-color: azure;
+}
+
+button {
+    border: none;
+    background: none;
+    font-family: Helvetica, sans-serif;
+    color: darkgray;
+    transition: color .25s ease-in-out;
+}
+
+button:hover {
+    color: slategray;
+    cursor: pointer;
+}

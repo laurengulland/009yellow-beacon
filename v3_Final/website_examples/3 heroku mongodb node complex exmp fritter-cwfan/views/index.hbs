@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Fritter </title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    </head> 
+    
+    
+   <body>
+    
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Fritter</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li><a href="allTweets">Freet Feed</a></li>
+          <li><a href="profile">Profile</a></li>
+        </ul>
+      </div>
+    </nav>
+       
+    <h1>Fritter</h1>
+    <div id="user">Hi {{user}} </div>
+    <form action="logout" method="post">
+    <button type="submit" class="btn btn-primary" id="logoutButton" >Logout</button>
+    </form>
+       
+    <form action="allTweets" method="get">
+    <button type="submit" class="btn btn-primary" id="allButton" >View All Tweets</button>
+    </form>
+    <form action="allFollowingTweets" method="get">
+    <button type="submit" class="btn btn-primary" id="followButton" >View Following Tweets</button>
+    </form>
+
+<!--    tweetID, tweetAuthor, tweet  || tweetInput -->
+    <form class="form-inline" action="addTweet" method="post">
+        <div class="form-group row">
+          <label for="tweetInput" class="col-xs-2 col-form-label"></label>
+          <div class="col-xs-10">
+            <input class="form-control" name="tweetInput" type="text" value="Artisanal kale" id="tweetInput">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="tweetButton">Tweet</button>
+    </form>
+    
+    <div id="tweetsFeed">The FreetFeed</div>
+
+    <div class="tweetDiv">
+    <!--    var theData = {tweets: [{tweetID: 1, author: Jo, tweet: hi}]-->
+        {{#each tweetsList}}
+            <div class="tweet" id={{_id}}>
+                <div class="tweetAuthor">{{author.name}}</div>
+                <div class="tweetBody">{{content}}</div>
+                <form method="post" action="retweet">
+                    <input type="hidden" name="tweetAuthor" value='{{author.name}}'/>
+                    <input type="hidden" name="tweet" value='{{content}}'/>
+                    <button type="submit" class="btn btn-primary">retweet</button>
+                </form>
+            </div>
+        {{/each}}
+    </div>
+
+    
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.runtime.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="/javascripts/controller.js"></script>
+    
+   </body>
+</html>

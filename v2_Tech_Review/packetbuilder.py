@@ -70,6 +70,17 @@ def packets_to_c(packets):
 #packet_from_hex_string('7e0d000b598602017cc43c040201010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000')
 #print(packet_from_hex_string(button_press_hex_string(0)))
 print(packets_to_c([
+<<<<<<< HEAD
+    gps_scout_packet(42.358306, -71.094515,0,True),
+    gps_scout_packet(42.358306, -71.094515,0,True),
+    gps_scout_packet(42.358306, -71.094515,0,False),
+    gps_scout_packet(42.358306, -71.094515,0,False),
+    gps_scout_packet(42.358380,-71.094680,0,False),
+    gps_scout_packet(42.358360,-71.094700,0,False),
+    gps_scout_packet(42.358340,-71.094700,0,False),
+    gps_scout_packet(42.358380,-71.094660,0,True),
+    #button_press_packet(0),
+=======
     gps_scout_packet(42.358340,-71.094600,0,True),
     gps_scout_packet(42.358360,-71.094620,0,True),
 #    gps_scout_packet(42.358380,-71.094640,0,True),
@@ -79,6 +90,7 @@ print(packets_to_c([
 #    button_press_packet(1),
 #    button_press_packet(1),
 #    button_press_packet(1)
+>>>>>>> 9bd78054138babaeb47c082642be0ee911fa333f
     #joystick_packet('up'),
     #hive_data_request_packet()
 ]))

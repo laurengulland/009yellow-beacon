@@ -10,7 +10,7 @@ from PIL import Image
 from io import BytesIO
 
 
-def make_map_request(clat,clon,zoom=15,szw=640,szh=640,scale=1,frmt='png',maptype='roadmap',):
+def make_map_request(clat,clon,zoom=15,szw=640,szh=640,scale=1,frmt='png',maptype='satellite',): #Map types: 'roadmap', 'satellite'
     clat = str(clat)
     clon = str(clon)
     zoom = str(zoom)
@@ -34,4 +34,4 @@ def make_map_request(clat,clon,zoom=15,szw=640,szh=640,scale=1,frmt='png',maptyp
 #i = Image.open(BytesIO(r.content))
 #i.show()
 
-make_map_request(42.3582,-71.0927,15,640,640,2).show()
+make_map_request(42.3582,-71.0927,20,640,640,2).show()

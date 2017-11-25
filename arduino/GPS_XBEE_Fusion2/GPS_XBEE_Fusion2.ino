@@ -177,8 +177,18 @@ void loop() // run over and over again
 //    timeString = String("Time") + String(GPS.minute,DEC) + ":" + String(GPS.seconds,DEC) + "." + String(GPS.milliseconds);
 
   Serial.println(GPS.latitude);
-  latTX = (long) (GPS.latitude*1000000);
+  String GPSLatituderead = String(fabs(GPS.latitudeDegrees),6);
+
+  float latitude = GPSLatituderead.toFloat();
+  Serial.println(GPSLatituderead);
+  Serial.println(latitude);
+  latTX = (long) (latitude*1000000);
   Serial.println(latTX);
+  Serial.println(GPS.lon);
+  String londir = GPS.lon;
+  if(londir == "W"){
+    Serial.println("Lon got");
+  }
 //  lonTX = (long) (GPSlon*1000000);
 ////  Serial.println(latTX);
 ////  Serial.println(lonTX);
