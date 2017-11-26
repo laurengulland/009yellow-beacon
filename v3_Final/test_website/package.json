@@ -1,0 +1,17 @@
+{
+  "name": "coordinate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "leaflet.offline": "^0.2.0",
+    "mongod": "^2.0.0",
+    "mongoose": "^4.13.5"
+  }
+}
