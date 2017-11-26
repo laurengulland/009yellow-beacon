@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<!-- All references to websites will eventually have to be replaced by local references  -->
+
+<head>
+	<title>Leaflet Quick-Start Test</title>
+	<!-- JB4: Needs to be modified of offline use. -->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
+   integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+   crossorigin=""/>
+	<!-- Make sure you put this AFTER Leaflet's CSS -->
+	<!-- JB4: Needs to be modified of offline use. -->
+	<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
+   integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
+   crossorigin=""></script>
+</head>
+<body>
+
+	<div id="mapid" style="width: 600px; height: 400px"></div>
+	<script type="text/javascript">
+		//Initialize Map
+		var mymap = L.map('mapid').setView([51.505, -0.09], 13);
+
+//		Set Source for Map Tiles; this part will have to be heavily modified for offline use.
+//		It appears that this is what will have to be replaced by things from leaflet.offline.
+		L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiMDA5eWVsbG93MTciLCJhIjoiY2phZnkwOHlsMTk1bjJ3cnoxNG4yaGxuNCJ9.ICzaK-eMacI1DF_b9YJcrw', {
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+			maxZoom: 18,
+			id: 'mapbox.satellite',
+			accessToken: 'pk.eyJ1IjoiMDA5eWVsbG93MTciLCJhIjoiY2phZnkwOHlsMTk1bjJ3cnoxNG4yaGxuNCJ9.ICzaK-eMacI1DF_b9YJcrw'
+		}).addTo(mymap);
+        
+		//Boring Marker
+		var marker = L.marker([51.5, -0.09]).addTo(mymap);
+
+		//Draw Circle
+		var circle = L.circle([51.508, -0.11], {
+    		color: 'red',
+    		fillColor: '#f03',
+    		fillOpacity: 0.5,
+    		radius: 500 //Units are in meters (absolute)
+		}).addTo(mymap);
+
+		//Draw Triangle
+		var polygon = L.polygon([
+    		[51.509, -0.08],
+    		[51.503, -0.06],
+    		[51.51, -0.047]
+		]).addTo(mymap);
+
+		//Simple Clickable Popups
+		marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup(); //Immediately opens the popup
+		circle.bindPopup("I am a circle.");
+		polygon.bindPopup("I am a polygon.");
+
+		//Non-Clickable Popup: This popup exists independently of an object, and disappears if you click away.  It is inaccessible afterward.
+		var popup = L.popup()
+	    .setLatLng([51.5, -0.09])
+	    .setContent("I am a standalone popup.")
+	    .openOn(mymap); //.openOn closes all other popups and opens this one.
+
+	    //Click on Map Creates Popup with Coordinates
+	    var popup = L.popup(); //Creates popup variable
+		function onMapClick(e) { //Function which assigns event click LatLong to new popup and displays it.
+    		popup
+        	.setLatLng(e.latlng)
+        	.setContent("You clicked the map at " + e.latlng.toString())
+        	.openOn(mymap);
+		}
+		mymap.on('click', onMapClick); //Creates an event listener for clicks on map
+
+	</script>
+
+</body>
+
+</html>
