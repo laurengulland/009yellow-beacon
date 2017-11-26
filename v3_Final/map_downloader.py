@@ -34,4 +34,6 @@ def make_map_request(clat,clon,zoom=15,szw=640,szh=640,scale=1,frmt='png',maptyp
 #i = Image.open(BytesIO(r.content))
 #i.show()
 
-make_map_request(42.3582,-71.0927,20,640,640,2).show()
+make_map_request(42.3582,-71.0947,19,640,640,2).show()
+make_map_request(42.3572,-71.1017,19,640,640,2).show()
+make_map_request(42.3562,-71.1017,19,640,640,2).show()

@@ -60,3 +60,21 @@ Install `requests` and `pillow` (PIL fork for Python 3) packages:
 ```bash
 python -m pip install --user requests pillow
 ```
+
+# JavaScript Frontend Setup
+
+## Install Node.js
+Go to `https://nodejs.org/en/download/` and install the appropriate version of Node.js.
+
+## Install Express
+```bash
+npm install express --save
+```
+
+## Install Leaflet and Accompanying Packages (LocalForage, Leaflet Offline)
+```bash
+npm install leaflet
+```
+```bash
+npm install localforage leaflet.offline
+```

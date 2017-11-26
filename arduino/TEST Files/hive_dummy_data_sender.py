@@ -15,9 +15,10 @@ packetqueue = [
     bytearray([0x7e,1,0x03]+[0x00]*80)
 ]
 
-port = serial.Serial('COM9')
+port = serial.Serial('COM10',9600)
 while packetqueue != []:
     packet = port.read(83)
+    print('Read')
     print(packet.hex())
     if packet[2] == 0x02:
         port.write(packetqueue.pop(0))
@@ -27,5 +28,6 @@ while packetqueue != []:
         packetqueue.append(packet)
 while 1==1:
     packet = port.read(83)
+    print('Read')
     print(packet.hex())
 port.close()

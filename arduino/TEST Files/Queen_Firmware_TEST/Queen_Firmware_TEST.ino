@@ -146,9 +146,12 @@ void loop() {
   //***SEND DATA TO HIVE OVER SX***
   if(count == 5){
     while(1==1){                                  //Maintain loop until broken when request is returned by an empty packet
+      //Serial.println("Enter");
+      
       sendTeensy({},0x02,0x00);                        //Request SX packet from Tablet
       uint8_t payload[80];
       while(TabletSerial.available()<83){
+        //Serial.println(TabletSerial.available());
         delay(5);
       }
         byte discard = TabletSerial.read();       //Read start byte from serial and discard
@@ -174,6 +177,7 @@ void loop() {
     count = 0;
   }
   count += 1;
+  //Serial.println(count);
   //***END HIVE TRANSMISSION***
   delay(5000);                                 //Delay 30 seconds before querying scouts again
 }
