@@ -7,26 +7,59 @@ var Schema = mongoose.Schema;
  * author field: the author of the tweet
 */
 var PointSchema = new Schema({
-    content: { type: String, required: true },
-    author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
+    Scout: { type: String }, // for Scout locations and waypoints
+    Queen: { type: String }, // for Queen locations and waypoints
+    isWaypoint: { type: Boolean, required: true },
+    isCurrent: {type: Boolean, required: true },
+    latitude: { type: Float32Array, required: true },
+    longitude: { type: Float32Array, required: true },
+    description: { type: String },
+    time: { type: Number, required: true },
 });
 
-/*
- * a static retweet method that retweets, saving into collection
- * @param currentTweeterID the person retweeting
- * @param tweeter the person who wrote the actual tweet
- * @tweetText the text of the tweet we want to retweet
- * @callback the callback function
-*/
-PointSchema.statics.retweet = function (currentTweeterID, tweeter, tweetText, callback) {
-    var newTweet = new Point({
-        content: tweeter + ":" + tweetText,
-        author: currentTweeterID
-    });
-    newTweet.save(function (err, newTweet) {
-        return callback(err);
+
+PointSchema.methods.getAllCurrentScoutLocations = function (callback) {
+    Point.find({ 'isCurrent': true , 'Scout': {$exists:true} }, function (err, docs) {
+        return callback(err, docs);
     });
 };
+
+PointSchema.methods.getAllCurrentQueenLocations = function (callback) {
+    Point.find({ 'isCurrent': true , 'Queen': {$exists:true} }, function (err, docs) {
+        return callback(err, docs);
+    });
+};
+
+PointSchema.methods.getScoutTracks = function (scout_id, callback) {
+    Point.find({ 'Scout': scout_id, 'isCurrent': false , 'isWaypoint': false }, function (err, docs) {
+        return callback(err, docs);
+    });
+};
+
+PointSchema.methods.getQueenTracks = function (queen_id, callback) {
+    Point.find({ 'Queen': queen_id, 'isCurrent': false , 'isWaypoint': false }, function (err, docs) {
+        return callback(err, docs);
+    });
+};
+
+PointSchema.methods.getWaypoints = function (callback) {
+    Point.find({ 'isWaypoint': true }, function (err, docs) {
+        return callback(err, docs);
+    });
+};
+
+PointSchema.methods.getSingleWaypoint = function (waypoint_id, callback) {
+    Point.find({ '_id': waypoint_id, 'isWaypoint': true }, function (err, docs) {
+        return callback(err, docs);
+    });
+};
+
+PointSchema.methods.getWaypointsFromQueen = function (queen_id, callback) {
+    Point.find({ 'Queen': queen_id, 'isWaypoint': true }, function (err, docs) {
+        return callback(err, docs);
+    });
+};
+
 
 var Point = mongoose.model('Point', PointSchema);
 module.exports = Point;

@@ -1,4 +1,4 @@
-var User = require('../models/user');
+var Point = require('../models/Point');
 
 module.exports = function (app) {
     app.get('/', function (req, res) {
@@ -19,12 +19,12 @@ module.exports = function (app) {
             return res.render('error', {message: "Please log in"});
         }
 
-        User.findOne({ name: name }, function (err, user) {
+        Point.findOne({ name: name }, function (err, user) {
             if (err || user === null) {
                 console.error(err);
                 res.render('error', {message: "Please try again"});
             } else {
-                User.getAllTweets(function (err, tweets) {
+                Point.getAllTweets(function (err, tweets) {
                     if (err) {
                         console.error(err);
                         res.render('error', {message: "Please try again"});
@@ -37,11 +37,11 @@ module.exports = function (app) {
     });
         
     app.get('/allQueens', function(req, res) {
-        UserController.getTweets(req, res, true);
+        // TODO 
     });
 
     app.post('/allQueenWaypoints', function(req, res) {
-        FritterController.addTweet(req, res);
+        // TODO
     });
 
 };
