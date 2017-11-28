@@ -1,19 +1,19 @@
-const express = require('express');
-const path = require('path');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+var express = require('express');
+var path = require('path');
+var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
 
 // database
 mongoose.connect('mongodb://localhost/db_name');
-const db = mongoose.connection;
+var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function (callback) {
   console.log("database connected");
 });
 
 // view engine setup
-const app = express();
+var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
@@ -26,6 +26,5 @@ require('./routes/index')(app);
 app.use(function(req, res, next) {
     res.render('error', {message: 'This is not a valid page.'});
 });
-
 
 module.exports = app;

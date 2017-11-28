@@ -11,10 +11,11 @@ var PointSchema = new Schema({
     Queen: { type: String }, // for Queen locations and waypoints
     isWaypoint: { type: Boolean, required: true },
     isCurrent: {type: Boolean, required: true },
-    latitude: { type: Float32Array, required: true },
-    longitude: { type: Float32Array, required: true },
+    latitude: { type: Number, required: true },
+    longitude: { type: Number, required: true },
     description: { type: String },
     time: { type: Number, required: true },
+    needs_transmit: { type: Boolean},
 });
 
 
