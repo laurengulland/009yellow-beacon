@@ -13,26 +13,27 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=p
   id: 'mapbox.light'
 }).addTo(map);
 
-
-function onEachFeature(feature, layer) {
+//Creates a pop up binding for each feature. Call this when rendering any object.
+function definePopup(feature, layer) {
   var popupContent = "<p></p>";
-
   if (feature.properties && feature.properties.popupContent) {
     popupContent += feature.properties.popupContent;
   }
-
   layer.bindPopup(popupContent);
 }
 
+//Draw shaded polygon over campus.
 L.geoJSON(campus, {
   style: function (feature) {
     return feature.properties && feature.properties.style;
   },
-  onEachFeature: onEachFeature,
+  onEachFeature: definePopup,
 }).addTo(map);
 
+//Draw scout positions and past positions.
 var positionLayer = L.geoJSON(scoutPositions,{
   filter: function (feature, layer) {
+    //Determine what icon/marker to draw for each point based on whether it's the current position or not.
     if (feature.properties.isCurrentPos == undefined) {
       // if the position doesn't have a value for "isCurrentPos", assume it's not a current position
       feature.properties.icon = pastPosIcon
@@ -43,31 +44,24 @@ var positionLayer = L.geoJSON(scoutPositions,{
       // if the position is not current position, render it with the past position icon.
       feature.properties.icon = pastPosIcon
     }
-    return true; //render all
+    return true; //render all the points by returning true.
   },
+  //draw points on the layer.
   pointToLayer: function (feature, latlng) {
     return L.marker(latlng, {icon: feature.properties.icon});
   },
-  onEachFeature: onEachFeature //TODO: this allows you to click on past points, but that's probably not necessary.
-  // pointToLayer: function (feature, latlng) {
-  //   return L.circleMarker(latlng, {
-  //     radius: 8,
-  //     fillColor: "#ff7800",
-  //     color: "#000",
-  //     weight: 1,
-  //     opacity: 1,
-  //     fillOpacity: 0.8
-  //   })
-  // }
+  onEachFeature: definePopup //TODO: this allows you to click on past points, but that's probably not necessary.
 }).addTo(map);
 
+//Draw tracks between scouts.
 L.geoJSON(scoutTracks, {
-  onEachFeature: onEachFeature,
+  onEachFeature: definePopup,
 }).addTo(map);
 
+//Draw individual waypoint.
 var mitWaypointLayer = L.geoJSON(lobby7mit, {
   pointToLayer: function (feature, latlng) {
     return L.marker(latlng, {icon: feature.icon});
   },
-  onEachFeature: onEachFeature
+  onEachFeature: definePopup
 }).addTo(map);

@@ -1,4 +1,6 @@
 //Stored Variables of scout tracks, scout positions, MIT campus polygon, and MIT lobby 7 marker.
+//This file is acting as a temporary model breakout.
+
 //Icon for waypoints
 var waypointIcon = L.icon({
   iconUrl: 'icons/waypoint-icon-red.png',
