@@ -1,0 +1,72 @@
+{
+  "_from": "offline-leaflet-map",
+  "_id": "offline-leaflet-map@0.3.1",
+  "_inBundle": false,
+  "_integrity": "sha1-3N1YM3cAiq89bM2rk5k2Bdh6a20=",
+  "_location": "/offline-leaflet-map",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "offline-leaflet-map",
+    "name": "offline-leaflet-map",
+    "escapedName": "offline-leaflet-map",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/offline-leaflet-map/-/offline-leaflet-map-0.3.1.tgz",
+  "_shasum": "dcdd583377008aaf3d6ccdab93993605d87a6b6d",
+  "_spec": "offline-leaflet-map",
+  "_where": "C:\\WINDOWS\\system32",
+  "author": {
+    "name": "Mathieu Briau"
+  },
+  "browserify": {
+    "transform": [
+      "coffeeify"
+    ]
+  },
+  "bugs": {
+    "url": "https://github.com/mWater/offline-leaflet-map/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "async": "^0.9.0",
+    "idb-wrapper": "^1.4.1"
+  },
+  "deprecated": false,
+  "description": "A Leaflet TileLayer with offline capabilities.",
+  "devDependencies": {
+    "browserify": "^3.40.0",
+    "chai": "^1.9.1",
+    "coffee-script": "^1.7.1",
+    "coffeeify": "^0.6.0",
+    "glob": "^4.0.2",
+    "gulp": "^3.7.0",
+    "gulp-coffee": "^2.0.1",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^0.3.1",
+    "gulp-util": "^2.2.16",
+    "testem": "^0.6.16",
+    "vinyl-buffer": "0.0.0",
+    "vinyl-source-stream": "^0.1.1"
+  },
+  "homepage": "https://github.com/mWater/offline-leaflet-map#readme",
+  "license": "GPLv3",
+  "main": "lib/index.js",
+  "name": "offline-leaflet-map",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mWater/offline-leaflet-map.git"
+  },
+  "scripts": {
+    "prepublish": "gulp",
+    "test": "testem ci"
+  },
+  "version": "0.3.1"
+}
