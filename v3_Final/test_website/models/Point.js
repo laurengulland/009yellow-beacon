@@ -49,7 +49,7 @@ PointSchema.methods.getWaypoints = function (callback) {
 };
 
 PointSchema.methods.getSingleWaypoint = function (waypoint_id, callback) {
-    Point.find({ '_id': waypoint_id, 'isWaypoint': true }, function (err, docs) {
+    Point.findOne({ '_id': waypoint_id, 'isWaypoint': true }, function (err, docs) {
         return callback(err, docs);
     });
 };
