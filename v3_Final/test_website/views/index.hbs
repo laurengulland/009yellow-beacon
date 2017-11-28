@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
    integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
    crossorigin=""/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 	<!-- Make sure you put this AFTER Leaflet's CSS -->
 	<!-- JB4: Needs to be modified of offline use. -->
 	<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
@@ -51,7 +52,7 @@
 
 		//Simple Clickable Popups
 		marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup(); //Immediately opens the popup
-		circle.bindPopup("I am a circle.");
+		circle.bindPopup('I am a circle.<form action="allQueenWaypoints" method="get"> <button type="submit" class="btn btn-primary" id="allButton" >Queen</button></form>');
 		polygon.bindPopup("I am a polygon.");
 
 		//Non-Clickable Popup: This popup exists independently of an object, and disappears if you click away.  It is inaccessible afterward.

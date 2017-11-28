@@ -34,9 +34,11 @@ module.exports = function (app) {
 //        // TODO 
 //    });
 //
-//    app.post('/allQueenWaypoints', function(req, res) {
-//        // TODO
-//    });
+    app.get('/allQueenWaypoints', function(req, res) {
+        //$('.mapid').append
+        
+        res.render('index', {message: "muahah"});
+    });
 
 };
              
