@@ -2,13 +2,7 @@ var Point = require('../models/Point');
 
 module.exports = function (app) {
     app.get('/', function (req, res) {
-        // already logged in
-        if (req.session.userId !== undefined) {
-            return res.redirect('/allTweets');
-               
-        // not logged in, render homepage
-        }
-        return res.render('login', {name: "express"});
+        res.render('index', {user: name, tweetsList: tweets});
     });
     
     app.get('/addDescription', function(req, res) {
