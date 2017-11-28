@@ -34,9 +34,10 @@ module.exports = function (app) {
 //        // TODO 
 //    });
 //
-//    app.post('/allQueenWaypoints', function(req, res) {
-//        // TODO
-//    });
+    app.get('/allQueenWaypoints', function(req, res) {
+        $('.delete-button').append
+        res.render('index', {message: "muahah"});
+    });
 
 };
              
