@@ -35,7 +35,8 @@ module.exports = function (app) {
 //    });
 //
     app.get('/allQueenWaypoints', function(req, res) {
-        $('.delete-button').append
+        //$('.mapid').append
+        
         res.render('index', {message: "muahah"});
     });
 
