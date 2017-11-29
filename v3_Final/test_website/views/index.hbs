@@ -13,14 +13,14 @@
 	<!-- Make sure you put this AFTER Leaflet's CSS -->
 	<!-- JB4: Needs to be modified of offline use. -->
 	<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
-   integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
+   integrity="sha512-lInMapFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
    crossorigin=""></script>
 </head>
 <body>
     <h1>{{message}}</h1>
     <button type="submit" class="btn btn-primary queen-button">X</button>
-    <button type="submit" class="btn btn-primary keyboard-submit-button">X</button>
-    
+    <input type="text" class="btn btn-primary keyboard" placeholder = 'Enter description...'></input>
+
 	<div id="mapid" style="width: 600px; height: 400px"></div>
 	<script type="text/javascript">
 		//Initialize Map
@@ -34,7 +34,7 @@
 			id: 'mapbox.satellite',
 			accessToken: 'pk.eyJ1IjoiMDA5eWVsbG93MTciLCJhIjoiY2phZnkwOHlsMTk1bjJ3cnoxNG4yaGxuNCJ9.ICzaK-eMacI1DF_b9YJcrw'
 		}).addTo(mymap);
-        
+
 		//Boring Marker
 		var marker = L.marker([51.5, -0.09]).addTo(mymap);
 
@@ -56,7 +56,7 @@
 		//Simple Clickable Popups
 		marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup(); //Immediately opens the popup
 		circle.bindPopup('I am a circle.<form action="allQueenWaypoints" method="get"> <button type="submit" class="btn btn-primary" id="allButton" >Queen</button></form>');
-		polygon.bindPopup('I am a polygon.');
+		polygon.bindPopup('I am a polygon.<form action="keyboard" method="get"> <button type="submit" class="btn btn-primary keyboard-button" id="allButton">Keyboard</button>');
 
 		//Non-Clickable Popup: This popup exists independently of an object, and disappears if you click away.  It is inaccessible afterward.
 		var popup = L.popup()
@@ -74,22 +74,27 @@
 		}
 		mymap.on('click', onMapClick); //Creates an event listener for clicks on map
 
-        
+
 	</script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.runtime.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet">
+
+		<link href="css/jquery-ui.min.css" rel="stylesheet">
+		<script src="js/jquery-latest.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
 
     <!-- jQuery UI position utility (optional, if you position the keyboard yourself) -->
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"></script>
 
     <!-- keyboard widget css & script -->
-    <link href="css/keyboard.css" rel="stylesheet">
+    <link href="css/keyboard.min.css" rel="stylesheet">
     <script src="js/jquery.keyboard.js"></script>
 
     <!-- css for the preview keyset extension -->
-    <link href="css/keyboard-previewkeyset.css" rel="stylesheet">
+    <link href="css/keyboard-previewkeyset.min.css" rel="stylesheet">
     <script src="/javascript/button_index.js"></script>
 
 </body>

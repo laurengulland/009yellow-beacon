@@ -18,7 +18,7 @@ $(document).ready(function () {
        },
     });
   });
-    
+
   $('.queens-list-button').click(function () {
     // Create activity with POST request.apparently not right
     $.ajax({
@@ -38,16 +38,18 @@ $(document).ready(function () {
 
   $('.keyboard-button').click(function () {
     // Create activity with POST request.apparently not right
-    var keyboard = $('#keyboard').getkeyboard();
-    keyboard.reveal();
+    // var keyboard = $('#keyboard').keyboard();
+    // keyboard.reveal();
+    $('#keyboard').keyboard();
+    console.log('hai')
   });
 
-  $('#keyboard').keyboard({
+  $('.keyboard').keyboard({
     accepted : function(event, keyboard, el) {
     console.log('The content "' + el.value + '" was accepted!');
     }
   });
-    
+
   $('.keyboard-submit-button').click(function () {
     // Create activity with POST request.apparently not right
     $.ajax({
@@ -64,5 +66,5 @@ $(document).ready(function () {
 		  ]).addTo(mymap);
        },
     });
-  });    
+  });
 });
