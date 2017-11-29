@@ -1,28 +1,17 @@
-<!DOCTYPE html>
-<html>
+//var leaflet = require('leaflet');
+//var offlineLeafletMap = require('offline-leaflet-map');
+//var button = require('./leaflet-button-control');
 
-<head>
-	<title>Leaflet Offline Test</title>
-	<link rel="stylesheet" href="./leaflet/dist/leaflet.css"/>
-	<script src="./leaflet/dist/leaflet.js" type="text/javascript"></script>
-	<script src="./offline-leaflet-map/dist/offlinemap.js" type="text/javascript"></script>
-	<script src="./leaflet-button-control.js" type="text/javascript"></script>
-
-</head>
-<body>
-
-	<div id="mapid" style="width: 95vw; height: 95vh"></div>
-	<script type="text/javascript">
-
-		var myButtonOptions = {
+var myButtonOptions = {
 			'text': 'MyButton',  // string
-			'iconUrl': '../images/baseball-marker.png',  // string
+			'iconUrl': '/images/baseball-marker.png',  // string
 			'onClick': my_button_onClick,  // callback function
 			'hideText': true,  // bool
 			'maxWidth': 30,  // number
 			'toggle': false,  // bool
 			'toggleStatus': false  // bool
-		}
+		};
+
 		function my_button_onClick(){
 			console.log('LOL');
 			return offlineLayer.saveTiles(15, (function(_this) {
@@ -52,7 +41,7 @@
 			return mymap.addControl(progressControls);
 		};
 
-		var mymap = L.map('mapid').setView([42.3583, -71.0945], 18);
+		var mymap = L.map('mapid').setView([51.505, -0.09], 13);
 
 		var offlineLayer = new OfflineLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiMDA5eWVsbG93MTciLCJhIjoiY2phZnkwOHlsMTk1bjJ3cnoxNG4yaGxuNCJ9.ICzaK-eMacI1DF_b9YJcrw', {
 			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -65,9 +54,3 @@
 			onReady: onReady
 		})
 		offlineLayer.addTo(mymap);
-
-	</script>
-
-</body>
-
-</html>
