@@ -1,3 +1,12 @@
+BEFORE YOU PUSH ANYTHING
+ - create a .gitignore file
+ - inside, paste in the following
+
+    node_modules/
+    npm-debug.log
+    data/db
+
+DO THE TERMINAL STUFF IN THE TEST_WEBSITE FOLDER
 how to set up
  - install node
  - install mongodb (Tablet: 32-bit Windows: https://www.mongodb.org/dl/win32/i386)
