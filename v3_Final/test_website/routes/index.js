@@ -29,7 +29,7 @@ module.exports = function (app) {
 //            }
 //        });
 //    });
-//        
+        
     app.get('/allQueens', function(req, res) {
         res.render('index', {message: "muahah"});
     });
