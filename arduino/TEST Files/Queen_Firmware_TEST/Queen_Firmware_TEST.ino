@@ -179,6 +179,6 @@ void loop() {
   count += 1;
   //Serial.println(count);
   //***END HIVE TRANSMISSION***
-  delay(5000);                                 //Delay 30 seconds before querying scouts again
+  delay(2000);                                 //Delay 30 seconds before querying scouts again
 }
 
