@@ -30,14 +30,17 @@ module.exports = function (app) {
 //        });
 //    });
 //        
-//    app.get('/allQueens', function(req, res) {
-//        // TODO 
-//    });
-//
-    app.get('/allQueenWaypoints', function(req, res) {
-        //$('.mapid').append
-        
+    app.get('/allQueens', function(req, res) {
         res.render('index', {message: "muahah"});
+    });
+
+    app.get('/allQueenWaypoints', function(req, res) {
+        console.log("got to waypoint");
+        var queenid = req.headers.queenid;
+        console.log(queenid);
+        res.type('json');
+        res.send({blah:"gee"});
+        //var allQueens = Point.getAll
     });
 
 };

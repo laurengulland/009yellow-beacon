@@ -19,43 +19,43 @@ var PointSchema = new Schema({
 });
 
 
-PointSchema.methods.getAllCurrentScoutLocations = function (callback) {
+PointSchema.statics.getAllCurrentScoutLocations = function (callback) {
     Point.find({ 'isCurrent': true , 'Scout': {$exists:true} }, function (err, docs) {
         return callback(err, docs);
     });
 };
 
-PointSchema.methods.getAllCurrentQueenLocations = function (callback) {
+PointSchema.statics.getAllCurrentQueenLocations = function (callback) {
     Point.find({ 'isCurrent': true , 'Queen': {$exists:true} }, function (err, docs) {
         return callback(err, docs);
     });
 };
 
-PointSchema.methods.getScoutTracks = function (scout_id, callback) {
+PointSchema.statics.getScoutTracks = function (scout_id, callback) {
     Point.find({ 'Scout': scout_id, 'isCurrent': false , 'isWaypoint': false }, function (err, docs) {
         return callback(err, docs);
     });
 };
 
-PointSchema.methods.getQueenTracks = function (queen_id, callback) {
+PointSchema.statics.getQueenTracks = function (queen_id, callback) {
     Point.find({ 'Queen': queen_id, 'isCurrent': false , 'isWaypoint': false }, function (err, docs) {
         return callback(err, docs);
     });
 };
 
-PointSchema.methods.getWaypoints = function (callback) {
+PointSchema.statics.getWaypoints = function (callback) {
     Point.find({ 'isWaypoint': true }, function (err, docs) {
         return callback(err, docs);
     });
 };
 
-PointSchema.methods.getSingleWaypoint = function (waypoint_id, callback) {
+PointSchema.statics.getSingleWaypoint = function (waypoint_id, callback) {
     Point.findOne({ '_id': waypoint_id, 'isWaypoint': true }, function (err, docs) {
         return callback(err, docs);
     });
 };
 
-PointSchema.methods.getWaypointsFromQueen = function (queen_id, callback) {
+PointSchema.statics.getWaypointsFromQueen = function (queen_id, callback) {
     Point.find({ 'Queen': queen_id, 'isWaypoint': true }, function (err, docs) {
         return callback(err, docs);
     });

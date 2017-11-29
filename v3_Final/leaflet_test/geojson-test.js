@@ -1,8 +1,10 @@
 //Broken out js file -- creates layers, maps, icons, and features. Called by geojson_test.html.
 //Modified from Leaflet's geojson example geojson_test.html
 
+//Set Map default view
 var map = L.map('map').setView([42.358393, -71.094907], 17);
 
+//Add map tiles to background
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
   maxZoom: 18,
   attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
@@ -11,62 +13,55 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=p
   id: 'mapbox.light'
 }).addTo(map);
 
-var baseballIcon = L.icon({
-  iconUrl: 'baseball-marker.png',
-  iconSize: [32, 37],
-  iconAnchor: [16, 37],
-  popupAnchor: [0, -28]
-});
-
-function onEachFeature(feature, layer) {
-  var popupContent = "<p>I started out as a GeoJSON " +
-      feature.geometry.type + ", but now I'm a Leaflet vector!</p>";
-
+//Creates a pop up binding for each feature. Call this when rendering any object.
+function definePopup(feature, layer) {
+  var popupContent = "<p></p>";
   if (feature.properties && feature.properties.popupContent) {
     popupContent += feature.properties.popupContent;
   }
-
   layer.bindPopup(popupContent);
 }
 
-L.geoJSON([scoutPositions, campus], {
-
+//Draw shaded polygon over campus.
+L.geoJSON(campus, {
   style: function (feature) {
     return feature.properties && feature.properties.style;
   },
-
-  onEachFeature: onEachFeature,
-
-  pointToLayer: function (feature, latlng) {
-    return L.circleMarker(latlng, {
-      radius: 8,
-      fillColor: "#ff7800",
-      color: "#000",
-      weight: 1,
-      opacity: 1,
-      fillOpacity: 0.8
-    });
-  }
+  onEachFeature: definePopup,
 }).addTo(map);
 
-L.geoJSON(scoutTracks, {
-
+//Draw scout positions and past positions.
+var positionLayer = L.geoJSON(scoutPositions,{
   filter: function (feature, layer) {
-    if (feature.properties) {
-      // If the property "underConstruction" exists and is true, return false (don't render features under construction)
-      return feature.properties.underConstruction !== undefined ? !feature.properties.underConstruction : true;
+    //Determine what icon/marker to draw for each point based on whether it's the current position or not.
+    if (feature.properties.isCurrentPos == undefined) {
+      // if the position doesn't have a value for "isCurrentPos", assume it's not a current position
+      feature.properties.icon = pastPosIcon
+    } else if (feature.properties.isCurrentPos) {
+      // If the property "isCurrentPos" exists and is true, render with a different symbol.
+      feature.properties.icon = currentPosIcon
+    } else {
+      // if the position is not current position, render it with the past position icon.
+      feature.properties.icon = pastPosIcon
     }
-    return false;
+    return true; //render all the points by returning true.
   },
-
-  onEachFeature: onEachFeature
+  //draw points on the layer.
+  pointToLayer: function (feature, latlng) {
+    return L.marker(latlng, {icon: feature.properties.icon});
+  },
+  onEachFeature: definePopup //TODO: this allows you to click on past points, but that's probably not necessary.
 }).addTo(map);
 
-var mitLayer = L.geoJSON(lobby7mit, {
+//Draw tracks between scouts.
+L.geoJSON(scoutTracks, {
+  onEachFeature: definePopup,
+}).addTo(map);
 
+//Draw individual waypoint.
+var mitWaypointLayer = L.geoJSON(lobby7mit, {
   pointToLayer: function (feature, latlng) {
-    return L.marker(latlng, {icon: baseballIcon});
+    return L.marker(latlng, {icon: feature.icon});
   },
-
-  onEachFeature: onEachFeature
+  onEachFeature: definePopup
 }).addTo(map);

@@ -1,4 +1,4 @@
-/*
+'/*
  * Queen Serial: SH -> 0x13A200, SL -> 0x41515876
  * Scout 1 Serial: SH -> 0x13A200, SL -> 0x4164D65A
  */

@@ -1,5 +1,30 @@
 //Stored Variables of scout tracks, scout positions, MIT campus polygon, and MIT lobby 7 marker.
+//This file is acting as a temporary model breakout.
 
+//Icon for waypoints
+var waypointIcon = L.icon({
+  iconUrl: 'icons/waypoint-icon-red.png',
+  iconSize: [37, 37],
+  iconAnchor: [16, 37],
+  popupAnchor: [0, -28]
+});
+
+var pastPosIcon = L.icon({
+  iconUrl: 'icons/black-dot.png',
+  iconSize: [5, 5],
+  iconAnchor: [2, 2],
+  popupAnchor: [0, -28]
+});
+
+var currentPosIcon = L.icon({
+  iconUrl: 'icons/waypoint-icon-blue.png',
+  iconSize: [37, 37],
+  iconAnchor: [16, 37],
+  popupAnchor: [0, -28]
+});
+
+
+//Manually inputted scoutTracks TODO: make these dynamically determined based off of scout positions.
 var scoutTracks = {
     "type": "FeatureCollection",
     "features": [
@@ -14,7 +39,6 @@ var scoutTracks = {
             },
             "properties": {
                 "popupContent": "Manually inputted track -- Scout Position 1 to 2",
-                "underConstruction": false
             },
             "id": 1
         },
@@ -29,13 +53,13 @@ var scoutTracks = {
             },
             "properties": {
                 "popupContent": "Manually inputted track -- Scout Position 2 to 3",
-                "underConstruction": false
             },
             "id": 2
         }
     ]
 };
 
+//Manually Inputted Scout Positions.
 var scoutPositions = {
     "type": "FeatureCollection",
     "features": [
@@ -49,7 +73,9 @@ var scoutPositions = {
             },
             "type": "Feature",
             "properties": {
-                "popupContent": "Scout Position 1"
+                "popupContent": "Scout Position 1",
+                "isCurrentPos": true,
+                // "icon": pastPosIcon //commented out because it's now determined dynamically by isCurrentPos
             },
             "id": 51
         },
@@ -63,7 +89,9 @@ var scoutPositions = {
             },
             "type": "Feature",
             "properties": {
-                "popupContent": "Scout Position 2"
+                "popupContent": "Scout Position 2",
+                "isCurrentPos": false,
+                // "icon": pastPosIcon //commented out because it's now determined dynamically by isCurrentPos
             },
             "id": 54
         },
@@ -77,13 +105,16 @@ var scoutPositions = {
             },
             "type": "Feature",
             "properties": {
-                "popupContent": "Scout Position 3"
+                "popupContent": "Scout Position 3",
+                "isCurrentPos": false,
+                // "icon": pastPosIcon //commented out because it's now determined dynamically by isCurrentPos
             },
             "id": 52
         }
     ]
 };
 
+//Manually defined polygon around campus. Could be useful if we want to draw a bounding box of area covered at any point.
 var campus = {
     "type": "Feature",
     "properties": {
@@ -112,8 +143,10 @@ var campus = {
     }
 };
 
+//Manually defined waypoint at Lobby 7ish.
 var lobby7mit = {
     "type": "Feature",
+    "icon": waypointIcon,
     "properties": {
         "popupContent": "77 Mass Ave, Lobby 7 at MIT!"
     },
