@@ -36,7 +36,6 @@ module.exports = function (app) {
 
     app.get('/addDescription', function(req, res) {
         console.log("keyboard initialized");
-        })
         //res.send({blah:"gee"});
         //var allQueens = Point.getAll
     });
