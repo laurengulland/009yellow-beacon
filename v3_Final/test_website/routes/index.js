@@ -34,6 +34,13 @@ module.exports = function (app) {
         //var allQueens = Point.getAll
     });
 
+    app.get('/addDescription', function(req, res) {
+        console.log("keyboard initialized");
+        })
+        //res.send({blah:"gee"});
+        //var allQueens = Point.getAll
+    });
+
 
     app.get('/test', function(req, res) {
         console.log("got routed to test");
