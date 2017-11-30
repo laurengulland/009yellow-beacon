@@ -33,6 +33,8 @@ uint32_t timer = millis();
 
 String currLatLong;
 
+const int ledPin = 13;
+
 void setup()
 {
   //while (!Serial);  // uncomment to have the sketch wait until Serial is ready
@@ -64,6 +66,9 @@ void setup()
   GPSSerial.println(PMTK_Q_RELEASE);
 
   currLatLong = "null";
+
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, LOW);
 }
 
 void loop() // run over and over again
@@ -110,9 +115,11 @@ void loop() // run over and over again
       Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
 
       currLatLong = String(fabs(GPS.latitudeDegrees), 6) + GPS.lat + ", " + String(fabs(GPS.longitudeDegrees), 6) + GPS.lon;
+      digitalWrite(ledPin, HIGH);
     }
     else {
       currLatLong = "null";
+      digitalWrite(ledPin, LOW);
       }
     Serial.print("Output Processed LatLong String: "); Serial.println(currLatLong);
   }
