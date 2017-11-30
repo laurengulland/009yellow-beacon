@@ -49,7 +49,7 @@
 		//Simple Clickable Popups
 		marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup(); //Immediately opens the popup
 		circle.bindPopup('I am a circle.<form action="allQueenWaypoints" method="get"> <button type="submit" class="btn btn-primary" id="allButton" >Queen</button></form>');
-		polygon.bindPopup("I am a polygon.<br> <input type='text' class='btn btn-primary keyboard' placeholder='Enter Description...'></input>");
+		polygon.bindPopup("I am a polygon.<form action='addDescription' method='get'> <input type='text' class='btn btn-primary keyboard' placeholder='Enter Description...'></input></form>");
 
 		//Non-Clickable Popup: This popup exists independently of an object, and disappears if you click away.  It is inaccessible afterward.
 		var popup = L.popup()
