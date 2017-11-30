@@ -42,6 +42,20 @@ module.exports = function (app) {
         res.send({blah:"gee"});
         //var allQueens = Point.getAll
     });
+    
+    app.get('/test', function(req, res) {
+        console.log("got routed to test");
+        Point.testAll(function(err, data) {
+            if (err) {
+                console.log("fooked up reading from mongo");
+                console.log(err);
+            } else {
+                console.log("successfully read from mongo");
+                console.log(data);
+                res.send(data);    
+            }
+        });
+    });
 
 };
              

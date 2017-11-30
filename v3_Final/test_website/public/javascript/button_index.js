@@ -1,6 +1,18 @@
 $(document).ready(function () {
 
   // when clicking on queen on map or side menu, get POI from backend
+  $('.test-button').click(function () {
+    // Create activity with POST request.apparently not right
+    $.ajax({
+        url: '/test',
+        type: 'GET',
+        success: function(data) {
+          console.log("success after getting button");
+          console.log(data);
+       },
+    });
+  });
+    
   $('.queen-button').click(function () {
     // Create activity with POST request.apparently not right
     $.ajax({

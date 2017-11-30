@@ -62,6 +62,11 @@ PointSchema.statics.getWaypointsFromQueen = function (queen_id, callback) {
     });
 };
 
+PointSchema.statics.testAll = function (callback) {
+    Point.findOne({}, function (err, docs) {
+        return callback(err, docs);
+    });
+};
 
 var Point = mongoose.model('Point', PointSchema);
 module.exports = Point;
