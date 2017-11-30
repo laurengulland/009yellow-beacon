@@ -58,7 +58,21 @@ $(document).ready(function () {
 
   $('.keyboard').keyboard({
     accepted : function(event, keyboard, el) {
-    console.log('The content "' + el.value + '" was accepted!');
+        console.log('The content "' + el.value + '" was accepted!');
+        $.ajax({
+            url: '/addDescription',
+            type: 'GET',
+            headers: {"description": el.value},
+            success: function(data) {
+              console.log(data);
+              var polygon = L.polygon([
+                  [51.509, -0.08],
+                  [51.503, -0.06],
+                  [51.51, -0.047],
+                  [51.50, -0.048]
+              ]).addTo(mymap);
+           },
+        });
     }
   });
 
