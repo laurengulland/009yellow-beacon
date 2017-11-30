@@ -20,6 +20,14 @@ var PointSchema = new Schema({
 
 //{ scout:"scout1", queen:"", isWaypoint:false, isCurrent:true, latitude:51.509, longitude:-0.08, description:"", time:13, needsTransmit:false }
 
+PointSchema.statics.addDescription = function (inp_description, callback) {
+    Point.findOne({ '_id': waypoint_id, 'isWaypoint': true }, function (err, point_to_add) {
+        this.model('Point').update({ "_id": this.id}, {description: inp_description}, function (err) {
+            return callback(err);
+        });
+    });
+};
+
 PointSchema.statics.getAllCurrentScoutLocations = function (callback) {
     Point.find({ 'isCurrent': true , 'scout': {$exists:true} }, function (err, docs) {
         return callback(err, docs);
@@ -62,6 +70,11 @@ PointSchema.statics.getWaypointsFromQueen = function (queen_id, callback) {
     });
 };
 
+PointSchema.statics.testAll = function (callback) {
+    Point.findOne({}, function (err, docs) {
+        return callback(err, docs);
+    });
+};
 
 var Point = mongoose.model('Point', PointSchema);
 module.exports = Point;
