@@ -13,7 +13,7 @@ import model
 class Controller(object):
 	def __init__(self, device):
 		#initialize serial communication
-		self.port = serial.Serial('COM9') #MUST SELECT CORRECT PORT ON TABLE
+		self.port = serial.Serial('COM4') #MUST SELECT CORRECT PORT ON TABLE
 		self.type = device
 		self.id = str(0) #necessary for queen
 		self.model = model.Model()
@@ -78,16 +78,16 @@ class Controller(object):
 		'''
 		slat = self.get_signed_coord(content[0:5])
 		slon = self.get_signed_coord(content[5:10])
-		scout_id = content[11]
-		scout_time = self.get_time_from_bytes(content[12:16])
+		scout_id = content[10]
+		scout_time = self.get_time_from_bytes(content[11:15])
 		self.model.add_location_data_point(str(scout_id),None,slat,slon,scout_time)
-		is_stale = content[16] == 1
-		has_poi = content[17]==1
+		is_stale = content[15] == 1
+		has_poi = content[16]==1
 		if has_poi:
-			plat = self.get_signed_coord(content[18:23])
-			plon = self.get_signed_coord(content[23:28])
-			#scout_id = content[28] this is redundant
-			poi_time = self.get_time_from_bytes(content[29:33])
+			plat = self.get_signed_coord(content[17:22])
+			plon = self.get_signed_coord(content[22:27])
+			#scout_id = content[27] this is redundant
+			poi_time = self.get_time_from_bytes(content[28:32])
 			self.model.add_poi_data_point(str(scout_id),None,plat,plon,poi_time,None)
 
 	def parse_queen_input(self, content):
@@ -100,7 +100,7 @@ class Controller(object):
 		queen_time = self.get_time_from_bytes(content[12:16])
 		self.model.add_location_data_point(None,str(queen_id),qlat,qlon,queen_time, None)
 
-	def transmit_data(self, content):
+	def transmit_data(self):
 		packet = self.location_data_packet()
 		if packet is None:
 			packet = self.poi_data_packet()
@@ -109,7 +109,8 @@ class Controller(object):
 			packet[0]=0x7e
 			packet[1]=1
 			packet[2]=0x03
-		self.port.write(packet)
+		print(packet.hex())
+		#self.port.write(packet)
 
 	def location_data_packet(self):
 		data = self.model.location_data_to_send()
@@ -133,7 +134,10 @@ class Controller(object):
 			return None
 		packet = bytearray(83)
 		packet[0] = 0x7e
-		descbytes = bytearray(data['description'],'ascii')
+		if data['description'] is not None:
+			descbytes = bytearray(data['description'],'ascii')
+		else:
+			descbytes = bytearray()
 		packet[1]=13+len(descbytes)
 		packet[2]=0x03
 		packet[3]=0x01
@@ -152,10 +156,10 @@ class Controller(object):
 		timestamp = point['time']
 		if scout_id is None:
 			scout_id = 0xFF
-		return self.get_coord_bytes(latitude)+self.get_coord_bytes(longitude)+bytearray([int(scout_id)])+self.time_int_to_bytearray(timestamp)
+		return self.get_coord_bytes(lat)+self.get_coord_bytes(lon)+bytearray([int(scout_id)])+self.time_int_to_bytearray(timestamp)
 
 	def get_time_from_bytes(self, timebytes):
-		return timebytes[0]+timebytes[1]*256+timebytes[2]*256^2+timebytes[3]*256^3
+		return timebytes[0]+timebytes[1]*256+timebytes[2]*256**2+timebytes[3]*256**3
 
 	def time_int_to_bytearray(self,timeint):
 		'''
@@ -177,10 +181,10 @@ class Controller(object):
 
 	def get_coord_bytes(self, coord_float):
 		if coord_float < 0:
-			sign = 0x02
+			sign = 2
 		else:
-			sign = 0x01
-		coordint = abs(coord_float*(10**6))
+			sign = 1
+		coordint = int(abs(coord_float*(10**6)))
 		return bytearray([
 			coordint % 256,
 			(coordint // 256) % 256,
@@ -190,9 +194,9 @@ class Controller(object):
 		])
 
 	def run(self):
-		while True:
+		for i in range(1):
 			self.parse_inputs()
 
 if __name__ == '__main__':
-	controller = Controller()
+	controller = Controller('Queen')
 	controller.run()

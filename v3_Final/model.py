@@ -1,7 +1,7 @@
 import pymongo
 
 class DataPoint(object):
-    def init(self, scout, queen, is_poi, is_current, latitude, longitude, description, time, needs_transmit):
+    def __init__(self, scout, queen, is_poi, is_current, latitude, longitude, description, time, needs_transmit):
         self.scout = scout
         self.queen = queen
         self.is_waypoint = is_poi
@@ -21,12 +21,13 @@ class DataPoint(object):
             'latitude': self.latitude,
             'isCurrent': self.is_current,
             'isWaypoint': self.is_waypoint,
-            'needsTransmit': self.needs_transmit
+            'needsTransmit': self.needs_transmit,
+            'description': self.description
         }
 
 class Model(object):
 
-    def init(self):
+    def __init__(self):
         self.client = pymongo.MongoClient('mongodb://localhost:27017/')
         self.database = self.client.beacon #rename this based on the database
         self.points = self.database.points
@@ -35,7 +36,7 @@ class Model(object):
         data = DataPoint(scout, queen, False, True, slat,slon,None,time,True)
         self.points.update_many(
             {'scout': data.scout, 'queen': data.queen, 'isCurrent':True },
-            {'isCurrent': False}
+            {'$set': {'isCurrent': False}}
         )
         self.points.insert_one(data.mongo_dict())
 
@@ -53,12 +54,12 @@ class Model(object):
         for point in self.points.find({'isWaypoint': False, 'needsTransmit': True}).limit(5):
             data.append(point)
             ids.append(point['_id'])
-        self.points.update_many({'_id':{'$in': ids}}, {'needsTransmit': False})
-        return output
+        self.points.update_many({'_id':{'$in': ids}}, {'$set':{'needsTransmit': False}})
+        return data
 
     def poi_data_to_send(self):
-        data = self.points.find_one({'isWaypoint': False,'needsTransmit': True})
+        data = self.points.find_one({'isWaypoint': True,'needsTransmit': True})
         if data is None:
             return None
-        self.points.update_one({'_id': data['_id']},{'needsTransmit': False})
+        self.points.update_one({'_id': data['_id']},{'$set':{'needsTransmit': False}})
         return data
