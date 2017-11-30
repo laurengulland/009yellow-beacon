@@ -48,23 +48,28 @@ $(document).ready(function () {
     });
   });
 
-  $('.keyboard-button').click(function () {
-    // Create activity with POST request.apparently not right
-    // var keyboard = $('#keyboard').keyboard();
-    // keyboard.reveal();
-    $('#keyboard').keyboard();
-    console.log('hai')
-  });
+//  $('.keyboard-button').click(function () {
+//    // Create activity with POST request.apparently not right
+//    // var keyboard = $('#keyboard').keyboard();
+//    // keyboard.reveal();
+//    $('#keyboard').keyboard();
+//    console.log('hai')
+//  });
 
   $('.keyboard').keyboard({
-    accepted : function(event, keyboard, el) {
-        console.log('The content "' + el.value + '" was accepted!');
+//    accepted : function(event, keyboard, el) {
+////        var that = this;
+//        console.log('The content "' + el.value + '" was accepted!');
+//
+//    }
+  });
+    $('.keyboard').bind('accepted', function(e, keyboard, el){
+        console.log(el.value);
         $.ajax({
             url: '/addDescription',
             type: 'GET',
-            headers: {"description": el.value},
-            success: function(data) {
-              console.log(data);
+            headers: {"description": el.value, "waypoint_id": keyboard.id},
+            success: function() {
               var polygon = L.polygon([
                   [51.509, -0.08],
                   [51.503, -0.06],
@@ -72,25 +77,24 @@ $(document).ready(function () {
                   [51.50, -0.048]
               ]).addTo(mymap);
            },
-        });
-    }
-  });
-
-  $('.keyboard-submit-button').click(function () {
-    // Create activity with POST request.apparently not right
-    $.ajax({
-        url: '/addDescription',
-        type: 'GET',
-        headers: {"queenid": this.id},
-        success: function(data) {
-          console.log(data);
-          var polygon = L.polygon([
-      		  [51.509, -0.08],
-    		  [51.503, -0.06],
-      		  [51.51, -0.047],
-              [51.50, -0.048]
-		  ]).addTo(mymap);
-       },
+        });    
     });
-  });
+
+//  $('.keyboard-submit-button').click(function () {
+//    // Create activity with POST request.apparently not right
+//    $.ajax({
+//        url: '/addDescription',
+//        type: 'GET',
+//        headers: {"queenid": this.id},
+//        success: function(data) {
+//          console.log(data);
+//          var polygon = L.polygon([
+//      		  [51.509, -0.08],
+//    		  [51.503, -0.06],
+//      		  [51.51, -0.047],
+//              [51.50, -0.048]
+//		  ]).addTo(mymap);
+//       },
+//    });
+//  });
 });
