@@ -55,6 +55,7 @@ module.exports = function (app) {
                 res.send(data);    
             }
         });
+    });
 
     app.get('/keyboard', function(req, res) {
         console.log("keyboard initialize");
