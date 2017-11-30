@@ -29,7 +29,8 @@ module.exports = function (app) {
         //res.send({blah:"gee"});
         //var allQueens = Point.getAll
     });
-    
+
+
     app.get('/test', function(req, res) {
         console.log("got routed to test");
         Point.testAll(function(err, data) {
@@ -39,9 +40,10 @@ module.exports = function (app) {
             } else {
                 console.log("successfully read from mongo");
                 console.log(data);
-                res.send(data);    
+                res.send(data);
             }
         });
+
     });
 
 //    app.get('/keyboard', function(req, res) {
@@ -54,9 +56,9 @@ module.exports = function (app) {
 //    });
 
 };
-            
+
 var handle_err = function(err) {
     if (err) {
-         return console.log(err);   
+         return console.log(err);
     }
 };
