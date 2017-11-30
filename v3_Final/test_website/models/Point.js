@@ -20,11 +20,9 @@ var PointSchema = new Schema({
 
 //{ scout:"scout1", queen:"", isWaypoint:false, isCurrent:true, latitude:51.509, longitude:-0.08, description:"", time:13, needsTransmit:false }
 
-PointSchema.statics.addDescription = function (inp_description, callback) {
-    Point.findOne({ '_id': waypoint_id, 'isWaypoint': true }, function (err, point_to_add) {
-        this.model('Point').update({ "_id": this.id}, {description: inp_description}, function (err) {
-            return callback(err);
-        });
+PointSchema.statics.addDescription = function (waypoint_id, waypoint_description, callback) {
+    Point.findOneAndUpdate({'_id': waypoint_id, 'isWaypoint': true},{description: waypoint_description}, function(err) {
+        return callback(err);
     });
 };
 

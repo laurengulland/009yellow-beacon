@@ -7,7 +7,8 @@ module.exports = function (app) {
 
     app.get('/addDescription', function(req, res) {
         var description = req.headers.description;
-        Point.addDescription(description, handle_err);
+        var waypoint_id = req.headers.waypointid;
+        Point.addDescription(waypoint_id, description, handle_err);
     });
 
     app.get('/allQueens', function(req, res) {
