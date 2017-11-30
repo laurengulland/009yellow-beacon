@@ -42,13 +42,11 @@ module.exports = function (app) {
         res.send({blah:"gee"});
         //var allQueens = Point.getAll
     });
-    
-    app.get('/keyboard', function(req, res) {
+
+    app.get('/addDescription', function(req, res) {
         console.log("keyboard initialize");
-        var queenid = req.headers.queenid;
-        console.log(queenid);
         res.type('json');
-        res.send({blah:"gee"});
+        res.send({blah:"hai"});
         //var allQueens = Point.getAll
     });
 

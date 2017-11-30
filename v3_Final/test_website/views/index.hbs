@@ -15,10 +15,12 @@
    integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
    crossorigin=""></script>-->
 </head>
+
 <body>
     <h1>{{message}}</h1>
     <button type="submit" class="btn btn-primary queen-button">X</button>
     <input type="text" class="btn btn-primary keyboard" placeholder = 'Enter description...'></input>
+
 	<div id="mapid" style="width: 80vw; height: 80vh"></div>
 	<script src="/javascript/leaflet_offline_setup.js" type="text/javascript"></script>
 	<script type="text/javascript">
@@ -44,7 +46,7 @@
 		//Simple Clickable Popups
 		marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup(); //Immediately opens the popup
 		circle.bindPopup('I am a circle.<form action="allQueenWaypoints" method="get"> <button type="submit" class="btn btn-primary" id="allButton" >Queen</button></form>');
-		polygon.bindPopup('I am a polygon.<form action="keyboard" method="get"> <button type="submit" class="btn btn-primary keyboard-button" id="allButton">Keyboard</button>');
+		polygon.bindPopup("I am a polygon.<br> <input type='text' class='btn btn-primary keyboard' placeholder='Enter Description...'></input>");
 
 		//Non-Clickable Popup: This popup exists independently of an object, and disappears if you click away.  It is inaccessible afterward.
 		var popup = L.popup()
