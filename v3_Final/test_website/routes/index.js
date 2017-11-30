@@ -4,7 +4,7 @@ module.exports = function (app) {
     app.get('/', function (req, res) {
         res.render('index', {message: "teehee"});
     });
-    
+
 //    app.get('/addDescription', function(req, res) {
 //        var error = req.query.error;
 //        var name = req.session.name;
@@ -25,11 +25,11 @@ module.exports = function (app) {
 //                    } else {
 //                        res.render('index', {user: name, tweetsList: tweets});
 //                    }
-//                });   
+//                });
 //            }
 //        });
 //    });
-        
+
     app.get('/allQueens', function(req, res) {
         res.render('index', {message: "muahah"});
     });
@@ -55,7 +55,14 @@ module.exports = function (app) {
                 res.send(data);    
             }
         });
+
+    app.get('/keyboard', function(req, res) {
+        console.log("keyboard initialize");
+        var queenid = req.headers.queenid;
+        console.log(queenid);
+        res.type('json');
+        res.send({blah:"gee"});
+        //var allQueens = Point.getAll
     });
 
 };
-             

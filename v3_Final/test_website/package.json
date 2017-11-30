@@ -10,10 +10,12 @@
   "dependencies": {
     "express": "^4.16.2",
     "hbs": "^4.0.1",
+    "leaflet": "^1.2.0",
     "leaflet.offline": "^0.2.0",
     "mongod": "^2.0.0",
     "mongodb": "^2.2.33",
     "mongoose": "^4.13.5",
+    "offline-leaflet-map": "^0.3.1",
     "virtual-keyboard": "^1.27.0"
   }
 }
