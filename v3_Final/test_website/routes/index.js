@@ -6,13 +6,9 @@ module.exports = function (app) {
     });
 
     app.get('/addDescription', function(req, res) {
+        console.log("keyboard initialized");
         var description = req.headers.description;
-        var waypoint_id = req.headers.waypointid;
-        return Point.addDescription(waypoint_id, description, function(err) {
-            if (err){
-                return console.log(err);
-            }
-        });
+        Point.addDescription(description, handle_err);
     });
 
     app.get('/allQueens', function(req, res) {
@@ -34,13 +30,6 @@ module.exports = function (app) {
         //var allQueens = Point.getAll
     });
 
-    app.get('/addDescription', function(req, res) {
-        console.log("keyboard initialized");
-        });
-        //res.send({blah:"gee"});
-        //var allQueens = Point.getAll
-
-
     app.get('/test', function(req, res) {
         console.log("got routed to test");
         Point.testAll(function(err, data) {
@@ -55,12 +44,16 @@ module.exports = function (app) {
         });
 
     });
-    
-    app.get('/dummydata', function(req, res) {
-        console.log("got routed to dummydata");
-        res.send({ scout:"scout1", queen:"", isWaypoint:false, isCurrent:true, latitude:51.509, longitude:-0.08, description:"", time:13, needsTransmit:false });
 
-    });
+//    app.get('/keyboard', function(req, res) {
+//        console.log("keyboard initialize");
+//        var queenid = req.headers.queenid;
+//        console.log(queenid);
+//        res.type('json');
+//        res.send({blah:"gee"});
+//        //var allQueens = Point.getAll
+//    });
+
 };
 
 var handle_err = function(err) {

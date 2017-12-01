@@ -8,23 +8,23 @@
 	<title>Leaflet Quick-Start Test</title>
 	<!-- JB4: Needs to be modified of offline use. -->
 	<link rel="stylesheet" href="/css/leaflet.css"/>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" href="src/L.Control.SlideMenu.css">
+  	<link rel="stylesheet" href="/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/src/L.Control.SlideMenu.css">
 	<script src="/javascript/leaflet.js" type="text/javascript"></script>
 	<script src="/javascript/offlinemap.js" type="text/javascript"></script>
 	<script src="/javascript/leaflet-button-control.js" type="text/javascript"></script>
-	<script src="src/L.Control.SlideMenu.js"></script>
+	<script src="/src/L.Control.SlideMenu.js"></script>
 	<!--<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
    integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
    crossorigin=""></script>-->
 </head>
 
 <body>
-    <h1>{{message}}</h1>
+<!--
     <button type="submit" class="btn btn-primary queen-button">X</button>
-
     <input type="text" class="keyboard" placeholder = 'Enter description...'></input>
+-->
 
 	<div id="mapid" style="position: absolute; width: 100%; height: 100%;"></div>
 	<script src="/javascript/leaflet_offline_setup.js" type="text/javascript"></script>
@@ -62,41 +62,43 @@
 
 	    //Click on Map Creates Popup with Coordinates
 	    var popup = L.popup(); //Creates popup variable
-		function onMapClick(e) { //Function which assigns event click LatLong to new popup and displays it.
-    		popup
-        	.setLatLng(e.latlng)
-        	.setContent("You clicked the map at " + e.latlng.toString())
-        	.openOn(mymap);
-		}
-		mymap.on('click', onMapClick); //Creates an event listener for clicks on map
+//		function onMapClick(e) { //Function which assigns event click LatLong to new popup and displays it.
+//    		popup
+//        	.setLatLng(e.latlng)
+//        	.setContent("You clicked the map at " + e.latlng.toString())
+//        	.openOn(mymap);
+//		}
+//		mymap.on('click', onMapClick); //Creates an event listener for clicks on map
 
-		var left  = '<h1>Slide Menu (Left)</h1>';
-		var right = '<h1>Slide Menu (Right)</h1>';
+		var right = '<h1>"Queens"</h1>';
 		var contents = '<hr>';
+		contents += "<div class = 'queenmenublock'><h3>Queen 1</h3><br><h5>43.0029°N, 71.4203°W</h5><br><input type='text' class='keyboard' placeholder = 'Enter description...'></input></div>"
 
-		var slideMenu = L.control.slideMenu('', {position: 'topright', menuposition: 'topright', width: '30%', height: '100%', delay: '50'}).addTo(mymap);
+
+		var slideMenu = L.control.slideMenu('', {position: 'bottomright', menuposition: 'bottomright', width: '30%', height: '100%', delay: '50'}).addTo(mymap);
 		slideMenu.setContents(right + contents);
 	</script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.runtime.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/handlebars.runtime.min.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <link href="/css/jquery-ui.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 
-		<link href="css/jquery-ui.min.css" rel="stylesheet">
-		<script src="js/jquery-latest.min.js"></script>
-		<script src="js/bootstrap.min.js"></script>
+		<link href="/css/jquery-ui.min.css" rel="stylesheet">
+		<script src="/js/jquery-latest.min.js"></script>
+		<script src="/js/bootstrap.min.js"></script>
 
     <!-- jQuery UI position utility (optional, if you position the keyboard yourself) -->
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
 
     <!-- keyboard widget css & script -->
-    <link href="css/keyboard.min.css" rel="stylesheet">
-    <script src="js/jquery.keyboard.js"></script>
+    <link href="/css/keyboard.min.css" rel="stylesheet">
+    <script src="/js/jquery.keyboard.js"></script>
 
     <!-- css for the preview keyset extension -->
-    <link href="css/keyboard-previewkeyset.min.css" rel="stylesheet">
+    <link href="/css/keyboard-previewkeyset.min.css" rel="stylesheet">
     <script src="/javascript/button_index.js"></script>
+    <script src="/javascript/markers.js"></script>
 
 </body>
 

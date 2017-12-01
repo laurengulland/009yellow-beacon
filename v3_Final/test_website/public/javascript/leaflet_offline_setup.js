@@ -33,7 +33,7 @@ var myButtonOptions = {
 		onReady = function() {
 			var cacheBtn, progressControls;
 			console.log("The OfflineLayer is ready to be used");
-			offlineLayer.addTo(mymap);
+			satLayer.addTo(mymap);
 			cacheBtn = new L.Control.Button(myButtonOptions);
 			mymap.addControl(cacheBtn);
 			progressControls = new OfflineProgressControl();
@@ -41,16 +41,29 @@ var myButtonOptions = {
 			return mymap.addControl(progressControls);
 		};
 
-		var mymap = L.map('mapid').setView([51.505, -0.09], 13);
-
-		var offlineLayer = new OfflineLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiMDA5eWVsbG93MTciLCJhIjoiY2phZnkwOHlsMTk1bjJ3cnoxNG4yaGxuNCJ9.ICzaK-eMacI1DF_b9YJcrw', {
-			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+		var satLayer = new OfflineLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiMDA5eWVsbG93MTciLCJhIjoiY2phZnkwOHlsMTk1bjJ3cnoxNG4yaGxuNCJ9.ICzaK-eMacI1DF_b9YJcrw', {
 			maxZoom: 20,
 			minZoom: 13,
 			subdomains: 'abc',
-			id: 'mapbox.satellite',//Alternatively, 'mapbox.satellite, mapbox.streets'
+			id: 'mapbox.streets-satellite',//Alternatively, 'mapbox.satellite, mapbox.streets, mapbox.outdoors'
 			accessToken: 'pk.eyJ1IjoiMDA5eWVsbG93MTciLCJhIjoiY2phZnkwOHlsMTk1bjJ3cnoxNG4yaGxuNCJ9.ICzaK-eMacI1DF_b9YJcrw',
 			dbOption: "WebSQL",
 			onReady: onReady
 		})
-		offlineLayer.addTo(mymap);
+
+		var topoLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiMDA5eWVsbG93MTciLCJhIjoiY2phZnkwOHlsMTk1bjJ3cnoxNG4yaGxuNCJ9.ICzaK-eMacI1DF_b9YJcrw', {
+			maxZoom: 20,
+			minZoom: 13,
+			subdomains: 'abc',
+			id: 'mapbox.outdoors',//Alternatively, 'mapbox.satellite, mapbox.streets, mapbox.outdoors'
+			accessToken: 'pk.eyJ1IjoiMDA5eWVsbG93MTciLCJhIjoiY2phZnkwOHlsMTk1bjJ3cnoxNG4yaGxuNCJ9.ICzaK-eMacI1DF_b9YJcrw'
+		})
+		
+		var mymap = L.map('mapid', {attributionControl: false, layers: [satLayer, topoLayer]}).setView([51.505, -0.09], 13);
+
+		var baseMaps = {
+    		"Satellite": satLayer,
+    		"Topographic": topoLayer
+		};
+
+		L.control.layers(baseMaps, null, {position: 'topleft'}).addTo(mymap);

@@ -23,10 +23,12 @@ how to set up
 how to run
 on one terminal:
 - create a data/db/ folder
-- then run: mongod --dbpath data/db/
+- then run: mongod --dbpath data/db/ (Tablet: 32-bit Windows: mongod --storageEngine=mmapv1 --dbpath data/db/
 
 on another terminal:
 - then run: npm start
 - if terminal complains that the port is taken, go on task manager and kill the node process
+
+Note: For the Tablet, be sure to do this sequence very fast to avoid timeouts.
 
 go on browser and and go to http://localhost:3001/
