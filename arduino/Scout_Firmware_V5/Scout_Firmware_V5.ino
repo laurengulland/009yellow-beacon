@@ -11,43 +11,27 @@
 #include <XBee.h> //XBee library
 #include <Adafruit_GPS.h> //Adafruit GPS library
 
-#define XBeeSerial Serial1 //Teensy Ports 0/RX1 and 1/TX1
-XBee xbee = XBee(); //Create XBee object
-XBeeResponse response = XBeeResponse();
-ZBRxResponse rx = ZBRxResponse();
+//Byte Definition - Define several commonly used bytes to improve readablity
+#define EMPTY 0x00
+#define START_BYTE 0x7E
+#define REQUEST_TABLET 0x02
+#define SCOUT_DATA 0x00
+#define QUEEN_DATA 0x01
+#define TABLET_DATA 0x03
+#define PACKET_LENGTH 83
 
-uint8_t payload[23] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-//uint8_t payload[13] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
-//XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x41515876); //Breadboard
-XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x4151A855); //PCB
-ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
-ZBTxStatusResponse txStatus = ZBTxStatusResponse();
-
-volatile uint8_t poiPayload[11] = {0,0,0,0,0,0,0,0,0,0,0};
-
-#define GPSSerial Serial2 //Teensy Ports 9/RX2 and 10/TX2
-// Connect to the GPS on the hardware port
-Adafruit_GPS GPS(&GPSSerial);
-     
-// Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
-// Set to 'true' if you want to debug and listen to the raw GPS sentences
-#define GPSECHO false
-
-uint32_t timer = millis();
-uint32_t timer1 = millis();
-float Pi = 3.14159;
-
-int count = 0x00;
+//Variable definition
+uint8_t payload[32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+volatile uint8_t poiPayload[15] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+volatile unsigned long last_interrupt;
+volatile unsigned long latTX;
+volatile unsigned long lonTX;
+volatile uint8_t longdir;
+volatile uint8_t latdir;
+volatile int unixTime;
 
 float GPSlat = 42.358340;
 float GPSlon = 71.094600;
-
-volatile unsigned long latTX;
-volatile unsigned long lonTX;
-
-volatile uint8_t longdir;
-volatile uint8_t latdir;
-
 String GPSLatitudeRead;
 String GPSLongitudeRead;
 float latitude;
@@ -58,40 +42,37 @@ String timeString;
 String compassString;
 String stringOut;
 
+byte stale = 0x00;
+
 int statusLed = 13;
 int buttonPin = 11;
 
-volatile unsigned long last_interrupt;
+uint32_t timer = millis();
 
-void flashLed(int pin, int times, int wait) {
+//XBee Initialization
+#define XBeeSerial Serial1 //Teensy Ports 0/RX1 and 1/TX1
+XBee xbee = XBee(); //Create XBee object
+XBeeResponse response = XBeeResponse();
+ZBRxResponse rx = ZBRxResponse();
+//XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x41515876); //Breadboard
+XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x4151A855); //PCB
+ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
+ZBTxStatusResponse txStatus = ZBTxStatusResponse();
 
-  for (int i = 0; i < times; i++) {
-    digitalWrite(pin, HIGH);
-    delay(wait);
-    digitalWrite(pin, LOW);
-
-    if (i + 1 < times) {
-      delay(wait);
-    }
-  }
-}
+//GPS Initialization
+#define GPSSerial Serial2 //Teensy Ports 9/RX2 and 10/TX2
+// Connect to the GPS on the hardware port
+Adafruit_GPS GPS(&GPSSerial);
+     
+// Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
+// Set to 'true' if you want to debug and listen to the raw GPS sentences
+#define GPSECHO false
 
 void setup() {
   Serial.begin(9600);
-    GPS.begin(9600);
-  // uncomment this line to turn on RMC (recommended minimum) and GGA (fix data) including altitude
+  GPS.begin(9600);
   GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
-  // uncomment this line to turn on only the "minimum recommended" data
-  //GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCONLY);
-  // For parsing data, we don't suggest using anything but either RMC only or RMC+GGA since
-  // the parser doesn't care about other sentences at this time
-  // Set the update rate
-  GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
-  // For the parsing code to work nicely and have time to sort thru the data, and
-  // print it out we don't suggest using anything higher than 1 Hz
-     
-  // Request updates on antenna status, comment out to keep quiet
-  GPS.sendCommand(PGCMD_ANTENNA);
+  GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate  
 
   delay(1000);
 
@@ -109,6 +90,14 @@ void loop() {
       if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag to false
         return; // we can fail to parse a sentence in which case we should just wait for another
     }
+    int dateYear = GPS.year;
+    int dateMonth = GPS.month;
+    int dateDay = GPS.day;
+    int dateHour = GPS.hour;
+    int dateMinute = GPS.minute;
+    int dateSecond = GPS.seconds;
+    unixTime = 946684800 + 31536000*dateYear + 2678400*(dateMonth - 1) + 86400*(dateDay - 1) + 3600*dateHour + 60*dateMinute + dateSecond;
+    
     if(GPS.fix){
       String GPSLatituderead = String(fabs(GPS.latitudeDegrees),6);
       String GPSLongituderead = String(fabs(GPS.longitudeDegrees),6);
@@ -117,6 +106,7 @@ void loop() {
       latTX = (long) (latitude*1000000);
       lonTX = (long) (longitude*1000000);
       String longdirs = GPS.lon;
+      stale = 0x00;
       if(longdirs=="E"){
         longdir = 0x01;
       }
@@ -131,7 +121,11 @@ void loop() {
         latdir = 0x02;
       }     
     }
-    else {
+    else { //Set to dummy data in middle of Kresege
+      if(millis()-timer > 120000){
+        timer = millis();
+        stale = 0x01;
+      }
       latTX = (long) 42358340;
       lonTX = (long) 71094600;
     }
@@ -139,9 +133,7 @@ void loop() {
   if(xbee.getResponse().isAvailable()){
     if(xbee.getResponse().getApiId() == ZB_RX_RESPONSE){
       flashLed(statusLed, 1,100);
-      Serial.println("Heard Data");
       xbee.getResponse().getZBRxResponse(rx);
-      Serial.println(rx.getDataLength());
       if(rx.getDataLength() == 5){
           Serial.println("Request Recieved");
           payload[0] = latTX & 255;
@@ -154,19 +146,26 @@ void loop() {
           payload[7] = (lonTX >> 16) & 255;
           payload[8] = (lonTX >> 24) & 255;
           payload[9] = longdir;
-          payload[10] = 0x01;
-          payload[11] = 0x00;
+          payload[10] = 0x01;               //Scout ID
+          payload[11] = unixTime & 255;
+          payload[12] = (unixTime >> 8) & 255;  
+          payload[13] = (unixTime >> 16) & 255;
+          payload[14] = (unixTime >> 24) & 255;
+          payload[15] = stale;
+          payload[16] = 0x00;               //is POI included 0 no 1 yes
+          
+
+          
 
           if(poiPayload[10]!=0x00){
             payload[11] = 0x01;
-            for(int i=0;i<12;i++){
-              payload[i+12] = poiPayload[i];
-              poiPayload[i] = 0;
+            for(int i=0;i<15;i++){
+              payload[i+17] = poiPayload[i];
+              poiPayload[i] = 0;            //Clean up array for next use
             }
           }
           xbee.send(zbTx);
-          Serial.println("Reply Sent");
-          for(int i=0;i<25;i++){
+          for(int i=0;i<32;i++){
             payload[i] = 0x00;
           }
           flashLed(statusLed,5,50);
@@ -177,7 +176,6 @@ void loop() {
 
 void markWaypoint(){
   if (millis() - last_interrupt > 1000){
-    Serial.println("Button Pushed");
     poiPayload[0] = latTX & 255;
     poiPayload[1] = (latTX >> 8) & 255;  
     poiPayload[2] = (latTX >> 16) & 255;
@@ -188,20 +186,25 @@ void markWaypoint(){
     poiPayload[7] = (lonTX >> 16) & 255;
     poiPayload[8] = (lonTX >> 24) & 255;
     poiPayload[9] = longdir;
-    poiPayload[10] = 0x01;
-  //  payload[13] = latTX & 255;
-  //  payload[14] = (latTX >> 8) & 255;   
-  //  payload[15] = (latTX >> 16) & 255;
-  //  payload[16] = (latTX >> 24) & 255;
-  //  payload[17] = 0x01;
-  //  payload[18] = lonTX & 255;
-  //  payload[19] = (lonTX >> 8) & 255;  
-  //  payload[20] = (lonTX >> 16) & 255;
-  //  payload[21] = (lonTX >> 24) & 255;
-  //  payload[22] = 0x01;
-  //  payload[23] = 0x01;
-  //  payload[24] = 0x01;
+    poiPayload[10] = 0x01;                    //Scout ID
+    poiPayload[11] = unixTime & 255;
+    poiPayload[12] = (unixTime >> 8) & 255;  
+    poiPayload[13] = (unixTime >> 16) & 255;
+    poiPayload[14] = (unixTime >> 24) & 255;
     }
   last_interrupt = millis();
 }
 
+//Debug function to flash Teensy built in LED
+void flashLed(int pin, int times, int wait) {
+
+  for (int i = 0; i < times; i++) {
+    digitalWrite(pin, HIGH);
+    delay(wait);
+    digitalWrite(pin, LOW);
+
+    if (i + 1 < times) {
+      delay(wait);
+    }
+  }
+}

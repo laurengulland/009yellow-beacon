@@ -10,7 +10,7 @@ var PointSchema = new Schema({
     scout: { type: String }, // for Scout locations and waypoints
     queen: { type: String }, // for Queen locations and waypoints
     isWaypoint: { type: Boolean, required: true },
-    isCurrent: {type: Boolean, required: true },
+    isCurrent: {type: Boolean },
     latitude: { type: Number, required: true }, // 10**6
     longitude: { type: Number, required: true }, // 10**6
     description: { type: String },

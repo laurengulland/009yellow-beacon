@@ -6,6 +6,7 @@ module.exports = function (app) {
     });
 
     app.get('/addDescription', function(req, res) {
+        console.log("keyboard initialized");
         var description = req.headers.description;
         Point.addDescription(description, handle_err);
     });
@@ -28,7 +29,6 @@ module.exports = function (app) {
         //res.send({blah:"gee"});
         //var allQueens = Point.getAll
     });
-
 
     app.get('/test', function(req, res) {
         console.log("got routed to test");

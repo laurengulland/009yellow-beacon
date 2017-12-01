@@ -1,7 +1,11 @@
 $(document).ready(function () {
 
   // when clicking on queen on map or side menu, get POI from backend
-  $('.test-button').click(function () {
+    $('#mapid').click(function () {
+        deselectMarker();
+    });
+    
+    $('.test-button').click(function () {
     // Create activity with POST request.apparently not right
     $.ajax({
         url: '/test',
@@ -12,6 +16,33 @@ $(document).ready(function () {
        },
     });
   });
+    
+    // if click on current queen, show list of POI
+    $('.queen-marker').click(function(){
+        $.ajax({
+            url: '/allQueenWaypoints',
+            type: 'GET',
+            headers: {"queenid": this.id},
+            success: function(data) {
+              console.log(data);
+              fillQueenMenu(data);
+           },
+        });
+    });
+    
+    // if click on poi, show list of POI with poi highlights
+    $('.waypoint-marker').click(function(){
+        $.ajax({
+            url: '/allQueenWaypoints',
+            type: 'GET',
+            headers: {"queenid": this.id},
+            success: function(data) {
+                console.log(data);
+                fillQueenMenu(data);
+                select_marker(this.id);
+           },
+        });        
+    });
     
   $('.queen-button').click(function () {
     // Create activity with POST request.apparently not right
