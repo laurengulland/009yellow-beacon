@@ -1,3 +1,11 @@
+.queenmenublock{
+  background-color: #ffd000;
+  color: black;
+  padding: 5px;
+  margin-left: 10px;
+
+}
+
 .leaflet-control-attribution, .leaflet-control-scale-line{
   padding: 2.5px;
 }
@@ -18,16 +26,16 @@
 .leaflet-control-slidemenu{
     background-color: black;
     border-radius: 0px;
-    color: yellow;
-    padding: 16px 200px;
+    color: #ffd000;
+    padding: 16px 30%;
     cursor: pointer;
     font-size: 14pt;
 }
 
 .leaflet-menu{
     position: absolute;
-    background-color: rgba(0, 0, 0, 255);
-    color: yellow;
+    background-color: black;
+    color: #ffd000;
     overflow: auto;
     cursor: default;
     z-index: 9999;
@@ -48,7 +56,7 @@
     background-color: black;
     border: none;
     font-size: 14pt;
-    color: yellow;
+    color: #ffd000;
     cursor: pointer;
 }
 
