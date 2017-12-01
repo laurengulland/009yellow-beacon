@@ -1,13 +1,13 @@
 // vars for icons
 var waypointIcon = L.icon({
-  iconUrl: 'icons/waypoint-icon-red.png',
+  iconUrl: 'images/waypoint-icon-red.png',
   iconSize: [37, 37],
   iconAnchor: [16, 37],
   popupAnchor: [0, -28]
 });
 
 var selectedWaypointIcon = L.icon({
-  iconUrl: 'icons/waypoint-icon-red.png',
+  iconUrl: 'images/emo.png',
   iconSize: [37, 37],
   iconAnchor: [16, 37],
   popupAnchor: [0, -28]
@@ -81,28 +81,32 @@ var fillQueenMenu = function(listQueens) {
     for (var i = 0; i < listQueens.length; i++) {
         var queen = listQueens[i];
         var queenDiv = "<div></div>";
+        queenDivs += queenDiv;
 //        <div class = > 
     }
     $("#leaflet-menu-contents").append(queenDivs);
 }
 
 var selectMarker = function(markerid) {
+    deselectMarker();
     $('menu' + markerid).css("color", "white");
-    currentMarkers[markerid].setIcon(selectedWaypointIcon);
+    console.log("markerid" + markerid);
+    console.log(waypointMarkers);
+    waypointMarkers[markerid].setIcon(selectedWaypointIcon);
     selected_marker = markerid;
 }
 
 var deselectMarker = function() {
     if (selected_marker.length > 0) {
         $('menu' + selected_marker).css("color", "yellow");
-        currentMarkers[selected_marker].setIcon(waypointIcon);
+        waypointMarkers[selected_marker].setIcon(waypointIcon);
         selected_marker = "";        
     }
 }
 
-var dummydata = '[{ "scout":"scout1", "queen":"", "isWaypoint":false, "isCurrent":true, "latitude":51.509, "longitude":-0.08, "description":"", "time":13, "needsTransmit":false },{ "scout":"scout2", "queen":"", "isWaypoint":false, "isCurrent":false, "latitude":51.508, "longitude":-0.09, "description":"", "time":13, "needsTransmit":false },{ "scout":"scout3", "queen":"", "isWaypoint":false, "isCurrent":true, "latitude":51.507, "longitude":-0.10, "description":"", "time":13, "needsTransmit":false }]';
+var dummydata = '[{ "_id": "2837hf3", "scout":"scout1", "queen":"", "isWaypoint":false, "isCurrent":true, "latitude":51.509, "longitude":-0.08, "description":"", "time":13, "needsTransmit":false },{ "_id": "3837hf3","scout":"scout2", "queen":"", "isWaypoint":false, "isCurrent":false, "latitude":51.508, "longitude":-0.09, "description":"", "time":13, "needsTransmit":false },{ "_id": "4837hf3","scout":"scout3", "queen":"", "isWaypoint":false, "isCurrent":true, "latitude":51.507, "longitude":-0.10, "description":"", "time":13, "needsTransmit":false }, { "_id": "5837hf3", "scout":"scout5", "queen":"queen1", "isWaypoint":true, "isCurrent":false, "latitude":51.505, "longitude":-0.12, "description":"", "time":13, "needsTransmit":false }, {"_id": "7837hf3", "scout":"scout5", "queen":"queen1", "isWaypoint":true, "isCurrent":false, "latitude":51.504, "longitude":-0.13, "description":"", "time":13, "needsTransmit":false }]';
 
-var dp = '{ "scout":"scout3", "queen":"", "isWaypoint":false, "isCurrent":true, "latitude":51.506, "longitude":-0.11, "description":"", "time":13, "needsTransmit":false }';
+var dp = '{ "_id": "6837hf3", "scout":"scout3", "queen":"", "isWaypoint":false, "isCurrent":true, "latitude":51.506, "longitude":-0.11, "description":"", "time":13, "needsTransmit":false }';
 
 processAllPoints(JSON.parse(dummydata));
 updateCurrentLocation("scout1", JSON.parse(dp));

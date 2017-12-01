@@ -2,7 +2,7 @@ $(document).ready(function () {
 
   // when clicking on queen on map or side menu, get POI from backend
     $('#mapid').click(function () {
-        deselectMarker();
+//        //todo
     });
     
     $('.test-button').click(function () {
@@ -31,7 +31,8 @@ $(document).ready(function () {
     });
     
     // if click on poi, show list of POI with poi highlights
-    $('.waypoint-marker').click(function(){
+    $('.waypoint-marker').click(function() {
+        var id = this.id;
         $.ajax({
             url: '/allQueenWaypoints',
             type: 'GET',
@@ -39,7 +40,7 @@ $(document).ready(function () {
             success: function(data) {
                 console.log(data);
                 fillQueenMenu(data);
-                select_marker(this.id);
+                selectMarker(id);
            },
         });        
     });

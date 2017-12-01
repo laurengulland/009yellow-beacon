@@ -8,7 +8,10 @@ module.exports = function (app) {
     app.get('/addDescription', function(req, res) {
         console.log("keyboard initialized");
         var description = req.headers.description;
-        Point.addDescription(description, handle_err);
+        var waypoint_id = req.headers.waypoint_id;
+        Point.addDescription(waypoint_id, description, function(err) {
+            handle_err();
+        });
     });
 
     app.get('/allQueens', function(req, res) {
@@ -22,10 +25,12 @@ module.exports = function (app) {
         console.log("got to waypoint");
         var queenid = req.headers.queenid;
         console.log(queenid);
-        Point.getWaypointsFromQueen(function(err, data) {
+        Point.getWaypointsFromQueen(queenid, function(err, data) {
             handle_err(err);
+            console.log(data);
+            console.log("get data");
             return res.send(data);
-        })
+        });
         //res.send({blah:"gee"});
         //var allQueens = Point.getAll
     });
