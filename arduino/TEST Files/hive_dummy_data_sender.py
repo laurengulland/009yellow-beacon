@@ -11,7 +11,7 @@ import serial
 
 packetqueue = []
 
-port = serial.Serial('COM9',9600)
+port = serial.Serial('COM17',9600)
 while 1==1:
     packet = port.read(83)
     print('Read')
@@ -20,10 +20,12 @@ while 1==1:
     if packet[2] == 0x02:
         if len(packetqueue)==0:
             packetqueue.append(bytearray([0x7e,1,0x03]+[0x00]*80))
-        port.write(packetqueue.pop(0))
+        packettowrite = packetqueue.pop(0)
+        port.write(packettowrite)
         print('Sending new packet')
+        print(packettowrite)
     if packet[2] == 0x00:
-        packetarray[2] = 0x03
+        packetarray= bytearray([0x7e,0x51,0x02]+[0xAA]*80)
         packetqueue.append(packetarray)
 while 1==1:
     packet = port.read(83)
