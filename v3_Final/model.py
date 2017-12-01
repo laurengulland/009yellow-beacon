@@ -36,7 +36,7 @@ class Model(object):
         data = DataPoint(scout, queen, False, True, slat,slon,None,time,True)
         self.points.update_many(
             {'scout': data.scout, 'queen': data.queen, 'isCurrent':True },
-            {'$set': {'isCurrent': False}}
+            {'$set': {'isCurrent': False, 'needsTransmit': True}}
         )
         self.points.insert_one(data.mongo_dict())
 
@@ -45,16 +45,21 @@ class Model(object):
         self.points.insert_one(data.mongo_dict())
 
     def add_hive_data_point(self, scout, queen, is_poi, is_current, latitude, longitude, description, time):
+        point = self.points.find_one({'scout': scout, 'queen':queen,'isWaypoint': is_poi,'latitude':latitude,'longitude': longitude})
         data = DataPoint(scout, queen, is_poi, is_current, latitude, longitude, description, time, None)
-        self.points.insert_one(data.mongo_dict())
+        if point is None:
+            self.points.insert_one(data.mongo_dict())
+        else:
+            self.points.update_one(
+                {'_id': point['_id']},
+                {'$set': data.mongo_dict()}
+            )
 
     def location_data_to_send(self):
-        data = []
-        ids = []
-        for point in self.points.find({'isWaypoint': False, 'needsTransmit': True}).limit(5):
-            data.append(point)
-            ids.append(point['_id'])
-        self.points.update_many({'_id':{'$in': ids}}, {'$set':{'needsTransmit': False}})
+        data = self.points.find_one({'isWaypoint': False, 'needsTransmit': True})
+        if data is None:
+            return None
+        self.points.update_one({'_id': data['_id']}, {'$set':{'needsTransmit': False}})
         return data
 
     def poi_data_to_send(self):

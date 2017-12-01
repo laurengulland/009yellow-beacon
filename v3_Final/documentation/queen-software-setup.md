@@ -78,3 +78,8 @@ npm install leaflet
 ```bash
 npm install localforage leaflet.offline
 ```
+
+# New Version of Python Backend: Requires
+```bash
+python -m pip install --user numpy scipy pandas serial pymongo
+```
