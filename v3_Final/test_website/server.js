@@ -16,6 +16,7 @@ db.once('open', function (callback) {
 var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
+app.use(express.static(path.join(__dirname, '/public')));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,8 +24,8 @@ require('./routes/index')(app);
 
 
 // catch 404 and forward to error page
-app.use(function(req, res, next) {
-    res.render('error', {message: 'This is not a valid page.'});
-});
+//app.use(function(req, res, next) {
+//    res.render('error', {message: 'This is not a valid page.'});
+//});
 
 module.exports = app;

@@ -1,0 +1,57 @@
+.leaflet-control-attribution, .leaflet-control-scale-line{
+  padding: 2.5px;
+}
+
+.leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar{
+    background-clip: padding-box;
+    border: 0px;
+}
+
+.leaflet-right .leaflet-control{
+    margin-right: 0px;
+}
+
+.leaflet-bottom .leaflet-control{
+    margin-bottom: 0px;
+}
+
+.leaflet-control-slidemenu{
+    background-color: black;
+    border-radius: 0px;
+    color: yellow;
+    padding: 16px 200px;
+    cursor: pointer;
+    font-size: 14pt;
+}
+
+.leaflet-menu{
+    position: absolute;
+    background-color: rgba(0, 0, 0, 255);
+    color: yellow;
+    overflow: auto;
+    cursor: default;
+    z-index: 9999;
+}
+
+.leaflet-menu::-webkit-scrollbar{
+    width: 7px;
+    height: 7px;
+    background: #f2f2f2;
+}
+
+.leaflet-menu::-webkit-scrollbar-thumb{
+    border-radius: 2px;
+    background: #777;
+}
+
+.leaflet-menu-close-button{
+    background-color: black;
+    border: none;
+    font-size: 14pt;
+    color: yellow;
+    cursor: pointer;
+}
+
+.leaflet-menu-close-button:hover{
+    color: #4285F4;
+}
