@@ -3,7 +3,32 @@
   color: black;
   padding: 5px;
   margin-left: 10px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
 
+.queentitle{
+  margin-top:2px;
+  margin-left: 10px;
+  margin-bottom: 0px;
+}
+
+.queencoord{
+  margin-top:2px;
+  margin-left: 20px;
+  margin-bottom: 0px;
+}
+
+.queentimestamp{
+  margin-top:0px;
+  margin-left: 20px;
+  margin-bottom: 0px;
+}
+
+.queenscout{
+  margin-top:0px;
+  margin-left: 20px;
+  margin-bottom: 0px;
 }
 
 .leaflet-control-attribution, .leaflet-control-scale-line{

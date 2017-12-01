@@ -41,7 +41,12 @@ var myButtonOptions = {
 			return mymap.addControl(progressControls);
 		};
 
-		var mymap = L.map('mapid', {attributionControl: false}).setView([51.505, -0.09], 13);
+
+		var mymap = L.map('mapid', {
+			center: [51.505, -0.09],
+			zoom: 13,
+			attributionControl: false,
+		});
 
 		var offlineLayer = new OfflineLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiMDA5eWVsbG93MTciLCJhIjoiY2phZnkwOHlsMTk1bjJ3cnoxNG4yaGxuNCJ9.ICzaK-eMacI1DF_b9YJcrw', {
 			maxZoom: 20,

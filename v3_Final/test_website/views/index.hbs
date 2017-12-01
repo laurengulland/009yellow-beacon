@@ -71,9 +71,14 @@
 //		mymap.on('click', onMapClick); //Creates an event listener for clicks on map
 
 		var right = '<h1>"Queens"</h1>';
-		var contents = '<hr>';
-		contents += "<div class = 'queenmenublock'><h3>Queen 1</h3><br><h5>43.0029°N, 71.4203°W</h5><br><input type='text' class='keyboard' placeholder = 'Enter description...'></input></div>"
+		var contents = "<input type='hidden' name='param' value='%00'>";
+		contents += "<div class = 'queenmenublock'><div class = 'queentitle'><h2>Queen 1</h2></div><div class = 'queencoord'><h5>43.0029 °N,  71.4203 °W</h5></div><div class ='queentimestamp'><h5>12/1/2017, 15:04:33</h5></div></div>"
+		contents += "<div class = 'queenmenublock'><div class = 'queentitle'><h2>Queen 2</h2></div><div class = 'queencoord'><h5>43.0029 °N,  71.4203 °W</h5></div><div class ='queentimestamp'><h5>12/1/2017, 15:04:33</h5></div></div>"
+		contents += "<div class = 'queenmenublock'><div class = 'queentitle'><h2>Queen 3</h2></div><div class = 'queencoord'><h5>43.0029 °N,  71.4203 °W</h5></div><div class ='queentimestamp'><h5>12/1/2017, 15:04:33</h5></div></div>"
+		contents += "<div class = 'queenmenublock'><div class = 'queentitle'><h2>Queen 4</h2></div><div class = 'queencoord'><h5>43.0029 °N,  71.4203 °W</h5></div><div class ='queentimestamp'><h5>12/1/2017, 15:04:33</h5></div></div>"
+		contents += "<div class = 'queenmenublock'><div class = 'queentitle'><h2>Queen 5</h2></div><div class = 'queencoord'><h5>43.0029 °N,  71.4203 °W</h5></div><div class ='queentimestamp'><h5>12/1/2017, 15:04:33</h5></div></div>"
 
+// <input type='text' class='keyboard' placeholder = 'Enter description...'></input>
 
 		var slideMenu = L.control.slideMenu('', {position: 'bottomright', menuposition: 'bottomright', width: '30%', height: '100%', delay: '50'}).addTo(mymap);
 		slideMenu.setContents(right + contents);
