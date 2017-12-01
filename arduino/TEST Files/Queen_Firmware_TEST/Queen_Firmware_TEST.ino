@@ -2,13 +2,17 @@
  * Queen Serial: SH -> 0x13A200, SL -> 0x41515876
  * Scout 1 Serial: SH -> 0x13A200, SL -> 0x4164D65A
  * Scout 2 Serial: SH -> 0x13A200, SL -> 0x41515879
+ * Hive Serial: SH -> 0013A200, SL -> 414FF265
+ * Scout PCB Serial: SH -> 0013A200, SL -> 4151A85D
+ * Queen PCB Serial: SH -> 0013A200, SL -> 4151A855
  */
 
 //Libraries
 #include <XBee.h> //XBee library
 
 //Variable Definition
-int scoutSerials[2][2] = {{0x13A200,0x4164D65A},{0x13A200,0x41515879}}; //Serial numbers of all scout devices connected to queen, form of [SH,SL]
+//int scoutSerials[1][2] = {{0x13A200,0x4164D65A}}; //Serial numbers of all scout devices connected to queen, form of [SH,SL]
+int scoutSerials[1][2] = {{0x13A200,0x4151A85D}}; //PCB Scout
 uint8_t accumlatedScoutData[83]; //Tablet sends single package of accumulated data
 uint8_t requestSX[83]; //Tablet requests SX transmission routine
 
@@ -48,29 +52,29 @@ void flashLed(int pin, int times, int wait) {
   }
 }
 
-void buttonPress(){
-  if (millis() - last_interrupt > 1000){
-    uint8_t toSend[83];                           //Initialize package to be sent 
-    for(int i=0;i<83;i++){ 
-      toSend[i] = 0x00;                           //Fill package with 0s per communication protocol
-    }
-    toSend[0] = 0x7E;
-    toSend[1] = 0x01;
-    toSend[2] = 0x01;
-    if(digitalRead(3)==LOW){
-      toSend[3] = 0x00;
-    }
-    else if(digitalRead(4)==LOW){
-      toSend[3] = 0x01;
-    }
-    cli();
-    for(int i=0;i<sizeof(toSend);i++){
-      TabletSerial.write(toSend[i]);              //Write packet to Serial
-    }
-    sei();
-  }
-  last_interrupt = millis();
-}
+//void buttonPress(){
+//  if (millis() - last_interrupt > 1000){
+//    uint8_t toSend[83];                           //Initialize package to be sent 
+//    for(int i=0;i<83;i++){ 
+//      toSend[i] = 0x00;                           //Fill package with 0s per communication protocol
+//    }
+//    toSend[0] = 0x7E;
+//    toSend[1] = 0x01;
+//    toSend[2] = 0x01;
+//    if(digitalRead(3)==LOW){
+//      toSend[3] = 0x00;
+//    }
+//    else if(digitalRead(4)==LOW){
+//      toSend[3] = 0x01;
+//    }
+//    cli();
+//    for(int i=0;i<sizeof(toSend);i++){
+//      TabletSerial.write(toSend[i]);              //Write packet to Serial
+//    }
+//    sei();
+//  }
+//  last_interrupt = millis();
+//}
 
 void setup() {
   XBeeSerial.begin(9600);
@@ -79,12 +83,12 @@ void setup() {
   SXxbee.setSerial(SXSerial);
   TabletSerial.begin(9600);
   pinMode(statusLed,OUTPUT);
-  pinMode(button1,INPUT);
-  pinMode(button2,INPUT);
-  digitalWrite(button1,HIGH);
-  digitalWrite(button2,HIGH);
-  attachInterrupt(button1,buttonPress,FALLING);
-  attachInterrupt(button2,buttonPress,FALLING);
+//  pinMode(button1,INPUT);
+//  pinMode(button2,INPUT);
+//  digitalWrite(button1,HIGH);
+//  digitalWrite(button2,HIGH);
+//  attachInterrupt(button1,buttonPress,FALLING);
+//  attachInterrupt(button2,buttonPress,FALLING);
 }
 
 

@@ -1,6 +1,10 @@
-'/*
+/*
  * Queen Serial: SH -> 0x13A200, SL -> 0x41515876
  * Scout 1 Serial: SH -> 0x13A200, SL -> 0x4164D65A
+ * Scout 2 Serial: SH -> 0x13A200, SL -> 0x41515879
+ * Hive Serial: SH -> 0013A200, SL -> 414FF265
+ * Scout PCB Serial: SH -> 0013A200, SL -> 4151A85D
+ * Queen PCB Serial: SH -> 0013A200, SL -> 4151A855
  */
 
 //Libraries
@@ -14,7 +18,8 @@ ZBRxResponse rx = ZBRxResponse();
 
 uint8_t payload[23] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 //uint8_t payload[13] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
-XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x41515876);
+//XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x41515876); //Breadboard
+XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x4151A855); //PCB
 ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
 ZBTxStatusResponse txStatus = ZBTxStatusResponse();
 
@@ -54,7 +59,7 @@ String compassString;
 String stringOut;
 
 int statusLed = 13;
-int buttonPin = 15;
+int buttonPin = 11;
 
 volatile unsigned long last_interrupt;
 
@@ -134,7 +139,9 @@ void loop() {
   if(xbee.getResponse().isAvailable()){
     if(xbee.getResponse().getApiId() == ZB_RX_RESPONSE){
       flashLed(statusLed, 1,100);
+      Serial.println("Heard Data");
       xbee.getResponse().getZBRxResponse(rx);
+      Serial.println(rx.getDataLength());
       if(rx.getDataLength() == 5){
           Serial.println("Request Recieved");
           payload[0] = latTX & 255;
