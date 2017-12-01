@@ -62,13 +62,13 @@
 
 	    //Click on Map Creates Popup with Coordinates
 	    var popup = L.popup(); //Creates popup variable
-		function onMapClick(e) { //Function which assigns event click LatLong to new popup and displays it.
-    		popup
-        	.setLatLng(e.latlng)
-        	.setContent("You clicked the map at " + e.latlng.toString())
-        	.openOn(mymap);
-		}
-		mymap.on('click', onMapClick); //Creates an event listener for clicks on map
+//		function onMapClick(e) { //Function which assigns event click LatLong to new popup and displays it.
+//    		popup
+//        	.setLatLng(e.latlng)
+//        	.setContent("You clicked the map at " + e.latlng.toString())
+//        	.openOn(mymap);
+//		}
+//		mymap.on('click', onMapClick); //Creates an event listener for clicks on map
 
 		var right = '<h1>"Queens"</h1>';
 		var contents = '<hr>';
