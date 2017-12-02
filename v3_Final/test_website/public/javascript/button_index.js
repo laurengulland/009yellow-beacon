@@ -1,9 +1,4 @@
 $(document).ready(function () {
-
-  // when clicking on queen on map or side menu, get POI from backend
-    $('#mapid').click(function () {
-//        //todo
-    });
     
     $('.test-button').click(function () {
     // Create activity with POST request.apparently not right
@@ -18,50 +13,35 @@ $(document).ready(function () {
   });
     
     // if click on current queen, show list of POI
-    $('.queen-marker').click(function(){
+    $('.queen-marker').click(function () {
+        var id = this.id;
+        console.log(this.latlng);
         $.ajax({
             url: '/allQueenWaypoints',
             type: 'GET',
-            headers: {"queenid": this.id},
+            headers: {"queenid": id},
             success: function(data) {
-              console.log(data);
-              fillQueenMenu(data);
+                console.log(data);
+                fillQueenMenu(data);
+                selectQueenMarker(id);
            },
         });
     });
     
     // if click on poi, show list of POI with poi highlights
-    $('.waypoint-marker').click(function() {
+    $('.waypoint-marker').click(function(e) {
         var id = this.id;
         $.ajax({
-            url: '/allQueenWaypoints',
+            url: '/allQueenWaypointsFromWaypoint',
             type: 'GET',
-            headers: {"queenid": this.id},
+            headers: {"waypointid": id},
             success: function(data) {
                 console.log(data);
                 fillQueenMenu(data);
-                selectMarker(id);
+                selectWaypointMarker(id);
            },
         });        
     });
-    
-  $('.queen-button').click(function () {
-    // Create activity with POST request.apparently not right
-    $.ajax({
-        url: '/allQueenWaypoints',
-        type: 'GET',
-        headers: {"queenid": this.id},
-        success: function(data) {
-          console.log(data);
-          var polygon = L.polygon([
-      		  [51.509, -0.08],
-    		  [51.503, -0.06],
-      		  [51.51, -0.047],
-              [51.50, -0.048]
-		  ]).addTo(mymap);
-       },
-    });
-  });
 
   $('.queens-list-button').click(function () {
     // Create activity with POST request.apparently not right

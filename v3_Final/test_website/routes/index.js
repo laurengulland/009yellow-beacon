@@ -22,22 +22,23 @@ module.exports = function (app) {
     });
 
     app.get('/allQueenWaypoints', function(req, res) {
-        console.log("got to waypoint");
         var queenid = req.headers.queenid;
-        console.log(queenid);
         Point.getWaypointsFromQueen(queenid, function(err, data) {
             handle_err(err);
-            console.log(data);
-            console.log("get data");
             return res.send(data);
         });
-        //res.send({blah:"gee"});
-        //var allQueens = Point.getAll
+    });
+    
+    app.get('/allQueenWaypointsFromWaypoint', function(req, res) {
+        var waypointid = req.headers.waypointid;
+        Point.getWaypointsFromWaypoint(waypointid, function(err, data) {
+            handle_err(err);
+            return res.send(data);
+        });
     });
 
-    app.get('/test', function(req, res) {
-        console.log("got routed to test");
-        Point.testAll(function(err, data) {
+    app.get('/all', function(req, res) {
+        Point.getAll(function(err, data) {
             if (err) {
                 console.log("fooked up reading from mongo");
                 console.log(err);
@@ -47,7 +48,6 @@ module.exports = function (app) {
                 res.send(data);
             }
         });
-
     });
 
 //    app.get('/keyboard', function(req, res) {
