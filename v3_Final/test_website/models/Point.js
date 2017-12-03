@@ -27,13 +27,13 @@ PointSchema.statics.addDescription = function (waypoint_id, waypoint_description
 };
 
 PointSchema.statics.getAllCurrentScoutLocations = function (callback) {
-    Point.find({ 'isCurrent': true , 'scout': {$exists:true} }, function (err, docs) {
+    Point.find({ 'isCurrent': true , 'scout': {$nin: ["", null]} }, function (err, docs) {
         return callback(err, docs);
     });
 };
 
 PointSchema.statics.getAllCurrentQueenLocations = function (callback) {
-    Point.find({ 'isCurrent': true , 'queen': {$exists:true} }, function (err, docs) {
+    Point.find({ 'isCurrent': true , 'queen': {$nin: ["", null]}, 'isWaypoint': false}, function (err, docs) {
         return callback(err, docs);
     });
 };
