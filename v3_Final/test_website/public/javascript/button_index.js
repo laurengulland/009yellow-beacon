@@ -1,43 +1,48 @@
 $(document).ready(function () {
+    button_functions();
+});
+
+var button_functions = function() {
     
-    $('.test-button').click(function () {
-    // Create activity with POST request.apparently not right
-    $.ajax({
-        url: '/test',
-        type: 'GET',
-        success: function(data) {
-          console.log("success after getting button");
-          console.log(data);
-       },
-    });
-  });
+
     
+//    $('.test-button').click(function () {
+//    // Create activity with POST request.apparently not right
+//    $.ajax({
+//        url: '/test',
+//        type: 'GET',
+//        success: function(data) {
+//          console.log("success after getting button");
+//          console.log(data);
+//       },
+//    });
+//  });
     // if click on current queen, show list of POI
     $('.queen-marker').click(function () {
-        var id = this.id;
-        console.log(this.latlng);
+        var id = this.id.replace("menu", "");
         $.ajax({
             url: '/allQueenWaypoints',
             type: 'GET',
             headers: {"queenid": id},
             success: function(data) {
                 console.log(data);
-                fillQueenMenu(data);
+                fillWaypointMenu(data);
                 selectQueenMarker(id);
            },
         });
     });
     
     // if click on poi, show list of POI with poi highlights
-    $('.waypoint-marker').click(function(e) {
-        var id = this.id;
+    $('.waypoint-marker').click(function() {
+        var id = this.id.replace("menu", "");
+        console.log("clicked waypoint or menu");
         $.ajax({
             url: '/allQueenWaypointsFromWaypoint',
             type: 'GET',
             headers: {"waypointid": id},
             success: function(data) {
                 console.log(data);
-                fillQueenMenu(data);
+                fillWaypointMenu(data);
                 selectWaypointMarker(id);
            },
         });        
@@ -109,4 +114,5 @@ $(document).ready(function () {
 //       },
 //    });
 //  });
-});
+
+};

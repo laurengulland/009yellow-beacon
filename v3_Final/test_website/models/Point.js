@@ -69,9 +69,7 @@ PointSchema.statics.getWaypointsFromQueen = function (queen_id, callback) {
 };
 
 PointSchema.statics.getWaypointsFromWaypoint = function (waypoint_id, callback) {
-    Point.find({ '_id': waypoint_id, 'isWaypoint': true }, function (err, waypoint) {
-        // TODO: findOne above and don't return
-        return callback(err, waypoint);
+    Point.findOne({ '_id': waypoint_id, 'isWaypoint': true }, function (err, waypoint) {
         Point.find({ 'queen': waypoint.queen, 'isWaypoint': true }, function (err, docs) {
             return callback(err, docs);
         });        

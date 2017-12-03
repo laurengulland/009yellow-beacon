@@ -55,10 +55,10 @@
 		polygon.bindPopup("I am a polygon. <br> <input type='text' class='btn btn-primary keyboard' placeholder='Enter Description...'></input>");
 
 		//Non-Clickable Popup: This popup exists independently of an object, and disappears if you click away.  It is inaccessible afterward.
-		var popup = L.popup()
-	    .setLatLng([51.5, -0.09])
-	    .setContent("I am a standalone popup.")
-	    .openOn(mymap); //.openOn closes all other popups and opens this one.
+//		var popup = L.popup()
+//	    .setLatLng([51.5, -0.09])
+//	    .setContent("I am a standalone popup.")
+//	    .openOn(mymap); //.openOn closes all other popups and opens this one.
 
 	    //Click on Map Creates Popup with Coordinates
 	    var popup = L.popup(); //Creates popup variable
@@ -72,11 +72,15 @@
 
 		var right = "<div class = 'menutitle'><h1>Queens</h1></div>";
 		var contents = "<input type='hidden' name='param' value='%00'>";
+<<<<<<< HEAD
 		contents += "<div class = 'queenmenublock'><div class = 'queentitle'><h2>Queen 1</h2></div><div class = 'queencoord'><h5>43.0029 °N,  71.4203 °W</h5></div><div class ='queentimestamp'><h5>12/1/2017, 15:04:33</h5></div><input type='text' class='keyboard' placeholder = 'Enter description...'></input></div>"
 		contents += "<div class = 'queenmenublock'><div class = 'queentitle'><h2>Queen 2</h2></div><div class = 'queencoord'><h5>43.0029 °N,  71.4203 °W</h5></div><div class ='queentimestamp'><h5>12/1/2017, 15:04:33</h5></div></div>"
 		contents += "<div class = 'queenmenublock'><div class = 'queentitle'><h2>Queen 3</h2></div><div class = 'queencoord'><h5>43.0029 °N,  71.4203 °W</h5></div><div class ='queentimestamp'><h5>12/1/2017, 15:04:33</h5></div></div>"
 		contents += "<div class = 'queenmenublock'><div class = 'queentitle'><h2>Queen 4</h2></div><div class = 'queencoord'><h5>43.0029 °N,  71.4203 °W</h5></div><div class ='queentimestamp'><h5>12/1/2017, 15:04:33</h5></div></div>"
 		contents += "<div class = 'queenmenublock'><div class = 'queentitle'><h2>Queen 5</h2></div><div class = 'queencoord'><h5>43.0029 °N,  71.4203 °W</h5></div><div class ='queentimestamp'><h5>12/1/2017, 15:04:33</h5></div></div>"
+=======
+		contents += "<div class = 'queenmenublock'><div class = 'queentitle'><h2>Queen 1</h2></div><div class = 'queencoord'><h5>43.0029 °N,  71.4203 °W</h5></div><div class ='queentimestamp'><h5>12/1/2017, 15:04:33</h5></div></div>"
+>>>>>>> aa95e811a837256d0152c266313b171dd42878f3
 
 // <input type='text' class='keyboard' placeholder = 'Enter description...'></input>
 
@@ -102,9 +106,9 @@
 
     <!-- css for the preview keyset extension -->
     <link href="/css/keyboard-previewkeyset.min.css" rel="stylesheet">
-    <script src="/javascript/button_index.js"></script>
-    <script src="/javascript/markers.js"></script>
 
+    <script src="/javascript/markers.js"></script>
+    <script src="/javascript/button_index.js"></script>
 </body>
 
 </html>

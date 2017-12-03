@@ -47,7 +47,6 @@ var allMarkers = {};
 var processAllPoints = function (allPoints) {
     for (var i = 0; i < allPoints.length; i++) {
         var p = allPoints[i];
-        console.log(p);
         if (p.isWaypoint) {
             var waypoint = L.marker([p.latitude, p.longitude], {icon: waypointIcon}).addTo(mymap);
             waypoint._icon.id = p._id;
@@ -83,46 +82,59 @@ var helperCurrent = function(p) {
     } 
 }
 
-var fillWaypointMenu = function(queenid, listWaypoints) {
+var fillWaypointMenu = function(listWaypoints) {
     $("#leafletSideMenuContent").remove();
     var menuContent = "<div id='leafletSideMenuContent'>";
-    menuContent += "<div class='menuTitle'>" + queenid + "</div>";
-    for (var i = 0; i < listWaypoints.length; i++) {
-        var waypoint = listWaypoints[i];
-        var time = waypoint.time;
-        var waypointContent = "<div class = 'queenmenublock' id = 'menu" + waypoint._id +"'>";
-        waypointContent += "<div class = 'submenuName'>POI</div>";
-        waypointContent += "<div class = 'submenuCoord'>" + waypoint.latitude + "°N," +  waypoint.longitude + "°W</div>";
-        waypointContent += "<div class ='submenuTime'>" + time + "</div>";
-        waypointContent += "<div class ='submenuText'>" + waypoint.description + "</div>";
-        menuContent += waypointContent + "</div>";
+    if (listWaypoints) {
+        menuContent += "<div class='menuTitle'>" + listWaypoints[0].queen + "</div>";
+        for (var i = 0; i < listWaypoints.length; i++) {
+            var waypoint = listWaypoints[i];
+            var time = waypoint.time;
+            var waypointContent = "<div class = 'queenmenublock waypoint-marker' id = 'menu" + waypoint._id +"'>";
+            waypointContent += "<div class = 'submenuName'>POI</div>";
+            waypointContent += "<div class = 'submenuCoord'>" + waypoint.latitude + "°N," +  waypoint.longitude + "°W</div>";
+            waypointContent += "<div class ='submenuTime'>" + time + "</div>";
+            if (waypoint.description) {
+                waypointContent += "<div class ='submenuText'>" + waypoint.description + "</div>";
+            } else {
+                waypointContent += '<form class="form-inline" action="addDescription" method="post">';
+                waypointContent += "<input type='text' name='descriptionInput' placeholder='Enter description'>";
+                waypointContent += "<input type='hidden' name='waypoint_id' value='" + waypoint._id + "'>";
+                waypointContent +='<button type="submit" class="descriptionButton">Save</button>';
+                waypointContent += "</form>";
+            }
+            
+            menuContent += waypointContent + "</div>";
+        }        
     }
     menuContent += "</div>";
-    $(".leaflet-menu-contents").append(waypointDivs);
+    $(".leaflet-menu-contents").append(menuContent);
 }
 
 var fillQueenMenu = function(listQueens) {
     $("#leafletSideMenuContent").remove();
     var menuContent = "<div id='leafletSideMenuContent'>";
-    menuContent += "<div class='menuTitle'>List of Queens</div>";
-    for (var i = 0; i < listQueens.length; i++) {
-        var queen = listQueens[i];
-        var time = queen.time;
-        var queenContent = "<div class = 'queenmenublock' id = 'menu" + queen.queen +"'>";
-        queenContent += "<div class = 'submenuName'>" + queen.queen + "</div>";
-        queenContent += "<div class = 'submenuCoord'>" + queen.latitude + "°N," +  queen.longitude + "°W</div>";
-        queenContent += "<div class ='submenuTime'>" + time + "</div>";
-        menuContent += queenContent + "</div>";
+    if (listQueens) {
+        menuContent += "<div class='menuTitle'>List of Queens</div>";
+        for (var i = 0; i < listQueens.length; i++) {
+            var queen = listQueens[i];
+            var time = queen.time;
+            var queenContent = "<div class = 'queenmenublock queen-marker' id = 'menu" + queen.queen +"'>";
+            queenContent += "<div class = 'submenuName'>" + queen.queen + "</div>";
+            queenContent += "<div class = 'submenuCoord'>" + queen.latitude + "°N," +  queen.longitude + "°W</div>";
+            queenContent += "<div class ='submenuTime'>" + time + "</div>";
+            menuContent += queenContent + "</div>";
+        }        
     }
     menuContent += "</div>";
-    console.log(menuContent);
     $(".leaflet-menu-contents").append(menuContent);
 }
 
 var selectWaypointMarker = function(markerid) {
     deselectMarker();
+    console.log(markerid);
     mymap.panTo(allMarkers[markerid].getLatLng());
-    $('menu' + markerid).css("color", "white");
+    $('#menu' + markerid).css("background-color", "white");
     allMarkers[markerid].setIcon(selectedWaypointIcon);
     selectedWaypointMarker = markerid;
 }
@@ -130,32 +142,46 @@ var selectWaypointMarker = function(markerid) {
 var selectQueenMarker = function(markerid) {
     deselectMarker();
     mymap.panTo(allMarkers[markerid].getLatLng());
-    $('menu' + markerid).css("color", "white");
+    $('#menu' + markerid).css("background-color", "white");
     allMarkers[markerid].setIcon(selectedQueenIcon);
     selectedQueenMarker = markerid;
 }
 
 var deselectMarker = function() {
     if (selectedWaypointMarker.length > 0) {
-        $('menu' + selectedWaypointMarker).css("color", "yellow");
+        $('#menu' + selectedWaypointMarker).css("background-color", "yellow");
         allMarkers[selectedWaypointMarker].setIcon(waypointIcon);
         selectedWaypointMarker = "";        
     } else if (selectedQueenMarker.length > 0) {
-        $('menu' + selectedQueenMarker).css("color", "yellow");
+        $('#menu' + selectedQueenMarker).css("background-color", "yellow");
         allMarkers[selectedQueenMarker].setIcon(queenIcon);
         selectedQueenMarker = "";        
     }
 }
 
-var dummydata = '[{ "_id": "2837hf3", "scout":"scout1", "queen":"", "isWaypoint":false, "isCurrent":true, "latitude":51.509, "longitude":-0.08, "description":"", "time":13, "needsTransmit":false },{ "_id": "3837hf3","scout":"scout2", "queen":"", "isWaypoint":false, "isCurrent":false, "latitude":51.508, "longitude":-0.09, "description":"", "time":13, "needsTransmit":false },{ "_id": "4837hf3","scout":"scout3", "queen":"", "isWaypoint":false, "isCurrent":true, "latitude":51.507, "longitude":-0.10, "description":"", "time":13, "needsTransmit":false }, { "_id": "5837hf3", "scout":"scout5", "queen":"queen1", "isWaypoint":true, "isCurrent":false, "latitude":51.505, "longitude":-0.12, "description":"", "time":13, "needsTransmit":false }, {"_id": "7837hf3", "scout":"scout5", "queen":"queen1", "isWaypoint":true, "isCurrent":false, "latitude":51.504, "longitude":-0.13, "description":"", "time":13, "needsTransmit":false }, { "_id": "8837hf3", "scout":"", "queen":"queen5", "isWaypoint":false, "isCurrent":true, "latitude":51.503, "longitude":-0.014, "description":"", "time":13, "needsTransmit":false }]';
-
-var dp = '{ "_id": "6837hf3", "scout":"scout3", "queen":"", "isWaypoint":false, "isCurrent":true, "latitude":51.506, "longitude":-0.11, "description":"", "time":13, "needsTransmit":false }';
-
-var listq = '[{ "_id": "2837hf3", "scout":"", "queen":"QueenLatifah", "isWaypoint":false, "isCurrent":true, "latitude":51.509, "longitude":-0.08, "description":"", "time":13, "needsTransmit":false }]';
-
-processAllPoints(JSON.parse(dummydata));
-updateCurrentLocation("scout1", JSON.parse(dp));
-fillQueenMenu(JSON.parse(listq));
-console.log("finsih parsing");
-
-
+//var dummydata = '[{ "_id": "2837hf3", "scout":"", "queen":"queen10", "isWaypoint":false, "isCurrent":true, "latitude":51.509, "longitude":-0.08, "description":"", "time":13, "needsTransmit":false },{ "_id": "3837hf3","scout":"scout2", "queen":"", "isWaypoint":false, "isCurrent":false, "latitude":51.508, "longitude":-0.09, "description":"", "time":13, "needsTransmit":false },{ "_id": "4837hf3","scout":"scout3", "queen":"", "isWaypoint":false, "isCurrent":true, "latitude":51.507, "longitude":-0.10, "description":"", "time":13, "needsTransmit":false }, { "_id": "5837hf3", "scout":"scout5", "queen":"queen1", "isWaypoint":true, "isCurrent":false, "latitude":51.505, "longitude":-0.12, "description":"", "time":13, "needsTransmit":false }, {"_id": "7837hf3", "scout":"scout5", "queen":"queen1", "isWaypoint":true, "isCurrent":false, "latitude":51.504, "longitude":-0.13, "description":"", "time":13, "needsTransmit":false }, { "_id": "8837hf3", "scout":"", "queen":"queen5", "isWaypoint":false, "isCurrent":true, "latitude":51.503, "longitude":-0.014, "description":"", "time":13, "needsTransmit":false }]';
+//
+//var dp = '{ "_id": "6837hf3", "scout":"scout3", "queen":"", "isWaypoint":false, "isCurrent":true, "latitude":51.506, "longitude":-0.11, "description":"", "time":13, "needsTransmit":false }';
+//
+//var listq = '[{ "_id": "2837hf3", "scout":"", "queen":"QueenLatifah", "isWaypoint":false, "isCurrent":true, "latitude":51.509, "longitude":-0.08, "description":"", "time":13, "needsTransmit":false }]';
+//
+//processAllPoints(JSON.parse(dummydata));
+////updateCurrentLocation("scout1", JSON.parse(dp));
+//fillQueenMenu(JSON.parse(listq));
+//fillQueenMenu(JSON.parse(dummydata));
+//console.log("finsih parsing");
+$.ajax({
+    url: '/all',
+    type: 'GET',
+    success: function(data) {
+        processAllPoints(data);
+        $.ajax({
+            url: '/allQueens',
+            type: 'GET',
+            success: function(queendata) {
+                fillQueenMenu(queendata);
+                button_functions();
+           },
+        });
+   },
+});

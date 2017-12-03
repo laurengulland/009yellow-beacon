@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 
 
 // database
-mongoose.connect('mongodb://localhost/db_name');
+mongoose.connect('mongodb://localhost/coordinate');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function (callback) {
