@@ -174,6 +174,14 @@ $.ajax({
     url: '/all',
     type: 'GET',
     success: function(data) {
-      processAllPoints(data);
+        processAllPoints(data);
+        $.ajax({
+            url: '/allQueens',
+            type: 'GET',
+            success: function(queendata) {
+                fillQueenMenu(queendata);
+                button_functions();
+           },
+        });
    },
 });

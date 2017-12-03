@@ -1,4 +1,10 @@
 $(document).ready(function () {
+    button_functions();
+});
+
+var button_functions = function() {
+    
+
     
 //    $('.test-button').click(function () {
 //    // Create activity with POST request.apparently not right
@@ -27,8 +33,9 @@ $(document).ready(function () {
     });
     
     // if click on poi, show list of POI with poi highlights
-    $('.waypoint-marker').click(function(e) {
+    $('.waypoint-marker').click(function() {
         var id = this.id.replace("menu", "");
+        console.log("clicked waypoint or menu");
         $.ajax({
             url: '/allQueenWaypointsFromWaypoint',
             type: 'GET',
@@ -107,4 +114,5 @@ $(document).ready(function () {
 //       },
 //    });
 //  });
-});
+
+};
