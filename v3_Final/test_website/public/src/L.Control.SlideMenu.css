@@ -1,3 +1,12 @@
+.menutitle{
+  background-color: black;
+  color: #ffd000;
+  padding: 0px;
+  margin-left: 15px;
+  margin-bottom: 20px;
+  margin-top: 0px;
+}
+
 .queenmenublock{
   background-color: #ffd000;
   color: black;
