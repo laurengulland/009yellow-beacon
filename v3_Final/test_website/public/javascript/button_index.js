@@ -1,28 +1,26 @@
 $(document).ready(function () {
     
-    $('.test-button').click(function () {
-    // Create activity with POST request.apparently not right
-    $.ajax({
-        url: '/test',
-        type: 'GET',
-        success: function(data) {
-          console.log("success after getting button");
-          console.log(data);
-       },
-    });
-  });
-    
+//    $('.test-button').click(function () {
+//    // Create activity with POST request.apparently not right
+//    $.ajax({
+//        url: '/test',
+//        type: 'GET',
+//        success: function(data) {
+//          console.log("success after getting button");
+//          console.log(data);
+//       },
+//    });
+//  });
     // if click on current queen, show list of POI
     $('.queen-marker').click(function () {
-        var id = this.id;
-        console.log(this.latlng);
+        var id = this.id.replace("menu", "");
         $.ajax({
             url: '/allQueenWaypoints',
             type: 'GET',
             headers: {"queenid": id},
             success: function(data) {
                 console.log(data);
-                fillQueenMenu(data);
+                fillWaypointMenu(data);
                 selectQueenMarker(id);
            },
         });
@@ -30,14 +28,14 @@ $(document).ready(function () {
     
     // if click on poi, show list of POI with poi highlights
     $('.waypoint-marker').click(function(e) {
-        var id = this.id;
+        var id = this.id.replace("menu", "");
         $.ajax({
             url: '/allQueenWaypointsFromWaypoint',
             type: 'GET',
             headers: {"waypointid": id},
             success: function(data) {
                 console.log(data);
-                fillQueenMenu(data);
+                fillWaypointMenu(data);
                 selectWaypointMarker(id);
            },
         });        

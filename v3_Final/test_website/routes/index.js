@@ -2,15 +2,17 @@ var Point = require('../models/Point');
 
 module.exports = function (app) {
     app.get('/', function (req, res) {
+//        makeFakeData();
         return res.render('index', {message: "teehee"});
     });
 
-    app.get('/addDescription', function(req, res) {
-        console.log("keyboard initialized");
-        var description = req.headers.description;
-        var waypoint_id = req.headers.waypoint_id;
+    app.post('/addDescription', function(req, res) {
+        var description = req.body.descriptionInput;
+        var waypoint_id = req.body.waypoint_id;
+        console.log(waypoint_id);
         Point.addDescription(waypoint_id, description, function(err) {
             handle_err();
+            res.redirect('back'); // TODO: might want to not reload the entire thing
         });
     });
 
@@ -40,11 +42,8 @@ module.exports = function (app) {
     app.get('/all', function(req, res) {
         Point.getAll(function(err, data) {
             if (err) {
-                console.log("fooked up reading from mongo");
                 console.log(err);
             } else {
-                console.log("successfully read from mongo");
-                console.log(data);
                 res.send(data);
             }
         });
@@ -66,3 +65,150 @@ var handle_err = function(err) {
          return console.log(err);
     }
 };
+
+// makes scout1 current, past, past scout2 current
+// queen1 current past, past, queen 2 current
+// waypoint1, wpt2
+var makeFakeData = function() {
+        var point = new Point({ 
+            scout: "scout1", 
+            queen: "",
+            isWaypoint: false,
+            isCurrent:true, 
+            latitude:51.502, 
+            longitude:-0.015, 
+            description:"", 
+            time:13, 
+            needsTransmit:false,
+        });
+        point.save(function(err) {
+            console.log("saved");
+        });  
+        point = new Point({ 
+            scout: "scout1", 
+            queen: "",
+            isWaypoint: false,
+            isCurrent:false, 
+            latitude:51.503, 
+            longitude:-0.014, 
+            description:"", 
+            time:13, 
+            needsTransmit:false,
+        });
+        point.save(function(err) {
+            console.log("saved");
+        });  
+        point = new Point({ 
+            scout: "scout1", 
+            queen: "",
+            isWaypoint: false,
+            isCurrent:false, 
+            latitude:51.504, 
+            longitude:-0.013, 
+            description:"", 
+            time:13, 
+            needsTransmit:false,
+        });
+        point.save(function(err) {
+            console.log("saved");
+        });
+    
+        point = new Point({ 
+            scout: "scout2", 
+            queen: "",
+            isWaypoint: false,
+            isCurrent:true, 
+            latitude:51.505, 
+            longitude:-0.012, 
+            description:"", 
+            time:13, 
+            needsTransmit:false,
+        });
+        point.save(function(err) {
+            console.log("saved");
+        });
+        point = new Point({ 
+            scout: "", 
+            queen: "queen1",
+            isWaypoint: false,
+            isCurrent:true, 
+            latitude:51.506, 
+            longitude:-0.011, 
+            description:"", 
+            time:13, 
+            needsTransmit:false,
+        });
+        point.save(function(err) {
+            console.log("saved");
+        }); 
+        point = new Point({ 
+            scout: "", 
+            queen: "queen1",
+            isWaypoint: false,
+            isCurrent:false, 
+            latitude:51.507, 
+            longitude:-0.010, 
+            description:"", 
+            time:13, 
+            needsTransmit:false,
+        });
+        point.save(function(err) {
+            console.log("saved");
+        }); 
+        point = new Point({ 
+            scout: "", 
+            queen: "queen1",
+            isWaypoint: false,
+            isCurrent:false, 
+            latitude:51.508, 
+            longitude:-0.009, 
+            description:"", 
+            time:13, 
+            needsTransmit:false,
+        });
+        point.save(function(err) {
+            console.log("saved");
+        }); 
+        point = new Point({ 
+            scout: "", 
+            queen: "queen2",
+            isWaypoint: false,
+            isCurrent:true, 
+            latitude:51.509, 
+            longitude:-0.008, 
+            description:"", 
+            time:13, 
+            needsTransmit:false,
+        });
+        point.save(function(err) {
+            console.log("saved");
+        });
+        point = new Point({ 
+            scout: "scout1", 
+            queen: "queen1",
+            isWaypoint: true,
+            isCurrent:false, 
+            latitude:51.510, 
+            longitude:-0.007, 
+            description:"", 
+            time:13, 
+            needsTransmit:false,
+        });
+        point.save(function(err) {
+            console.log("saved");
+        }); 
+        point = new Point({ 
+            scout: "scout2", 
+            queen: "queen2",
+            isWaypoint: true,
+            isCurrent:false, 
+            latitude:51.511, 
+            longitude:-0.006, 
+            description:"", 
+            time:13, 
+            needsTransmit:false,
+        });
+        point.save(function(err) {
+            console.log("saved");
+        }); 
+}
