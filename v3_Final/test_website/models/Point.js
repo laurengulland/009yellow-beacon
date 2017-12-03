@@ -2,23 +2,19 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 /*
- * Point is the model class that represents tweets
- * content field: the text of the tweet
- * author field: the author of the tweet
+ * Point is the model class that represents points
 */
 var PointSchema = new Schema({
     scout: { type: String }, // for Scout locations and waypoints
     queen: { type: String }, // for Queen locations and waypoints
     isWaypoint: { type: Boolean, required: true },
     isCurrent: {type: Boolean },
-    latitude: { type: Number, required: true }, // 10**6
-    longitude: { type: Number, required: true }, // 10**6
+    latitude: { type: Number, required: true },
+    longitude: { type: Number, required: true },
     description: { type: String },
     time: { type: Number, required: true },
     needsTransmit: { type: Boolean},
 });
-
-//{ scout:"scout1", queen:"", isWaypoint:false, isCurrent:true, latitude:51.509, longitude:-0.08, description:"", time:13, needsTransmit:false }
 
 PointSchema.statics.addDescription = function (waypoint_id, waypoint_description, callback) {
     Point.findOneAndUpdate({'_id': waypoint_id, 'isWaypoint': true},{description: waypoint_description}, function(err) {

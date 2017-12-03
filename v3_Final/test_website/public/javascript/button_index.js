@@ -2,21 +2,9 @@ $(document).ready(function () {
     button_functions();
 });
 
+// ensures all buttons have desired functionality
 var button_functions = function() {
-    
 
-    
-//    $('.test-button').click(function () {
-//    // Create activity with POST request.apparently not right
-//    $.ajax({
-//        url: '/test',
-//        type: 'GET',
-//        success: function(data) {
-//          console.log("success after getting button");
-//          console.log(data);
-//       },
-//    });
-//  });
     // if click on current queen, show list of POI
     $('.queen-marker').click(function () {
         var id = this.id.replace("menu", "");
@@ -25,7 +13,6 @@ var button_functions = function() {
             type: 'GET',
             headers: {"queenid": id},
             success: function(data) {
-                console.log(data);
                 fillWaypointMenu(data);
                 selectQueenMarker(id);
            },
@@ -35,84 +22,45 @@ var button_functions = function() {
     // if click on poi, show list of POI with poi highlights
     $('.waypoint-marker').click(function() {
         var id = this.id.replace("menu", "");
-        console.log("clicked waypoint or menu");
         $.ajax({
             url: '/allQueenWaypointsFromWaypoint',
             type: 'GET',
             headers: {"waypointid": id},
             success: function(data) {
-                console.log(data);
                 fillWaypointMenu(data);
                 selectWaypointMarker(id);
            },
         });        
     });
 
-  $('.queens-list-button').click(function () {
-    // Create activity with POST request.apparently not right
+  // when you click back on submenu
+  $('.submenuBack').click(function () {
     $.ajax({
         url: '/allQueens',
         type: 'GET',
         success: function(data) {
-          console.log(data);
-          var polygon = L.polygon([
-      		  [51.509, -0.08],
-    		  [51.503, -0.06],
-      		  [51.51, -0.047],
-              [51.50, -0.048]
-		  ]).addTo(mymap);
+            fillQueenMenu(data);
        },
     });
   });
 
-//  $('.keyboard-button').click(function () {
-//    // Create activity with POST request.apparently not right
-//    // var keyboard = $('#keyboard').keyboard();
-//    // keyboard.reveal();
-//    $('#keyboard').keyboard();
-//    console.log('hai')
+//  $('.keyboard').keyboard({
 //  });
-
-  $('.keyboard').keyboard({
-//    accepted : function(event, keyboard, el) {
-////        var that = this;
-//        console.log('The content "' + el.value + '" was accepted!');
-//
-//    }
-  });
-    $('.keyboard').bind('accepted', function(e, keyboard, el){
-        console.log(el.value);
-        $.ajax({
-            url: '/addDescription',
-            type: 'GET',
-            headers: {"description": el.value, "waypoint_id": keyboard.id},
-            success: function() {
-              var polygon = L.polygon([
-                  [51.509, -0.08],
-                  [51.503, -0.06],
-                  [51.51, -0.047],
-                  [51.50, -0.048]
-              ]).addTo(mymap);
-           },
-        });    
-    });
-
-//  $('.keyboard-submit-button').click(function () {
-//    // Create activity with POST request.apparently not right
-//    $.ajax({
-//        url: '/addDescription',
-//        type: 'GET',
-//        headers: {"queenid": this.id},
-//        success: function(data) {
-//          console.log(data);
-//          var polygon = L.polygon([
-//      		  [51.509, -0.08],
-//    		  [51.503, -0.06],
-//      		  [51.51, -0.047],
-//              [51.50, -0.048]
-//		  ]).addTo(mymap);
-//       },
+//    $('.keyboard').bind('accepted', function(e, keyboard, el){
+//        console.log(el.value);
+//        $.ajax({
+//            url: '/addDescription',
+//            type: 'GET',
+//            headers: {"description": el.value, "waypoint_id": keyboard.id},
+//            success: function() {
+//              var polygon = L.polygon([
+//                  [51.509, -0.08],
+//                  [51.503, -0.06],
+//                  [51.51, -0.047],
+//                  [51.50, -0.048]
+//              ]).addTo(mymap);
+//           },
+//        });    
 //    });
-//  });
 
 };

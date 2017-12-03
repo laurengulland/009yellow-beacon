@@ -44,6 +44,30 @@ var selectedQueenIcon = L.icon({
 var selectedWaypointMarker = "";
 var selectedQueenMarker = "";
 var allMarkers = {};
+
+
+
+//////////////// initializes page ///////////////////
+// real sketchy but o well
+$.ajax({
+    url: '/all',
+    type: 'GET',
+    success: function(data) {
+        processAllPoints(data);
+        $.ajax({
+            url: '/allQueens',
+            type: 'GET',
+            success: function(queendata) {
+                fillQueenMenu(queendata);
+           },
+        });
+   },
+});
+
+
+
+////////// All the map related functions //////////////////////
+
 var processAllPoints = function (allPoints) {
     for (var i = 0; i < allPoints.length; i++) {
         var p = allPoints[i];
@@ -73,6 +97,7 @@ var helperCurrent = function(p) {
         var queenMarker = L.marker([p.latitude, p.longitude], {icon: queenIcon}).addTo(mymap);
         queenMarker._icon.id = p.queen;
         queenMarker._icon.classList.add('queen-marker');
+        queenMarker._icon.html = '<div>' + p.queen + '</div>';
         allMarkers[p.queen] = queenMarker;                    
     } else if (p.scout.length > 0){
         var scoutMarker = L.marker([p.latitude, p.longitude], {icon: scoutIcon}).addTo(mymap);
@@ -86,13 +111,14 @@ var fillWaypointMenu = function(listWaypoints) {
     $("#leafletSideMenuContent").remove();
     var menuContent = "<div id='leafletSideMenuContent'>";
     if (listWaypoints) {
+        menuContent += "<button class='submenuBack'>back</button>";
         menuContent += "<div class='menuTitle'>" + listWaypoints[0].queen + "</div>";
         for (var i = 0; i < listWaypoints.length; i++) {
             var waypoint = listWaypoints[i];
-            var time = waypoint.time;
+            var time = new Date(waypoint.time).toTimeString().split(' ')[0].substring(0, 5);
             var waypointContent = "<div class = 'queenmenublock waypoint-marker' id = 'menu" + waypoint._id +"'>";
-            waypointContent += "<div class = 'submenuName'>POI</div>";
-            waypointContent += "<div class = 'submenuCoord'>" + waypoint.latitude + "°N," +  waypoint.longitude + "°W</div>";
+            waypointContent += "<div class = 'submenuName'>POI: " + waypoint.scout + "</div>";
+            waypointContent += "<div class = 'submenuCoord'>" + waypoint.latitude + "°N, " +  waypoint.longitude + "°W</div>";
             waypointContent += "<div class ='submenuTime'>" + time + "</div>";
             if (waypoint.description) {
                 waypointContent += "<div class ='submenuText'>" + waypoint.description + "</div>";
@@ -109,6 +135,7 @@ var fillWaypointMenu = function(listWaypoints) {
     }
     menuContent += "</div>";
     $(".leaflet-menu-contents").append(menuContent);
+    button_functions();
 }
 
 var fillQueenMenu = function(listQueens) {
@@ -118,16 +145,17 @@ var fillQueenMenu = function(listQueens) {
         menuContent += "<div class='menuTitle'>List of Queens</div>";
         for (var i = 0; i < listQueens.length; i++) {
             var queen = listQueens[i];
-            var time = queen.time;
+            var time = new Date(queen.time).toTimeString().split(' ')[0].substring(0, 5);
             var queenContent = "<div class = 'queenmenublock queen-marker' id = 'menu" + queen.queen +"'>";
             queenContent += "<div class = 'submenuName'>" + queen.queen + "</div>";
-            queenContent += "<div class = 'submenuCoord'>" + queen.latitude + "°N," +  queen.longitude + "°W</div>";
+            queenContent += "<div class = 'submenuCoord'>" + queen.latitude + "°N, " +  queen.longitude + "°W</div>";
             queenContent += "<div class ='submenuTime'>" + time + "</div>";
             menuContent += queenContent + "</div>";
         }        
     }
     menuContent += "</div>";
     $(".leaflet-menu-contents").append(menuContent);
+    button_functions();
 }
 
 var selectWaypointMarker = function(markerid) {
@@ -170,18 +198,3 @@ var deselectMarker = function() {
 //fillQueenMenu(JSON.parse(listq));
 //fillQueenMenu(JSON.parse(dummydata));
 //console.log("finsih parsing");
-$.ajax({
-    url: '/all',
-    type: 'GET',
-    success: function(data) {
-        processAllPoints(data);
-        $.ajax({
-            url: '/allQueens',
-            type: 'GET',
-            success: function(queendata) {
-                fillQueenMenu(queendata);
-                button_functions();
-           },
-        });
-   },
-});
