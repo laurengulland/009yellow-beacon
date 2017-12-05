@@ -27,6 +27,14 @@ var scoutIcon = L.icon({
   popupAnchor: [0, -28]
 });
 
+//var queenIcon = L.divIcon({
+//  className: 'queenMapIcon',
+//  html: '<img src="images/waypoint-icon-blue.png">',
+//  iconSize: [37, 37],
+//  iconAnchor: [16, 37],
+//  popupAnchor: [0, -28]
+//});
+
 var queenIcon = L.icon({
   iconUrl: 'images/waypoint-icon-blue.png',
   iconSize: [37, 37],
@@ -41,14 +49,21 @@ var selectedQueenIcon = L.icon({
   popupAnchor: [0, -28]
 });
 
+//var selectedQueenIcon = L.divIcon({
+//  html: '<img src="images/emo.png"/>',
+//  iconSize: [37, 37],
+//  iconAnchor: [16, 37],
+//  popupAnchor: [0, -28]
+//});
+
 var selectedWaypointMarker = "";
 var selectedQueenMarker = "";
 var allMarkers = {};
 
 
 
-//////////////// initializes page ///////////////////
-// real sketchy but o well
+//////////////// renders markers on map ///////////////////
+// runs once to initialize markers upon querying all data from mongo
 $.ajax({
     url: '/all',
     type: 'GET',
@@ -64,6 +79,38 @@ $.ajax({
    },
 });
 
+// runs every 5sec to read from entire db and draw all markers again
+//setInterval(function(){
+//    $.ajax({
+//        url: '/all',
+//        type: 'GET',
+//        success: function(data) {
+//            processAllPoints(data);
+//            if ($(".menuTitle").length > 0) {
+//                if ($('.submenuBack').length > 0) {
+//                    var id = $('.menuTitle')[0].innerText;
+//                    $.ajax({
+//                        url: '/allQueenWaypoints',
+//                        type: 'GET',
+//                        headers: {"queenid": id},
+//                        success: function(data) {
+//                            fillWaypointMenu(data);
+//                       },
+//                    }); 
+//                } else {
+//                    $.ajax({
+//                        url: '/allQueens',
+//                        type: 'GET',
+//                        success: function(queendata) {
+//                            fillQueenMenu(queendata);
+//                       },
+//                    });   
+//                }                
+//            }
+//       },
+//    });    
+//            
+//},5000);
 
 
 ////////// All the map related functions //////////////////////
@@ -86,8 +133,9 @@ var processAllPoints = function (allPoints) {
     }
 }
 
-var updateCurrentLocation = function(scoutid, newPoint) {
-    var old = allMarkers[scoutid];
+// runs to replace the current location of queens or scouts
+var updateCurrentLocation = function(id, newPoint) {
+    var old = allMarkers[id];
     old.setIcon(pastPosIcon);
     helperCurrent(newPoint);
 }
@@ -97,7 +145,7 @@ var helperCurrent = function(p) {
         var queenMarker = L.marker([p.latitude, p.longitude], {icon: queenIcon}).addTo(mymap);
         queenMarker._icon.id = p.queen;
         queenMarker._icon.classList.add('queen-marker');
-        queenMarker._icon.html = '<div>' + p.queen + '</div>';
+        queenMarker._icon.html = '<img src="images/emo.png">';
         allMarkers[p.queen] = queenMarker;                    
     } else if (p.scout.length > 0){
         var scoutMarker = L.marker([p.latitude, p.longitude], {icon: scoutIcon}).addTo(mymap);
@@ -105,8 +153,14 @@ var helperCurrent = function(p) {
         scoutMarker._icon.classList.add('scout-marker');
         allMarkers[p.scout] = scoutMarker;
     } 
+    if (selectedQueenMarker) {
+        allMarkers[selectedQueenMarker].setIcon(selectedQueenIcon);        
+    } else if (selectedWaypointMarker) {
+        allMarkers[selectedWaypointMarker].setIcon(selectedQueenIcon);        
+    }
 }
 
+// populates side menu with all waypoints associated with a given queen
 var fillWaypointMenu = function(listWaypoints) {
     $("#leafletSideMenuContent").remove();
     var menuContent = "<div id='leafletSideMenuContent'>";
@@ -135,9 +189,11 @@ var fillWaypointMenu = function(listWaypoints) {
     }
     menuContent += "</div>";
     $(".leaflet-menu-contents").append(menuContent);
+    $('#menu' + selectedWaypointMarker).css("background-color", "white");
     button_functions();
 }
 
+// populates sidemenu with all queens in database
 var fillQueenMenu = function(listQueens) {
     $("#leafletSideMenuContent").remove();
     var menuContent = "<div id='leafletSideMenuContent'>";
@@ -149,18 +205,21 @@ var fillQueenMenu = function(listQueens) {
             var queenContent = "<div class = 'queenmenublock queen-marker' id = 'menu" + queen.queen +"'>";
             queenContent += "<div class = 'submenuName'>" + queen.queen + "</div>";
             queenContent += "<div class = 'submenuCoord'>" + queen.latitude + "°N, " +  queen.longitude + "°W</div>";
-            queenContent += "<div class ='submenuTime'>" + time + "</div>";
+            queenContent += "<div class ='submenuTime'>Last received: " + time + "</div>";
             menuContent += queenContent + "</div>";
         }        
     }
     menuContent += "</div>";
     $(".leaflet-menu-contents").append(menuContent);
+    $('#menu' + selectedQueenMarker).css("background-color", "white");
     button_functions();
 }
 
 var selectWaypointMarker = function(markerid) {
+    if (markerid.length < 1) {
+        return;
+    }
     deselectMarker();
-    console.log(markerid);
     mymap.panTo(allMarkers[markerid].getLatLng());
     $('#menu' + markerid).css("background-color", "white");
     allMarkers[markerid].setIcon(selectedWaypointIcon);
@@ -168,6 +227,9 @@ var selectWaypointMarker = function(markerid) {
 }
 
 var selectQueenMarker = function(markerid) {
+    if (markerid.length < 1) {
+        return;
+    }
     deselectMarker();
     mymap.panTo(allMarkers[markerid].getLatLng());
     $('#menu' + markerid).css("background-color", "white");
