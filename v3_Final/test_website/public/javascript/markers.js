@@ -1,14 +1,14 @@
 // vars for icons
 var waypointIcon = L.icon({
-  iconUrl: 'images/waypoint-icon-red.png',
-  iconSize: [37, 37],
+  iconUrl: 'images/waypoint.png',
+  iconSize: [37, 50],
   iconAnchor: [16, 37],
   popupAnchor: [0, -28]
 });
 
 var selectedWaypointIcon = L.icon({
-  iconUrl: 'images/emo.png',
-  iconSize: [37, 37],
+  iconUrl: 'images/selectedWaypoint.png',
+  iconSize: [37, 50],
   iconAnchor: [16, 37],
   popupAnchor: [0, -28]
 });
@@ -21,8 +21,8 @@ var pastPosIcon = L.icon({
 });
 
 var scoutIcon = L.icon({
-  iconUrl: 'images/waypoint-icon-blue.png',
-  iconSize: [37, 37],
+  iconUrl: 'images/scout.png',
+  iconSize: [20, 20],
   iconAnchor: [16, 37],
   popupAnchor: [0, -28]
 });
@@ -36,14 +36,14 @@ var scoutIcon = L.icon({
 //});
 
 var queenIcon = L.icon({
-  iconUrl: 'images/waypoint-icon-blue.png',
+  iconUrl: 'images/queen.png',
   iconSize: [37, 37],
   iconAnchor: [16, 37],
   popupAnchor: [0, -28]
 });
 
 var selectedQueenIcon = L.icon({
-  iconUrl: 'images/emo.png',
+  iconUrl: 'images/selectedQueen.png',
   iconSize: [37, 37],
   iconAnchor: [16, 37],
   popupAnchor: [0, -28]
@@ -145,7 +145,7 @@ var helperCurrent = function(p) {
         var queenMarker = L.marker([p.latitude, p.longitude], {icon: queenIcon}).addTo(mymap);
         queenMarker._icon.id = p.queen;
         queenMarker._icon.classList.add('queen-marker');
-        queenMarker._icon.html = '<img src="images/emo.png">';
+//        queenMarker._icon.html = '<img src="images/emo.png">';
         allMarkers[p.queen] = queenMarker;                    
     } else if (p.scout.length > 0){
         var scoutMarker = L.marker([p.latitude, p.longitude], {icon: scoutIcon}).addTo(mymap);
@@ -153,11 +153,11 @@ var helperCurrent = function(p) {
         scoutMarker._icon.classList.add('scout-marker');
         allMarkers[p.scout] = scoutMarker;
     } 
-    if (selectedQueenMarker) {
-        allMarkers[selectedQueenMarker].setIcon(selectedQueenIcon);        
-    } else if (selectedWaypointMarker) {
-        allMarkers[selectedWaypointMarker].setIcon(selectedQueenIcon);        
-    }
+//    if (selectedQueenMarker) {
+//        allMarkers[selectedQueenMarker].setIcon(selectedQueenIcon);        
+//    } else if (selectedWaypointMarker) {
+//        allMarkers[selectedWaypointMarker].setIcon(selectedQueenIcon);        
+//    }
 }
 
 // populates side menu with all waypoints associated with a given queen
@@ -232,7 +232,6 @@ var selectQueenMarker = function(markerid) {
     }
     deselectMarker();
     mymap.panTo(allMarkers[markerid].getLatLng());
-    $('#menu' + markerid).css("background-color", "white");
     allMarkers[markerid].setIcon(selectedQueenIcon);
     selectedQueenMarker = markerid;
 }
