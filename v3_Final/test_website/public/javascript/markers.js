@@ -80,44 +80,52 @@ $.ajax({
 });
 
 // runs every 5sec to read from entire db and draw all markers again
-//setInterval(function(){
-//    $.ajax({
-//        url: '/all',
-//        type: 'GET',
-//        success: function(data) {
-//            processAllPoints(data);
-//            if ($(".menuTitle").length > 0) {
-//                if ($('.submenuBack').length > 0) {
-//                    var id = $('.menuTitle')[0].innerText;
-//                    $.ajax({
-//                        url: '/allQueenWaypoints',
-//                        type: 'GET',
-//                        headers: {"queenid": id},
-//                        success: function(data) {
-//                            fillWaypointMenu(data);
-//                       },
-//                    }); 
-//                } else {
-//                    $.ajax({
-//                        url: '/allQueens',
-//                        type: 'GET',
-//                        success: function(queendata) {
-//                            fillQueenMenu(queendata);
-//                       },
-//                    });   
-//                }                
-//            }
-//       },
-//    });    
-//            
-//},5000);
+setInterval(function(){
+    $.ajax({
+        url: '/all',
+        type: 'GET',
+        success: function(data) {
+            processAllPoints(data);
+            if (selectedQueenMarker) {
+                allMarkers[selectedQueenMarker].setIcon(selectedQueenIcon);
+            } else if (selectedWaypointMarker) {
+                allMarkers[selectedWaypointMarker].setIcon(selectedWaypointIcon);        
+            }
+            if ($(".menuTitle").length > 0) {
+                if ($('.submenuBack').length > 0) {
+                    var id = $('.menuTitle')[0].innerText;
+                    $.ajax({
+                        url: '/allQueenWaypoints',
+                        type: 'GET',
+                        headers: {"queenid": id},
+                        success: function(data) {
+                            fillWaypointMenu(data);
+                       },
+                    }); 
+                } else {
+                    $.ajax({
+                        url: '/allQueens',
+                        type: 'GET',
+                        success: function(queendata) {
+                            fillQueenMenu(queendata);
+                       },
+                    });   
+                }                
+            }
+       },
+    });    
+            
+},5000);
 
 
 ////////// All the map related functions //////////////////////
-
+var pastPosList = {};
 var processAllPoints = function (allPoints) {
     for (var i = 0; i < allPoints.length; i++) {
         var p = allPoints[i];
+        if (p._id in allMarkers) {
+            continue;
+        }
         if (p.isWaypoint) {
             var waypoint = L.marker([p.latitude, p.longitude], {icon: waypointIcon}).addTo(mymap);
             waypoint._icon.id = p._id;
@@ -127,7 +135,13 @@ var processAllPoints = function (allPoints) {
             if (p.isCurrent) {
                 helperCurrent(p);              
             } else {
-                var pastPos = L.marker([p.latitude, p.longitude], {icon: pastPosIcon}).addTo(mymap);
+                var pastPos = L.marker([p.latitude, p.longitude], {icon: pastPosIcon});
+                if (p._id in pastPosList) {
+                    continue;
+                }
+                console.log("add past point");
+                pastPosList[p._id] = pastPos;
+                pastPos.addTo(mymap);
             }
         }
     }
@@ -142,21 +156,33 @@ var updateCurrentLocation = function(id, newPoint) {
 
 var helperCurrent = function(p) {
     if (p.queen.length > 0) {
-        var queenMarker = L.marker([p.latitude, p.longitude], {icon: queenIcon}).addTo(mymap);
+        var queenMarker = L.marker([p.latitude, p.longitude], {icon: queenIcon});
+
+        if (p.queen in allMarkers && allMarkers[p.queen].getLatLng().toString() === queenMarker.getLatLng().toString()) {
+            return;
+        }
+        
+        queenMarker.addTo(mymap);
         queenMarker._icon.id = p.queen;
         queenMarker._icon.classList.add('queen-marker');
+        console.log("added quee");
 //        queenMarker._icon.html = '<img src="images/emo.png">';
         allMarkers[p.queen] = queenMarker;                    
     } else if (p.scout.length > 0){
-        var scoutMarker = L.marker([p.latitude, p.longitude], {icon: scoutIcon}).addTo(mymap);
+        var scoutMarker = L.marker([p.latitude, p.longitude], {icon: scoutIcon});
+        if (p.scout in allMarkers && allMarkers[p.scout].getLatLng().toString() == scoutMarker.getLatLng().toString()) {
+            return;
+        }
+        scoutMarker.addTo(mymap);
         scoutMarker._icon.id = p.scout;
         scoutMarker._icon.classList.add('scout-marker');
         allMarkers[p.scout] = scoutMarker;
+        console.log("added scout");
     } 
 //    if (selectedQueenMarker) {
 //        allMarkers[selectedQueenMarker].setIcon(selectedQueenIcon);        
 //    } else if (selectedWaypointMarker) {
-//        allMarkers[selectedWaypointMarker].setIcon(selectedQueenIcon);        
+//        allMarkers[selectedWaypointMarker].setIcon(selectedWaypointIcon);        
 //    }
 }
 
