@@ -165,7 +165,7 @@ var fillWaypointMenu = function(listWaypoints) {
     $("#leafletSideMenuContent").remove();
     var menuContent = "<div id='leafletSideMenuContent'>";
     if (listWaypoints) {
-        menuContent += "<button class='submenuBack'>back</button>";
+        menuContent += "<i class='fa fa-chevron-left submenuBack'></i>";
         menuContent += "<div class='menuTitle'>" + listWaypoints[0].queen + "</div>";
         for (var i = 0; i < listWaypoints.length; i++) {
             var waypoint = listWaypoints[i];
@@ -178,9 +178,9 @@ var fillWaypointMenu = function(listWaypoints) {
                 waypointContent += "<div class ='submenuText'>" + waypoint.description + "</div>";
             } else {
                 waypointContent += '<form class="form-inline" action="addDescription" method="post">';
-                waypointContent += "<input type='text' name='descriptionInput' placeholder='Enter description'>";
+                waypointContent += "<input class='form-control descriptionInput' type='text' name='descriptionInput' placeholder='Enter description'>";
                 waypointContent += "<input type='hidden' name='waypoint_id' value='" + waypoint._id + "'>";
-                waypointContent +='<button type="submit" class="descriptionButton">Save</button>';
+                waypointContent +='<button type="submit" class="btn-default descriptionButton">Save</button>';
                 waypointContent += "</form>";
             }
             
