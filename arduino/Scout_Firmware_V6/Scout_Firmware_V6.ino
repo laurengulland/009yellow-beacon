@@ -90,12 +90,15 @@ void setup() {
 }
 
 void loop() {
+  timer = millis();
+  while(millis()-timer < 500){
   char c = GPS.read();
   if (GPSECHO)
     if (c) Serial.print(c);
   if (GPS.newNMEAreceived()) {
     if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag to false
       return; // we can fail to parse a sentence in which case we should just wait for another
+  }
   }
   int dateYear = GPS.year;
   int dateMonth = GPS.month;
@@ -104,12 +107,11 @@ void loop() {
   int dateMinute = GPS.minute;
   int dateSecond = GPS.seconds;
   unixTime = unixTime = 946702800 + 31536000*dateYear + 2678400*(dateMonth - 1) + 86400*(dateDay - 1) + 3600*dateHour + 60*dateMinute + dateSecond - 86400*2 - 3600*5;
-
+  
   if (timer > millis()) timer = millis();
   if (timer1 > millis()) timer1 = millis();
   if (timerStale > millis()) timerStale = millis();
 
-  if(millis()-timer >500) {
   timer = millis();
   if(GPS.fix){
     String GPSLatituderead = String(fabs(GPS.latitudeDegrees),6);
@@ -191,7 +193,7 @@ void loop() {
       }
     }
   }
-}
+
 }
 
 void markWaypoint(){

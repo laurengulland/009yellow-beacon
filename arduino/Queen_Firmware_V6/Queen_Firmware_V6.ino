@@ -59,36 +59,36 @@ void loop() {
   //***END QUERY***  
   
   //***SEND DATA TO HIVE OVER SX***
-  if(count == 5){
-    while(1==1){                                        //Maintain loop until broken when request is returned by an empty packet
-      
-      sendTeensy({},REQUEST_TABLET,EMPTY);              //Request SX packet from Tablet
-      uint8_t payload[83];
-      while(TabletSerial.available()<83){
-        delay(5);                                       //Wait until 83 bytes have accumlated in the serial buffer to ensure complete message read
-      }
-
-      for(int i = 0;i<83;i++){                          //Run through all bytes and insert into array
-          payload[i] = TabletSerial.read();
-      }
-
-      byte lengthByte = payload[1];
-      byte typeByte = payload[2];
-      
-      if(lengthByte==0x01 && typeByte==0x03){           //*** NOTE THIS SEEMS TO BREAK THINGS MUST TEST AS TO WHY***
-        break;                                          //Terminates reading loop when tablet passes an empty payload array
-      }
-        
-      ZBTxRequest zbTx = ZBTxRequest(hiveAddr64, payload, sizeof(payload));
-      ZBTxStatusResponse txStatus = ZBTxStatusResponse();
-  
-      SXxbee.send(zbTx);
-      delay(100);
-    }
-    count = 0;
-  }
+//  if(count == 1){
+//    while(1==1){                                        //Maintain loop until broken when request is returned by an empty packet
+//      
+//      sendTeensy({},REQUEST_TABLET,EMPTY);              //Request SX packet from Tablet
+//      uint8_t payload[83];
+//      while(TabletSerial.available()<83){
+//        delay(5);                                       //Wait until 83 bytes have accumlated in the serial buffer to ensure complete message read
+//      }
+//
+//      for(int i = 0;i<83;i++){                          //Run through all bytes and insert into array
+//          payload[i] = TabletSerial.read();
+//      }
+//
+//      byte lengthByte = payload[1];
+//      byte typeByte = payload[2];
+//      
+//      if(lengthByte==0x01 && typeByte==0x03){           //*** NOTE THIS SEEMS TO BREAK THINGS MUST TEST AS TO WHY***
+//        break;                                          //Terminates reading loop when tablet passes an empty payload array
+//      }
+//        
+//      ZBTxRequest zbTx = ZBTxRequest(hiveAddr64, payload, sizeof(payload));
+//      ZBTxStatusResponse txStatus = ZBTxStatusResponse();
+//  
+//      SXxbee.send(zbTx);
+//      delay(100);
+//    }
+//    count = 0;
+//  }
   //***END HIVE TRANSMISSION***
-  cout += 1;
+//  count += 1;
   delay(2000);                                          //Delay before querying scouts again
 }
 
@@ -132,11 +132,11 @@ void queryScout(int scoutSH, int scoutSL){
   ZBTxRequest zbTx = ZBTxRequest(addr64, request, sizeof(request)); //Build request
   ZBTxStatusResponse txStatus = ZBTxStatusResponse();               //Define response
   ZBRxResponse rx = ZBRxResponse();
-  uint8_t payload[25];
+  uint8_t payload[32];
   
   xbee.send(zbTx);                                                  //Send request for information
   flashLed(statusLed,1,100);
-  if(xbee.readPacket(2000)){                                        //Wait for 2 seconds to see if we get a response
+  if(xbee.readPacket(3000)){                                        //Wait for 2 seconds to see if we get a response
     if(xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE){     //Check that we got an appropriate response for our request
       xbee.readPacket(2000);                                        //Wait for 2 more seconds for an information packet
       if(xbee.getResponse().getApiId() == ZB_RX_RESPONSE){          //Check that we have an appropriate response
