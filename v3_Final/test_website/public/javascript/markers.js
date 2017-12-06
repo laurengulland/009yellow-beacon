@@ -60,6 +60,45 @@ var selectedWaypointMarker = "";
 var selectedQueenMarker = "";
 var allMarkers = {};
 
+//////////////////////////////////
+/////  Socket Stuff
+//////////////////////////////////
+
+// Point socket to our site
+const socket = io('http://localhost:3001');
+// This runs when it connects to the server-side library
+socket.on('connect', () => {
+    console.log("connected on client");
+});
+
+// Make a button here for a quick example
+const base = document.getElementsByClassName('leaflet-menu-contents')[0];
+const test_button = document.createElement('button');
+test_button.id = 'test_button';
+test_button.innerHTML = 'socket.io test';
+base.appendChild(test_button);
+
+
+
+test_button.addEventListener('click', () => {
+    // On a given event (button click for example), emit a socket message
+    // This name has to match the name on the client!
+    // This shows sending a JSON object 
+    let data = {val: 'hello from client'}
+    socket.emit('socket_from_client', data)
+}, false)
+
+// Listen for our message from the server
+// Remember, the names need to match!
+socket.on('socket_from_server', msg => {
+    console.log("message from server: ", msg)
+});
+
+//////////////////////////////////
+/////  End of Socket Stuff
+//////////////////////////////////
+
+
 
 
 //////////////// renders markers on map ///////////////////
