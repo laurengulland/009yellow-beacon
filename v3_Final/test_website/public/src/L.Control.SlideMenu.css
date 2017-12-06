@@ -1,16 +1,13 @@
 @font-face {
     font-family: azonsansbold;
-    src: url('/css/fonts/AzoSans-Bold.otf') format('opentype');
+    src: url('/css/fonts/AzoSans.otf') format('opentype');
 }
 
 .menuTitle{
   background-color: black;
   color: #fbe104;
-  padding: 0px;
-  margin-left: 15px;
-  margin-bottom: 20px;
-  margin-top: 0px;
-    font-size: 20px;
+  padding-left: 10px;
+  font-size: 20px;
   display: inline-block;
   float: left;
 }
@@ -18,6 +15,7 @@
 .menuContainer {
     width: 100%;
     height: 30px;
+    padding-left: 10px;
 }
 
 .queenmenublock{
@@ -68,10 +66,15 @@
     height: 30px;
     display: inline-block;
     float: left;
+    font-size: 30px;
 }
 
 .submenuBack:hover {
     color: #f8ba00;
+    font-size: 30px;
+}
+.leaflet-menu-close-button{
+    padding: 5px;
 }
 
 .form-control.descriptionInput {

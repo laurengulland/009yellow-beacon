@@ -9,10 +9,11 @@ module.exports = function (app) {
     app.post('/addDescription', function(req, res) {
         var description = req.body.descriptionInput;
         var waypoint_id = req.body.waypoint_id;
+        console.log("adding description");
         console.log(waypoint_id);
         Point.addDescription(waypoint_id, description, function(err) {
-            handle_err();
-            res.redirect('back'); // TODO: might want to not reload the entire thing
+            return handle_err();
+//            res.redirect('back'); // TODO: might want to not reload the entire thing
         });
     });
 
