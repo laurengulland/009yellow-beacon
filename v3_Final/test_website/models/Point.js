@@ -2,23 +2,19 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 /*
- * Point is the model class that represents tweets
- * content field: the text of the tweet
- * author field: the author of the tweet
+ * Point is the model class that represents points
 */
 var PointSchema = new Schema({
     scout: { type: String }, // for Scout locations and waypoints
     queen: { type: String }, // for Queen locations and waypoints
     isWaypoint: { type: Boolean, required: true },
     isCurrent: {type: Boolean },
-    latitude: { type: Number, required: true }, // 10**6
-    longitude: { type: Number, required: true }, // 10**6
+    latitude: { type: Number, required: true },
+    longitude: { type: Number, required: true },
     description: { type: String },
     time: { type: Number, required: true },
     needsTransmit: { type: Boolean},
 });
-
-//{ scout:"scout1", queen:"", isWaypoint:false, isCurrent:true, latitude:51.509, longitude:-0.08, description:"", time:13, needsTransmit:false }
 
 PointSchema.statics.addDescription = function (waypoint_id, waypoint_description, callback) {
     Point.findOneAndUpdate({'_id': waypoint_id, 'isWaypoint': true},{description: waypoint_description}, function(err) {
@@ -27,13 +23,13 @@ PointSchema.statics.addDescription = function (waypoint_id, waypoint_description
 };
 
 PointSchema.statics.getAllCurrentScoutLocations = function (callback) {
-    Point.find({ 'isCurrent': true , 'scout': {$exists:true} }, function (err, docs) {
+    Point.find({ 'isCurrent': true , 'scout': {$nin: ["", null]} }, function (err, docs) {
         return callback(err, docs);
     });
 };
 
 PointSchema.statics.getAllCurrentQueenLocations = function (callback) {
-    Point.find({ 'isCurrent': true , 'queen': {$exists:true} }, function (err, docs) {
+    Point.find({ 'isCurrent': true , 'queen': {$nin: ["", null]}, 'isWaypoint': false}, function (err, docs) {
         return callback(err, docs);
     });
 };
@@ -68,8 +64,16 @@ PointSchema.statics.getWaypointsFromQueen = function (queen_id, callback) {
     });
 };
 
-PointSchema.statics.testAll = function (callback) {
-    Point.findOne({}, function (err, docs) {
+PointSchema.statics.getWaypointsFromWaypoint = function (waypoint_id, callback) {
+    Point.findOne({ '_id': waypoint_id, 'isWaypoint': true }, function (err, waypoint) {
+        Point.find({ 'queen': waypoint.queen, 'isWaypoint': true }, function (err, docs) {
+            return callback(err, docs);
+        });        
+    });
+};
+
+PointSchema.statics.getAll = function (callback) {
+    Point.find({}, function (err, docs) {
         return callback(err, docs);
     });
 };

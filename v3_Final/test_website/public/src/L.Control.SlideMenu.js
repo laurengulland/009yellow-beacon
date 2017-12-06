@@ -20,10 +20,10 @@ L.Control.SlideMenu = L.Control.extend({
     },
 
     onAdd: function(map){
-        this._container = L.DomUtil.create('div', 'leaflet-control-slidemenu leaflet-bar leaflet-control');
-        var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container);
-        link.title = 'Menu';
-        L.DomUtil.create('span', 'fa fa-bars', link);
+        this._container = L.DomUtil.create('div', 'leaflet-control-slidemenu leaflet-control');   
+        
+        var bottomMenu = L.DomUtil.create('span', 'bottomQueenMenu', this._container);
+        bottomMenu.innerHTML = 'Leaders';
 
         this._menu = L.DomUtil.create('div', 'leaflet-menu', map._container);
 
@@ -64,27 +64,8 @@ L.Control.SlideMenu = L.Control.extend({
         }
 
         var closeButton = L.DomUtil.create('button', 'leaflet-menu-close-button fa', this._menu);
-
-        if(this._isHorizontal){
-            if(this._isLeftPosition){
-                closeButton.style.float = 'right';
-                L.DomUtil.addClass(closeButton, 'fa-chevron-left');
-            }
-            else{
-                closeButton.style.float = 'left';
-                L.DomUtil.addClass(closeButton, 'fa-chevron-right');
-            }
-        }
-        else{
-            if(this._isTopPosition){
-                closeButton.style.float = 'right';
-                L.DomUtil.addClass(closeButton, 'fa-chevron-up');
-            }
-            else{
-                closeButton.style.float = 'right';
-                L.DomUtil.addClass(closeButton, 'fa-chevron-down');
-            }
-        }
+        closeButton.style.float = 'right';
+        L.DomUtil.addClass(closeButton, 'fa-times');
 
         this._contents = L.DomUtil.create('div', 'leaflet-menu-contents', this._menu);
         this._contents.innerHTML = this._innerHTML;
@@ -101,8 +82,8 @@ L.Control.SlideMenu = L.Control.extend({
 
         L.DomEvent.disableClickPropagation(this._menu);
         L.DomEvent
-            .on(link, 'click', L.DomEvent.stopPropagation)
-            .on(link, 'click', function(){
+            .on(bottomMenu, 'click', L.DomEvent.stopPropagation)
+            .on(bottomMenu, 'click', function(){
                 // Open
                 this._animate(this._menu, frominit, 0, true, ispx, unit);
             }, this)

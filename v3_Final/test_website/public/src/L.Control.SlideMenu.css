@@ -1,11 +1,61 @@
-.queenmenublock{
-  background-color: #ffd000;
-  color: black;
-  padding: 5px;
-  margin-left: 10px;
-
+.menutitle{
+  background-color: black;
+  color: #fbe104;
+  padding: 0px;
+  margin-left: 15px;
+  margin-bottom: 20px;
+  margin-top: 0px;
 }
 
+.queenmenublock{
+  background-color: #fbe104;
+  color: black;
+  padding: 5px;
+  margin: 15px;
+}
+
+.queentitle{
+  margin-top:2px;
+  margin-left: 10px;
+  margin-bottom: 0px;
+}
+
+.queencoord{
+  margin-top:2px;
+  margin-left: 20px;
+  margin-bottom: 0px;
+}
+
+.queentimestamp{
+  margin-top:0px;
+  margin-left: 20px;
+  margin-bottom: 0px;
+}
+
+.queenscout{
+  margin-top:0px;
+  margin-left: 20px;
+  margin-bottom: 0px;
+}
+
+.submenuBack {
+    color: #fbe104;
+    cursor: pointer;
+}
+
+.submenuBack:hover {
+    color: #f8ba00;
+}
+
+.form-control.descriptionInput {
+    height: 30px;
+}
+
+.bottomQueenMenu {
+    color: #fbe104;
+    padding: 10px 30px;
+    font-family: "azo-sans";
+}
 .leaflet-control-attribution, .leaflet-control-scale-line{
   padding: 2.5px;
 }
@@ -26,8 +76,7 @@
 .leaflet-control-slidemenu{
     background-color: black;
     border-radius: 0px;
-    color: #ffd000;
-    padding: 16px 30%;
+    color: #fbe104;
     cursor: pointer;
     font-size: 14pt;
 }
@@ -35,7 +84,7 @@
 .leaflet-menu{
     position: absolute;
     background-color: black;
-    color: #ffd000;
+    color: #fbe104;
     overflow: auto;
     cursor: default;
     z-index: 9999;
@@ -44,22 +93,22 @@
 .leaflet-menu::-webkit-scrollbar{
     width: 7px;
     height: 7px;
-    background: #f2f2f2;
+    background: #726401;
 }
 
 .leaflet-menu::-webkit-scrollbar-thumb{
     border-radius: 2px;
-    background: #777;
+    background: #fbe104;
 }
 
 .leaflet-menu-close-button{
     background-color: black;
     border: none;
     font-size: 14pt;
-    color: #ffd000;
+    color: #fbe104;
     cursor: pointer;
 }
 
 .leaflet-menu-close-button:hover{
-    color: #4285F4;
+    color: #f8ba00;
 }

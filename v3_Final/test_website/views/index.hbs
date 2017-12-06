@@ -15,6 +15,8 @@
 	<script src="/javascript/offlinemap.js" type="text/javascript"></script>
 	<script src="/javascript/leaflet-button-control.js" type="text/javascript"></script>
 	<script src="/src/L.Control.SlideMenu.js"></script>
+    <!-- SOCKET LIBRARY INCLUDED HERE! -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 	<!--<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
    integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
    crossorigin=""></script>-->
@@ -31,37 +33,15 @@
 
 	<script type="text/javascript">
 
-		//Boring Marker
-		var marker = L.marker([51.5, -0.09]).addTo(mymap);
-
-		//Draw Circle
-		var circle = L.circle([51.508, -0.11], {
-    		color: 'red',
-    		fillColor: '#f03',
-    		fillOpacity: 0.5,
-    		radius: 500 //Units are in meters (absolute)
-		}).addTo(mymap);
-
-		//Draw Triangle
-		var polygon = L.polygon([
-    		[51.509, -0.08],
-    		[51.503, -0.06],
-    		[51.51, -0.047]
-		]).addTo(mymap);
-
-		//Simple Clickable Popups
-		marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup(); //Immediately opens the popup
-		circle.bindPopup('I am a circle.<form action="allQueenWaypoints" method="get"> <button type="submit" class="btn btn-primary" id="allButton" >Queen</button></form>');
-		polygon.bindPopup("I am a polygon. <br> <input type='text' class='btn btn-primary keyboard' placeholder='Enter Description...'></input>");
-
-		//Non-Clickable Popup: This popup exists independently of an object, and disappears if you click away.  It is inaccessible afterward.
-		var popup = L.popup()
-	    .setLatLng([51.5, -0.09])
-	    .setContent("I am a standalone popup.")
-	    .openOn(mymap); //.openOn closes all other popups and opens this one.
+//		//Draw Triangle
+//		var polygon = L.polygon([
+//    		[51.509, -0.08],
+//    		[51.503, -0.06],
+//    		[51.51, -0.047]
+//		]).addTo(mymap);
 
 	    //Click on Map Creates Popup with Coordinates
-	    var popup = L.popup(); //Creates popup variable
+//	    var popup = L.popup(); //Creates popup variable
 //		function onMapClick(e) { //Function which assigns event click LatLong to new popup and displays it.
 //    		popup
 //        	.setLatLng(e.latlng)
@@ -69,14 +49,6 @@
 //        	.openOn(mymap);
 //		}
 //		mymap.on('click', onMapClick); //Creates an event listener for clicks on map
-
-		var right = '<h1>"Queens"</h1>';
-		var contents = '<hr>';
-		contents += "<div class = 'queenmenublock'><h3>Queen 1</h3><br><h5>43.0029°N, 71.4203°W</h5><br><input type='text' class='keyboard' placeholder = 'Enter description...'></input></div>"
-
-
-		var slideMenu = L.control.slideMenu('', {position: 'bottomright', menuposition: 'bottomright', width: '30%', height: '100%', delay: '50'}).addTo(mymap);
-		slideMenu.setContents(right + contents);
 	</script>
 
     <script src="/js/handlebars.runtime.min.js"></script>
@@ -97,9 +69,9 @@
 
     <!-- css for the preview keyset extension -->
     <link href="/css/keyboard-previewkeyset.min.css" rel="stylesheet">
-    <script src="/javascript/button_index.js"></script>
-    <script src="/javascript/markers.js"></script>
 
+    <script src="/javascript/markers.js"></script>
+    <script src="/javascript/button_index.js"></script>
 </body>
 
 </html>
