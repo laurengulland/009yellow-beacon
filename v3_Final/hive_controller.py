@@ -4,13 +4,13 @@ import time
 
 class Controller(object):
     def __init__(self):
-        self.port = serial.Serial('COM4') #MUST SELECT CORRECT PORT ON TABLE
+        self.port = serial.Serial('COM10') #MUST SELECT CORRECT PORT ON TABLE
         self.model = model.Model()
 
     def run(self):
         for i in range(6):
-            data = self.port.read(80)
-            self.store_data(data)
+            data = self.port.read(83)
+            self.store_data(data[3:])
 
     def store_data(self, content):
         is_poi = content[0]
