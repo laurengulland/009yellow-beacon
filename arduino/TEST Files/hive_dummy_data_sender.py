@@ -11,7 +11,7 @@ import serial
 
 packetqueue = []
 
-port = serial.Serial('COM17',9600)
+port = serial.Serial('COM13',9600)
 while 1==1:
     packet = port.read(83)
     print('Read')
