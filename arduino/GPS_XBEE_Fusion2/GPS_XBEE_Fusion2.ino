@@ -111,7 +111,7 @@ void setup()
   pinMode(buttonLed, OUTPUT);
   digitalWrite(buttonPin, HIGH);
 
-  attachInterrupt(buttonPin,transmitWaypoint,FALLING);
+//  attachInterrupt(buttonPin,transmitWaypoint,FALLING);
 }
 
 void loop() // run over and over again
@@ -157,6 +157,14 @@ void loop() // run over and over again
     Serial.println(GPS.year, DEC);
     Serial.print("Fix: "); Serial.print((int)GPS.fix);
     Serial.print(" quality: "); Serial.println((int)GPS.fixquality);
+    int dateYear = GPS.year;
+    int dateMonth = GPS.month;
+    int dateDay = GPS.day;
+    int dateHour = GPS.hour;
+    int dateMinute = GPS.minute;
+    int dateSecond = GPS.seconds;
+    int unixTime = 946702800 + 31536000*dateYear + 2678400*(dateMonth - 1) + 86400*(dateDay - 1) + 3600*dateHour + 60*dateMinute + dateSecond - 86400*2 - 3600*5;
+    Serial.println(unixTime);
     if (GPS.fix) {
       Serial.print("Location: ");
       Serial.print(GPS.latitude, 4); Serial.print(GPS.lat);
@@ -175,19 +183,19 @@ void loop() // run over and over again
 ////    Serial.print("Output Processed LatLong String: "); Serial.println(currLatLong);
 //
 //    timeString = String("Time") + String(GPS.minute,DEC) + ":" + String(GPS.seconds,DEC) + "." + String(GPS.milliseconds);
-
-  Serial.println(GPS.latitude);
-  String GPSLatituderead = String(fabs(GPS.latitudeDegrees),6);
-
-  float latitude = GPSLatituderead.toFloat();
-  Serial.println(GPSLatituderead);
-  Serial.println(latitude);
-  latTX = (long) (latitude*1000000);
-  Serial.println(latTX);
-  Serial.println(GPS.lon);
-  String londir = GPS.lon;
-  if(londir == "W"){
-    Serial.println("Lon got");
+//
+//  Serial.println(GPS.latitude);
+//  String GPSLatituderead = String(fabs(GPS.latitudeDegrees),6);
+//
+//  float latitude = GPSLatituderead.toFloat();
+//  Serial.println(GPSLatituderead);
+//  Serial.println(latitude);
+//  latTX = (long) (latitude*1000000);
+//  Serial.println(latTX);
+//  Serial.println(GPS.lon);
+//  String londir = GPS.lon;
+//  if(londir == "W"){
+//    Serial.println("Lon got");
   }
 //  lonTX = (long) (GPSlon*1000000);
 ////  Serial.println(latTX);
@@ -233,60 +241,60 @@ void loop() // run over and over again
 //  } else {
 //    // local XBee did not provide a timely TX Status Response -- should not happen
 //    flashLed(errorLed, 2, 50);
-  }
+//  }
   }
 }
 
-void transmitWaypoint() {
-  if (millis() - last_interrupt > 1000) {
-  digitalWrite(16, HIGH);
-  char c = GPS.read();
-  // if you want to debug, this is a good time to do it!
-  latTX = (long) (GPSlat*1000000);
-  lonTX = (long) (GPSlon*1000000);
-
-  Serial.println("Waypoint");
-  
-  payload[0] = latTX & 255;
-  payload[1] = (latTX >> 8) & 255;  
-  payload[2] = (latTX >> 16) & 255;
-  payload[3] = (latTX >> 24) & 255;
-  payload[4] = 0x01;
-  payload[5] = 0xFF;
-  
-  xbee.send(zbTx);
-// flash TX indicator
-  flashLed(statusLed, 1, 100);
-
-  // after sending a tx request, we expect a status response
-  // wait up to half second for the status response
-  if (xbee.readPacket(500)) {
-    // got a response!
-
-    // should be a znet tx status              
-    if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
-      xbee.getResponse().getZBTxStatusResponse(txStatus);
-
-      // get the delivery status, the fifth byte
-      if (txStatus.getDeliveryStatus() == SUCCESS) {
-        // success.  time to celebrate
-        flashLed(statusLed, 5, 50);
-        Serial.println("Success");
-      } else {
-        // the remote XBee did not receive our packet. is it powered on?
-        flashLed(errorLed, 3, 500);
-      }
-    }
-  } else if (xbee.getResponse().isError()) {
-    //nss.print("Error reading packet.  Error code: ");  
-    //nss.println(xbee.getResponse().getErrorCode());
-  } else {
-    // local XBee did not provide a timely TX Status Response -- should not happen
-    flashLed(errorLed, 2, 50);
-  }
-  digitalWrite(16,LOW);
-  }
-  last_interrupt = millis();
-  
-}
+//void transmitWaypoint() {
+//  if (millis() - last_interrupt > 1000) {
+//  digitalWrite(16, HIGH);
+//  char c = GPS.read();
+//  // if you want to debug, this is a good time to do it!
+//  latTX = (long) (GPSlat*1000000);
+//  lonTX = (long) (GPSlon*1000000);
+//
+//  Serial.println("Waypoint");
+//  
+//  payload[0] = latTX & 255;
+//  payload[1] = (latTX >> 8) & 255;  
+//  payload[2] = (latTX >> 16) & 255;
+//  payload[3] = (latTX >> 24) & 255;
+//  payload[4] = 0x01;
+//  payload[5] = 0xFF;
+//  
+//  xbee.send(zbTx);
+//// flash TX indicator
+//  flashLed(statusLed, 1, 100);
+//
+//  // after sending a tx request, we expect a status response
+//  // wait up to half second for the status response
+//  if (xbee.readPacket(500)) {
+//    // got a response!
+//
+//    // should be a znet tx status              
+//    if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
+//      xbee.getResponse().getZBTxStatusResponse(txStatus);
+//
+//      // get the delivery status, the fifth byte
+//      if (txStatus.getDeliveryStatus() == SUCCESS) {
+//        // success.  time to celebrate
+//        flashLed(statusLed, 5, 50);
+//        Serial.println("Success");
+//      } else {
+//        // the remote XBee did not receive our packet. is it powered on?
+//        flashLed(errorLed, 3, 500);
+//      }
+//    }
+//  } else if (xbee.getResponse().isError()) {
+//    //nss.print("Error reading packet.  Error code: ");  
+//    //nss.println(xbee.getResponse().getErrorCode());
+//  } else {
+//    // local XBee did not provide a timely TX Status Response -- should not happen
+//    flashLed(errorLed, 2, 50);
+//  }
+//  digitalWrite(16,LOW);
+//  }
+//  last_interrupt = millis();
+//  
+//}
 

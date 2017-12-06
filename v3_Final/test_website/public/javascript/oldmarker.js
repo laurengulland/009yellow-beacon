@@ -72,21 +72,21 @@ socket.on('connect', () => {
 });
 
 // Make a button here for a quick example
-//const base = document.getElementsByClassName('leaflet-menu-contents')[0];
-//const test_button = document.createElement('button');
-//test_button.id = 'test_button';
-//test_button.innerHTML = 'socket.io test';
-//base.appendChild(test_button);
-//
-//
-//
-//test_button.addEventListener('click', () => {
-//    // On a given event (button click for example), emit a socket message
-//    // This name has to match the name on the client!
-//    // This shows sending a JSON object 
-//    let data = {val: 'hello from client'}
-//    socket.emit('socket_from_client', data)
-//}, false)
+const base = document.getElementsByClassName('leaflet-menu-contents')[0];
+const test_button = document.createElement('button');
+test_button.id = 'test_button';
+test_button.innerHTML = 'socket.io test';
+base.appendChild(test_button);
+
+
+
+test_button.addEventListener('click', () => {
+    // On a given event (button click for example), emit a socket message
+    // This name has to match the name on the client!
+    // This shows sending a JSON object 
+    let data = {val: 'hello from client'}
+    socket.emit('socket_from_client', data)
+}, false)
 
 // Listen for our message from the server
 // Remember, the names need to match!
@@ -95,8 +95,7 @@ socket.on('socket_from_server', msg => {
 });
 
 socket.on('mongo_update', msg => {
-    console.log("mongo_update from server: ", msg);
-    processAllPoints([msg], false);
+    console.log("mongo_update from server: ", msg)
 });
 
 //////////////////////////////////
@@ -112,7 +111,7 @@ $.ajax({
     url: '/all',
     type: 'GET',
     success: function(data) {
-        processAllPoints(data, true);
+        processAllPoints(data);
         $.ajax({
             url: '/allQueens',
             type: 'GET',
@@ -163,10 +162,11 @@ $.ajax({
 
 
 ////////// All the map related functions //////////////////////
-var processAllPoints = function (allPoints, isInitialize) {
+var pastPosList = {};
+var processAllPoints = function (allPoints) {
     for (var i = 0; i < allPoints.length; i++) {
         var p = allPoints[i];
-        if (p.dummy) {
+        if (p._id in allMarkers || p.dummy) {
             continue;
         }
         if (p.isWaypoint) {
@@ -176,42 +176,47 @@ var processAllPoints = function (allPoints, isInitialize) {
             allMarkers[p._id] = waypoint;
         } else {
             if (p.isCurrent) {
-                if (isInitialize) {
-                    helperCurrent(p);  
-                } else {
-                    updateCurrentLocation(p);
-                }              
+                helperCurrent(p);              
             } else {
-                var pastPos = L.marker([p.latitude, p.longitude], {icon: pastPosIcon}).addTo(mymap);
+                var pastPos = L.marker([p.latitude, p.longitude], {icon: pastPosIcon});
+                if (p._id in pastPosList) {
+                    continue;
+                }
                 console.log("add past point");
+                pastPosList[p._id] = pastPos;
+                pastPos.addTo(mymap);
             }
         }
     }
 }
 
 // runs to replace the current location of queens or scouts
-var updateCurrentLocation = function(newPoint) {
-    var previousPoint;
-    if (newPoint.queen) {
-        previousPoint = allMarkers[newPoint.queen];
-        $('#menu' + previousPoint.queen + ' > .submenuTime').innerHTML = newPoint.time;
-    } else {
-        previousPoint = allMarkers[newPoint.scout];
-    }
-    previousPoint.setIcon(pastPosIcon);    
+var updateCurrentLocation = function(id, newPoint) {
+    var old = allMarkers[id];
+    old.setIcon(pastPosIcon);
     helperCurrent(newPoint);
 }
 
 var helperCurrent = function(p) { //null
-    if (p.queen) {
-        var queenMarker = L.marker([p.latitude, p.longitude], {icon: queenIcon}).addTo(mymap);
+    if (p.queen.length > 0) {
+        var queenMarker = L.marker([p.latitude, p.longitude], {icon: queenIcon});
+
+        if (p.queen in allMarkers && allMarkers[p.queen].getLatLng().toString() === queenMarker.getLatLng().toString()) {
+            return;
+        }
+        
+        queenMarker.addTo(mymap);
         queenMarker._icon.id = p.queen;
         queenMarker._icon.classList.add('queen-marker');
-        console.log("added queen");
+        console.log("added quee");
 //        queenMarker._icon.html = '<img src="images/emo.png">';
         allMarkers[p.queen] = queenMarker;                    
-    } else if (p.scout){
-        var scoutMarker = L.marker([p.latitude, p.longitude], {icon: scoutIcon}).addTo(mymap);
+    } else if (p.scout.length > 0){
+        var scoutMarker = L.marker([p.latitude, p.longitude], {icon: scoutIcon});
+        if (p.scout in allMarkers && allMarkers[p.scout].getLatLng().toString() == scoutMarker.getLatLng().toString()) {
+            return;
+        }
+        scoutMarker.addTo(mymap);
         scoutMarker._icon.id = p.scout;
         scoutMarker._icon.classList.add('scout-marker');
         allMarkers[p.scout] = scoutMarker;
@@ -229,17 +234,17 @@ var fillWaypointMenu = function(listWaypoints) {
     $("#leafletSideMenuContent").remove();
     var menuContent = "<div id='leafletSideMenuContent'>";
     if (listWaypoints) {
-        menuContent += "<div class='menuContainer'><i class='fa fa-chevron-left fa-2 submenuBack'></i>";
-        menuContent += "<div class='menuTitle'>" + listWaypoints[0].queen + "</div></div>";
+        menuContent += "<i class='fa fa-chevron-left fa-2 submenuBack'></i>";
+        menuContent += "<div class='menuTitle'>" + listWaypoints[0].queen + "</div>";
         for (var i = 0; i < listWaypoints.length; i++) {
             var waypoint = listWaypoints[i];
             var time = new Date(waypoint.time).toTimeString().split(' ')[0].substring(0, 5);
             var waypointContent = "<div class = 'queenmenublock waypoint-marker' id = 'menu" + waypoint._id +"'>";
             waypointContent += "<div class = 'submenuName'>POI: " + waypoint.scout + "</div>";
-            waypointContent += "<div class = 'submenuContent submenuCoord'>" + waypoint.latitude + "°N, " +  waypoint.longitude + "°W</div>";
-            waypointContent += "<div class ='submenuContent submenuTime'>Time marked: " + time + "</div>";
+            waypointContent += "<div class = 'submenuCoord'>" + waypoint.latitude + "°N, " +  waypoint.longitude + "°W</div>";
+            waypointContent += "<div class ='submenuTime'>" + time + "</div>";
             if (waypoint.description) {
-                waypointContent += "<div class ='submenuContent submenuText'>" + waypoint.description + "</div>";
+                waypointContent += "<div class ='submenuText'>" + waypoint.description + "</div>";
             } else {
                 waypointContent += '<form class="form-inline" action="addDescription" method="post">';
                 waypointContent += "<input class='form-control descriptionInput' type='text' name='descriptionInput' placeholder='Enter description'>";
@@ -262,14 +267,14 @@ var fillQueenMenu = function(listQueens) {
     $("#leafletSideMenuContent").remove();
     var menuContent = "<div id='leafletSideMenuContent'>";
     if (listQueens) {
-        menuContent += "<div class='menuContainer'><div class='menuTitle'>List of Leaders</div></div>";
+        menuContent += "<div class='menuTitle'>List of Queens</div>";
         for (var i = 0; i < listQueens.length; i++) {
             var queen = listQueens[i];
             var time = new Date(queen.time).toTimeString().split(' ')[0].substring(0, 5);
             var queenContent = "<div class = 'queenmenublock queen-marker' id = 'menu" + queen.queen +"'>";
             queenContent += "<div class = 'submenuName'>" + queen.queen + "</div>";
-            queenContent += "<div class = 'submenuContent submenuCoord'>" + queen.latitude + "°N, " +  queen.longitude + "°W</div>";
-            queenContent += "<div class ='submenuContent submenuTime'>Last received: " + time + "</div>";
+            queenContent += "<div class = 'submenuCoord'>" + queen.latitude + "°N, " +  queen.longitude + "°W</div>";
+            queenContent += "<div class ='submenuTime'>Last received: " + time + "</div>";
             menuContent += queenContent + "</div>";
         }        
     }
@@ -302,11 +307,11 @@ var selectQueenMarker = function(markerid) {
 
 var deselectMarker = function() {
     if (selectedWaypointMarker.length > 0) {
-        $('#menu' + selectedWaypointMarker).css("background-color", "#fbe104");
+        $('#menu' + selectedWaypointMarker).css("background-color", "yellow");
         allMarkers[selectedWaypointMarker].setIcon(waypointIcon);
         selectedWaypointMarker = "";        
     } else if (selectedQueenMarker.length > 0) {
-        $('#menu' + selectedQueenMarker).css("background-color", "#fbe104");
+        $('#menu' + selectedQueenMarker).css("background-color", "yellow");
         allMarkers[selectedQueenMarker].setIcon(queenIcon);
         selectedQueenMarker = "";        
     }

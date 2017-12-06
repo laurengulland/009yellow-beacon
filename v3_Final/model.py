@@ -28,8 +28,8 @@ class DataPoint(object):
 class Model(object):
 
     def __init__(self):
-        self.client = pymongo.MongoClient('mongodb://localhost:27017/')
-        self.database = self.client.beacon #rename this based on the database
+        self.client = pymongo.MongoClient('mongodb://localhost:27017/') #where is mongod served from
+        self.database = self.client.coordinate #rename this based on the database
         self.points = self.database.points
 
     def add_location_data_point(self,scout,queen,slat,slon,time):

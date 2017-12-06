@@ -33,16 +33,20 @@ var button_functions = function() {
         });        
     });
 
-  // when you click back on submenu
-  $('.submenuBack').click(function () {
-    $.ajax({
-        url: '/allQueens',
-        type: 'GET',
-        success: function(data) {
-            fillQueenMenu(data);
-       },
+    // when you click back on submenu
+    $('.submenuBack').click(function () {
+        $.ajax({
+            url: '/allQueens',
+            type: 'GET',
+            success: function(data) {
+                fillQueenMenu(data);
+            },
+        });
     });
-  });
+    
+    $('.form-inline').on("click", function(e) {
+        e.stopPropagation();
+    });
 
 //  $('.keyboard').keyboard({
 //  });

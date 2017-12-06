@@ -18,8 +18,51 @@ app.set('port', port);
 /**
  * Create HTTP server.
  */
-
 var server = http.createServer(app);
+
+
+//////////////////////////////////
+/////  Socket Stuff
+//////////////////////////////////
+
+// Require socket, connect it to our http server
+var mubsub = require('mubsub');
+var client = mubsub('mongodb://localhost/coordinate');
+var channel = client.channel('points');
+client.on('error', console.error);
+channel.on('error', console.error);
+
+const io = require('socket.io')(server)
+// This runs when it connects with the client-side library
+io.on('connection', (socket) => {
+  console.log("connected on server!");
+
+  // Listen for an event by name "socket_test", then handle the message in a callback
+  // This name has to match the name on the client!
+  socket.on('socket_from_client', msg => {
+    console.log("incoming message: ", msg.val);
+    // When we get a message from the client, emit one back! 
+    let resp = {val: 'hello from server'};
+    socket.emit('socket_from_server', resp);
+  });
+    
+  channel.on('document', function (doc) {
+    console.log("mongo c3hanged");
+    socket.emit('mongo_update', doc);    
+  });
+//  channel.subscribe([], function(doc) {
+//    console.log("mongo changed");
+//    socket.emit('mongo_update', doc);
+//  });
+
+});
+// *** Notice how we wrap our socket listening and emitting events inside the on('connection') function
+// We need to make sure our connection is live before we try to do anything else
+//////////////////////////////////
+/////  End of Socket Stuff
+//////////////////////////////////
+
+
 
 /**
  * Listen on provided port, on all network interfaces.

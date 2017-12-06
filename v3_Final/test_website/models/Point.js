@@ -14,6 +14,8 @@ var PointSchema = new Schema({
     description: { type: String },
     time: { type: Number, required: true },
     needsTransmit: { type: Boolean},
+}, {
+    capped: 100000,
 });
 
 PointSchema.statics.addDescription = function (waypoint_id, waypoint_description, callback) {

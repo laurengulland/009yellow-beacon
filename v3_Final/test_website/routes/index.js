@@ -48,18 +48,10 @@ module.exports = function (app) {
             }
         });
     });
-
-//    app.get('/keyboard', function(req, res) {
-//        console.log("keyboard initialize");
-//        var queenid = req.headers.queenid;
-//        console.log(queenid);
-//        res.type('json');
-//        res.send({blah:"gee"});
-//        //var allQueens = Point.getAll
-//    });
-
 };
 
+
+// some helper and dummy data creation
 var handle_err = function(err) {
     if (err) {
          return console.log(err);
