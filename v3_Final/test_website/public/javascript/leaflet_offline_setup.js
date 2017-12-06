@@ -73,4 +73,4 @@ var myButtonOptions = {
 		contents += "<div class = 'queenmenublock'><div class = 'queentitle'><h2>Queen 1</h2></div><div class = 'queencoord'><h5>43.0029 °N,  71.4203 °W</h5></div><div class ='queentimestamp'><h5>12/1/2017, 15:04:33</h5></div></div>"
 
 		var slideMenu = L.control.slideMenu('', {position: 'bottomright', menuposition: 'bottomright', width: '30%', height: '100%', delay: '50'}).addTo(mymap);
-		slideMenu.setContents(right + contents);
+//		slideMenu.setContents(right + contents);

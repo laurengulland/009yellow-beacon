@@ -26,10 +26,10 @@ require('./routes/index')(app);
 
 
 // mubsub
-var client = mubsub(url);
-var channel = client.channel('test');
-client.on('error', console.error);
-channel.on('error', console.error);
+//var client = mubsub(url);
+//var channel = client.channel('test');
+//client.on('error', console.error);
+//channel.on('error', console.error);
 //subscription = channel.subscribe(function(doc) {
 //   app.get()
 //});

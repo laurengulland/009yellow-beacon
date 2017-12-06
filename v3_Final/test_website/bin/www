@@ -26,6 +26,12 @@ var server = http.createServer(app);
 //////////////////////////////////
 
 // Require socket, connect it to our http server
+var mubsub = require('mubsub');
+var client = mubsub('mongodb://localhost/coordinate');
+var channel = client.channel('points');
+client.on('error', console.error);
+channel.on('error', console.error);
+
 const io = require('socket.io')(server)
 // This runs when it connects with the client-side library
 io.on('connection', (socket) => {
@@ -39,6 +45,15 @@ io.on('connection', (socket) => {
     let resp = {val: 'hello from server'};
     socket.emit('socket_from_server', resp);
   });
+    
+  channel.on('document', function (doc) {
+    console.log("mongo c3hanged");
+    socket.emit('mongo_update', doc);    
+  });
+//  channel.subscribe([], function(doc) {
+//    console.log("mongo changed");
+//    socket.emit('mongo_update', doc);
+//  });
 
 });
 // *** Notice how we wrap our socket listening and emitting events inside the on('connection') function
