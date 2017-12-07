@@ -54,8 +54,8 @@ int buttonPin = 11;
 XBee xbee = XBee(); //Create XBee object
 XBeeResponse response = XBeeResponse();
 ZBRxResponse rx = ZBRxResponse();
-//XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x41515876); //Breadboard
-XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x4151A855); //PCB
+XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x41515876); //Breadboard
+//XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x4151A855); //PCB
 ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
 ZBTxStatusResponse txStatus = ZBTxStatusResponse();
 
@@ -178,7 +178,7 @@ void loop() {
           
 
           if(poiPayload[10]!=0x00){
-            payload[11] = 0x01;
+            payload[16] = 0x01;
             for(int i=0;i<15;i++){
               payload[i+17] = poiPayload[i];
               poiPayload[i] = 0;            //Clean up array for next use

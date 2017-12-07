@@ -9,9 +9,11 @@ Created on Wed Nov 15 19:41:46 2017
 
 import serial
 
+count = 0
+
 packetqueue = []
 
-port = serial.Serial('COM3',9600)
+port = serial.Serial('COM9',9600)
 while 1==1:
     packet = port.read(83)
     print('Read')
@@ -23,10 +25,12 @@ while 1==1:
         packettowrite = packetqueue.pop(0)
         port.write(packettowrite)
         print('Sending new packet')
-        print(packettowrite)
     if packet[2] == 0x00:
+        count += 1
+        print(count)
         packetarray= bytearray([0x7e,0x51,0x02]+[0xAA]*80)
         packetqueue.append(packetarray)
+
 while 1==1:
     packet = port.read(83)
     print('Read')
