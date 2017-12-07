@@ -37,25 +37,19 @@ String GPSLongitudeRead;
 float latitude;
 float longitude;
 
-String currLatLong;
-String timeString;
-String compassString;
-String stringOut;
-
 byte stale = 0x00;
 
 int statusLed = 13;
 int buttonPin = 11;
 
-//uint32_t timer = millis();
 
 //XBee Initialization
 #define XBeeSerial Serial1 //Teensy Ports 0/RX1 and 1/TX1
 XBee xbee = XBee(); //Create XBee object
 XBeeResponse response = XBeeResponse();
 ZBRxResponse rx = ZBRxResponse();
-//XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x41515876); //Breadboard
-XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x4151A855); //PCB
+XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x41515876); //Breadboard
+//XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x4151A855); //PCB
 ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
 ZBTxStatusResponse txStatus = ZBTxStatusResponse();
 
@@ -68,8 +62,6 @@ Adafruit_GPS GPS(&GPSSerial);
 // Set to 'true' if you want to debug and listen to the raw GPS sentences
 #define GPSECHO false
 
-uint32_t timer = millis();
-uint32_t timer1 = millis();
 uint32_t timerStale = millis();
 
 void setup() {
@@ -108,8 +100,6 @@ void loop() {
   int dateSecond = GPS.seconds;
   unixTime = unixTime = 946702800 + 31536000*dateYear + 2678400*(dateMonth - 1) + 86400*(dateDay - 1) + 3600*dateHour + 60*dateMinute + dateSecond - 86400*2 - 3600*5;
   
-  if (timer > millis()) timer = millis();
-  if (timer1 > millis()) timer1 = millis();
   if (timerStale > millis()) timerStale = millis();
 
   timer = millis();
@@ -178,7 +168,7 @@ void loop() {
           
 
           if(poiPayload[10]!=0x00){
-            payload[11] = 0x01;
+            payload[16] = 0x01;
             for(int i=0;i<15;i++){
               payload[i+17] = poiPayload[i];
               poiPayload[i] = 0;            //Clean up array for next use
