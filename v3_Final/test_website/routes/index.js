@@ -23,6 +23,13 @@ module.exports = function (app) {
             return res.send(data);
         });
     });
+    
+    app.get('/allWaypoints', function(req, res) {
+        Point.getWaypoints(function(err, data) {
+            handle_err(err);
+            return res.send(data);
+        });
+    });
 
     app.get('/allQueenWaypoints', function(req, res) {
         var queenid = req.headers.queenid;

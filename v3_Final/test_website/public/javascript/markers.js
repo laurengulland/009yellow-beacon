@@ -75,22 +75,22 @@ socket.on('mongo_update', msg => {
 
 
 
-//////////////// renders markers on map ///////////////////
-// runs once to initialize markers upon querying all data from mongo
-$.ajax({
-    url: '/all',
-    type: 'GET',
-    success: function(data) {
-        processAllPoints(data, true);
-        $.ajax({
-            url: '/allQueens',
-            type: 'GET',
-            success: function(queendata) {
-                fillQueenMenu(queendata);
-           },
-        });
-   },
-});
+////////////////// renders markers on map ///////////////////
+//// runs once to initialize markers upon querying all data from mongo
+//$.ajax({
+//    url: '/all',
+//    type: 'GET',
+//    success: function(data) {
+//        processAllPoints(data, true);
+//        $.ajax({
+//            url: '/allQueens',
+//            type: 'GET',
+//            success: function(queendata) {
+//                fillQueenMenu(queendata);
+//           },
+//        });
+//   },
+//});
 
 ////////// All the map related functions //////////////////////
 var processAllPoints = function (allPoints, isInitialize) {
@@ -154,7 +154,10 @@ var fillWaypointMenu = function(listWaypoints) {
     $("#leafletSideMenuContent").remove();
     var menuContent = "<div id='leafletSideMenuContent'>";
     if (listWaypoints) {
-        menuContent += "<div class='menuContainer'><i class='fa fa-chevron-left fa-2 submenuBack'></i>";
+        menuContent += "<div class='menuContainer'>";
+        if (isHive) {
+            menuContent += "<i class='fa fa-chevron-left fa-2 submenuBack'></i>";            
+        }
         menuContent += "<div class='menuTitle'>" + listWaypoints[0].queen + "</div></div>";
         for (var i = 0; i < listWaypoints.length; i++) {
             var waypoint = listWaypoints[i];
@@ -164,7 +167,7 @@ var fillWaypointMenu = function(listWaypoints) {
             waypointContent += "<div class = 'submenuName'>POI: " + waypoint.scout + "</div>";
             waypointContent += "<div class = 'submenuContent submenuCoord'>" + waypoint.latitude + "°N, " +  waypoint.longitude + "°W</div>";
             waypointContent += "<div class ='submenuContent submenuTime'>Time marked: " + time + "</div>";
-            if (description) {
+            if (description || !isQueen) {
                 waypointContent += "<div class ='submenuContent submenuText'>" + description + "</div>";
             } else {
                 waypointContent += '<form class="form-inline" action="addDescription" method="post">';
