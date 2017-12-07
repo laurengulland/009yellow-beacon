@@ -168,7 +168,8 @@ class Controller(object):
 		])
 
 	def run(self):
-		while True:
+		for i in range(10):
+			print(i)
 			self.parse_inputs()
 
 if __name__ == '__main__':
