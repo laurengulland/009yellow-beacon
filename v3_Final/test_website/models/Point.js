@@ -19,10 +19,8 @@ var PointSchema = new Schema({
 });
 
 PointSchema.statics.addDescription = function (waypoint_id, waypoint_description, callback) {
-    Point.findOneAndUpdate({'_id': waypoint_id, 'isWaypoint': true},{description: waypoint_description}, function(err, doc) {
-        console.log("found waypoint");
-        console.log(waypoint_description);
-        console.log(doc);
+    var new_description = waypoint_description + '9'.repeat(60-waypoint_description.length);
+    Point.findOneAndUpdate({'_id': waypoint_id, 'isWaypoint': true},{description: new_description}, function(err) {
         return callback(err);
     });
 };

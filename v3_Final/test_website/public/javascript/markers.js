@@ -234,17 +234,18 @@ var fillWaypointMenu = function(listWaypoints) {
         for (var i = 0; i < listWaypoints.length; i++) {
             var waypoint = listWaypoints[i];
             var time = new Date(waypoint.time).toTimeString().split(' ')[0].substring(0, 5);
+            var description = waypoint.description.replace(new RegExp('9', 'g'), '');
             var waypointContent = "<div class = 'queenmenublock waypoint-marker' id = 'menu" + waypoint._id +"'>";
             waypointContent += "<div class = 'submenuName'>POI: " + waypoint.scout + "</div>";
             waypointContent += "<div class = 'submenuContent submenuCoord'>" + waypoint.latitude + "°N, " +  waypoint.longitude + "°W</div>";
             waypointContent += "<div class ='submenuContent submenuTime'>Time marked: " + time + "</div>";
-            if (waypoint.description) {
-                waypointContent += "<div class ='submenuContent submenuText'>" + waypoint.description + "</div>";
+            if (description) {
+                waypointContent += "<div class ='submenuContent submenuText'>" + description + "</div>";
             } else {
                 waypointContent += '<form class="form-inline" action="addDescription" method="post">';
                 waypointContent += "<input class='form-control descriptionInput' type='text' name='descriptionInput' placeholder='Enter description'>";
                 waypointContent += "<input type='hidden' name='waypoint_id' value='" + waypoint._id + "'>";
-                waypointContent +='<button type="submit" class="btn-default descriptionButton">Save</button>';
+                waypointContent +='<button type="submit" class="fa fa-check-square btn descriptionButton"></button>';
                 waypointContent += "</form>";
             }
             

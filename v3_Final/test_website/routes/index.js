@@ -12,8 +12,8 @@ module.exports = function (app) {
         console.log("adding description");
         console.log(waypoint_id);
         Point.addDescription(waypoint_id, description, function(err) {
-            return handle_err();
-//            res.redirect('back'); // TODO: might want to not reload the entire thing
+            handle_err();
+            return res.redirect('back'); // TODO: might want to not reload the entire thing
         });
     });
 
@@ -62,6 +62,7 @@ var handle_err = function(err) {
 // makes scout1 current, past, past scout2 current
 // queen1 current past, past, queen 2 current
 // waypoint1, wpt2
+var placeholder = "9".repeat(60);
 var makeFakeData = function() {
         var point = new Point({ 
             scout: "scout1", 
@@ -183,7 +184,7 @@ var makeFakeData = function() {
             isCurrent:false, 
             latitude:51.510, 
             longitude:-0.007, 
-            description:"", 
+            description:placeholder, 
             time:13, 
             needsTransmit:false,
         });
@@ -197,7 +198,7 @@ var makeFakeData = function() {
             isCurrent:false, 
             latitude:51.511, 
             longitude:-0.006, 
-            description:"", 
+            description:placeholder, 
             time:13, 
             needsTransmit:false,
         });
