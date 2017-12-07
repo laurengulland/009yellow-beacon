@@ -14,10 +14,13 @@ var PointSchema = new Schema({
     description: { type: String },
     time: { type: Number, required: true },
     needsTransmit: { type: Boolean},
+}, {
+    capped: 1000000,
 });
 
 PointSchema.statics.addDescription = function (waypoint_id, waypoint_description, callback) {
-    Point.findOneAndUpdate({'_id': waypoint_id, 'isWaypoint': true},{description: waypoint_description}, function(err) {
+    var new_description = waypoint_description + '9'.repeat(60-waypoint_description.length);
+    Point.findOneAndUpdate({'_id': waypoint_id, 'isWaypoint': true},{description: new_description}, function(err) {
         return callback(err);
     });
 };

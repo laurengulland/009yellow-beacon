@@ -1,10 +1,46 @@
-.menutitle{
+@font-face {
+    font-family: azonsansbold;
+    src: url('/css/fonts/AzoSans.otf') format('opentype');
+}
+
+.queenMarker {
+  width: 37px;
+  height: 37px;
+  background-image: url('/images/queen.png');
+  background-size: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selectedQueenMarker {
+  width: 37px;
+  height: 37px;
+  background-image: url('/images/selectedQueen.png');
+  background-size: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.queenMarkerLabel {
+  font-size: 16px;
+  color: black;
+}
+
+.menuTitle{
   background-color: black;
   color: #fbe104;
-  padding: 0px;
-  margin-left: 15px;
-  margin-bottom: 20px;
-  margin-top: 0px;
+  padding-left: 10px;
+  font-size: 20px;
+  display: inline-block;
+  float: left;
+}
+
+.menuContainer {
+    width: 100%;
+    height: 30px;
+    padding-left: 10px;
 }
 
 .queenmenublock{
@@ -14,10 +50,20 @@
   margin: 15px;
 }
 
-.queentitle{
-  margin-top:2px;
+.submenuName{
+  margin-left: 10px;
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
+.submenuContent {
   margin-left: 10px;
   margin-bottom: 0px;
+  font-size: 12px; 
+}
+
+.form-inline {
+  margin: 5px 0px 5px 10px;
 }
 
 .queencoord{
@@ -41,20 +87,39 @@
 .submenuBack {
     color: #fbe104;
     cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    float: left;
+    font-size: 30px;
 }
 
 .submenuBack:hover {
     color: #f8ba00;
+    font-size: 30px;
+}
+.leaflet-menu-close-button{
+    padding: 5px;
 }
 
 .form-control.descriptionInput {
     height: 30px;
+    border: 2px solid #fbe104;
+}
+.btn.descriptionButton {
+    font-size: 30px;
+    padding: 0px 0px 0px 5px;
+    border: none;
+    background-color: transparent;
+}
+.btn.descriptionButton:hover {
+    color: #f8ba00;
 }
 
 .bottomQueenMenu {
     color: #fbe104;
     padding: 10px 30px;
-    font-family: "azo-sans";
+    font-family: azonsansbold;
 }
 .leaflet-control-attribution, .leaflet-control-scale-line{
   padding: 2.5px;

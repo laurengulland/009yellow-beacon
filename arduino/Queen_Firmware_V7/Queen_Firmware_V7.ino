@@ -9,6 +9,7 @@
 
 //Libraries
 #include <XBee.h> //XBee library
+#include <Adafruit_GPS.h> //Adafruit GPS library
 
 //Byte Definition - Define several commonly used bytes to improve readablity
 #define EMPTY 0x00
@@ -28,8 +29,37 @@ uint8_t requestSX[83];                                            //Tablet reque
 int countdebug = 0;
 int count = 0; //Counter to track repetitions of searching cycles
 
+volatile unsigned long latTX;
+volatile unsigned long lonTX;
+volatile uint8_t longdir;
+volatile uint8_t latdir;
+volatile int unixTime;
+
+float GPSlat = 42.358340;
+float GPSlon = 71.094600;
+String GPSLatitudeRead;
+String GPSLongitudeRead;
+float latitude;
+float longitude;
+
+byte stale = 0x00;
+
 int statusLed = 13;
 int resetPin = 4;
+
+uint32_t timer = millis();
+uint32_t timerStale = millis();
+
+uint8_t queenPayload[17] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
+//GPS Initialization
+#define GPSSerial Serial2 //Teensy Ports 9/RX2 and 10/TX2
+// Connect to the GPS on the hardware port
+Adafruit_GPS GPS(&GPSSerial);
+     
+// Set GPSECHO to 'false' to turn off echoing the GPS data to the Serial console
+// Set to 'true' if you want to debug and listen to the raw GPS sentences
+#define GPSECHO false
 
 //XBee Preamble - Intialize XBee information
 #define XBeeSerial Serial1                                        //Teensy Ports 0/RX1 and 1/TX1
@@ -44,6 +74,12 @@ XBeeAddress64 hiveAddr64 = XBeeAddress64(0x0013A200,0x414FF2A7);
 #define TabletSerial Serial                                       //USB Serial
 
 void setup() {
+  GPS.begin(9600);
+  GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
+  GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate  
+
+  delay(1000);
+  GPSSerial.println(PMTK_Q_RELEASE);
   //Open Serial Ports with Baud rate of 9600 and attach to relevant XBee objects
   XBeeSerial.begin(9600);
   xbee.setSerial(XBeeSerial);
@@ -69,6 +105,76 @@ void loop() {
     }
   }
   //***END QUERY***  
+
+  //***QUEEN GPS QUERY
+  timer = millis();
+  while(millis()-timer < 500){
+    char c = GPS.read();
+    if (GPS.newNMEAreceived()) {
+      if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag to false
+        return; // we can fail to parse a sentence in which case we should just wait for another
+    }
+  }
+  int dateYear = GPS.year;
+  int dateMonth = GPS.month;
+  int dateDay = GPS.day;
+  int dateHour = GPS.hour;
+  int dateMinute = GPS.minute;
+  int dateSecond = GPS.seconds;
+  unixTime = unixTime = 946702800 + 31536000*dateYear + 2678400*(dateMonth - 1) + 86400*(dateDay - 1) + 3600*dateHour + 60*dateMinute + dateSecond - 86400*2 - 3600*5;
+  
+  if (timerStale > millis()) timerStale = millis();
+  if(GPS.fix){
+    String GPSLatituderead = String(fabs(GPS.latitudeDegrees),6);
+    String GPSLongituderead = String(fabs(GPS.longitudeDegrees),6);
+    float longitude = GPSLongituderead.toFloat();
+    float latitude = GPSLatituderead.toFloat();
+    latTX = (long) (latitude*1000000);
+    lonTX = (long) (longitude*1000000);
+    String longdirs = GPS.lon;
+    stale = 0x00;
+    if(longdirs=="E"){
+      longdir = 0x01;
+    }
+    else if(longdirs=="W"){
+      longdir = 0x02;
+    }
+    String latdirs = GPS.lat;
+    if(latdirs=="N"){
+      latdir = 0x01;
+    }
+    else if(latdirs=="S"){
+      latdir = 0x02;
+    }     
+  }
+  else { //Set to dummy data in middle of Kresege
+    if(millis()-timerStale > 120000){
+      timerStale = millis();
+      stale = 0x01;
+    }
+    latTX = (long) 42358340;
+    lonTX = (long) 71094600;
+  }
+  queenPayload[0] = latTX & 255;
+  queenPayload[1] = (latTX >> 8) & 255;  
+  queenPayload[2] = (latTX >> 16) & 255;
+  queenPayload[3] = (latTX >> 24) & 255;
+  queenPayload[4] = latdir;
+  queenPayload[5] = lonTX & 255;
+  queenPayload[6] = (lonTX >> 8) & 255;  
+  queenPayload[7] = (lonTX >> 16) & 255;
+  queenPayload[8] = (lonTX >> 24) & 255;
+  queenPayload[9] = longdir;
+  queenPayload[10] = 0x01;               //Scout ID
+  queenPayload[11] = unixTime & 255;
+  queenPayload[12] = (unixTime >> 8) & 255;  
+  queenPayload[13] = (unixTime >> 16) & 255;
+  queenPayload[14] = (unixTime >> 24) & 255;
+  queenPayload[15] = stale;
+  queenPayload[16] = 0x00;
+
+  sendTeensy(queenPayload,QUEEN_DATA,0x17);
+  //***END QUEEN GPS
   
   //***SEND DATA TO HIVE OVER SX***
   if(count == 3){

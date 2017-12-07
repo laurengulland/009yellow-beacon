@@ -9,15 +9,23 @@ module.exports = function (app) {
     app.post('/addDescription', function(req, res) {
         var description = req.body.descriptionInput;
         var waypoint_id = req.body.waypoint_id;
+        console.log("adding description");
         console.log(waypoint_id);
         Point.addDescription(waypoint_id, description, function(err) {
             handle_err();
-            res.redirect('back'); // TODO: might want to not reload the entire thing
+            return res.redirect('back'); // TODO: might want to not reload the entire thing
         });
     });
 
     app.get('/allQueens', function(req, res) {
         Point.getAllCurrentQueenLocations(function(err, data) {
+            handle_err(err);
+            return res.send(data);
+        });
+    });
+    
+    app.get('/allWaypoints', function(req, res) {
+        Point.getWaypoints(function(err, data) {
             handle_err(err);
             return res.send(data);
         });
@@ -44,7 +52,6 @@ module.exports = function (app) {
             if (err) {
                 console.log(err);
             } else {
-                console.log(data.length);
                 res.send(data);
             }
         });
@@ -62,6 +69,7 @@ var handle_err = function(err) {
 // makes scout1 current, past, past scout2 current
 // queen1 current past, past, queen 2 current
 // waypoint1, wpt2
+var placeholder = "9".repeat(60);
 var makeFakeData = function() {
         var point = new Point({ 
             scout: "scout1", 
@@ -183,7 +191,7 @@ var makeFakeData = function() {
             isCurrent:false, 
             latitude:51.510, 
             longitude:-0.007, 
-            description:"", 
+            description:placeholder, 
             time:13, 
             needsTransmit:false,
         });
@@ -197,7 +205,7 @@ var makeFakeData = function() {
             isCurrent:false, 
             latitude:51.511, 
             longitude:-0.006, 
-            description:"", 
+            description:placeholder, 
             time:13, 
             needsTransmit:false,
         });
