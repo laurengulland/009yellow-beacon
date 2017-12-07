@@ -37,17 +37,11 @@ String GPSLongitudeRead;
 float latitude;
 float longitude;
 
-String currLatLong;
-String timeString;
-String compassString;
-String stringOut;
-
 byte stale = 0x00;
 
 int statusLed = 13;
 int buttonPin = 11;
 
-//uint32_t timer = millis();
 
 //XBee Initialization
 #define XBeeSerial Serial1 //Teensy Ports 0/RX1 and 1/TX1
@@ -68,8 +62,6 @@ Adafruit_GPS GPS(&GPSSerial);
 // Set to 'true' if you want to debug and listen to the raw GPS sentences
 #define GPSECHO false
 
-uint32_t timer = millis();
-uint32_t timer1 = millis();
 uint32_t timerStale = millis();
 
 void setup() {
@@ -108,8 +100,6 @@ void loop() {
   int dateSecond = GPS.seconds;
   unixTime = unixTime = 946702800 + 31536000*dateYear + 2678400*(dateMonth - 1) + 86400*(dateDay - 1) + 3600*dateHour + 60*dateMinute + dateSecond - 86400*2 - 3600*5;
   
-  if (timer > millis()) timer = millis();
-  if (timer1 > millis()) timer1 = millis();
   if (timerStale > millis()) timerStale = millis();
 
   timer = millis();
