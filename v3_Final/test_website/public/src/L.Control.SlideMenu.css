@@ -3,6 +3,31 @@
     src: url('/css/fonts/AzoSans.otf') format('opentype');
 }
 
+.queenMarker {
+  width: 37px;
+  height: 37px;
+  background-image: url('/images/queen.png');
+  background-size: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selectedQueenMarker {
+  width: 37px;
+  height: 37px;
+  background-image: url('/images/selectedQueen.png');
+  background-size: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.queenMarkerLabel {
+  font-size: 16px;
+  color: black;
+}
+
 .menuTitle{
   background-color: black;
   color: #fbe104;

@@ -47,7 +47,7 @@ var button_functions = function() {
     $('.form-inline').on("click", function(e) {
         e.stopPropagation();
     });
-
+    
 //  $('.keyboard').keyboard({
 //  });
 //    $('.keyboard').bind('accepted', function(e, keyboard, el){

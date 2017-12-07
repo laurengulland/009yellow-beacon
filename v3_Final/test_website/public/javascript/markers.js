@@ -27,35 +27,6 @@ var scoutIcon = L.icon({
   popupAnchor: [0, -28]
 });
 
-//var queenIcon = L.divIcon({
-//  className: 'queenMapIcon',
-//  html: '<img src="images/waypoint-icon-blue.png">',
-//  iconSize: [37, 37],
-//  iconAnchor: [16, 37],
-//  popupAnchor: [0, -28]
-//});
-
-var queenIcon = L.icon({
-  iconUrl: 'images/queen.png',
-  iconSize: [37, 37],
-  iconAnchor: [16, 37],
-  popupAnchor: [0, -28]
-});
-
-var selectedQueenIcon = L.icon({
-  iconUrl: 'images/selectedQueen.png',
-  iconSize: [37, 37],
-  iconAnchor: [16, 37],
-  popupAnchor: [0, -28]
-});
-
-//var selectedQueenIcon = L.divIcon({
-//  html: '<img src="images/emo.png"/>',
-//  iconSize: [37, 37],
-//  iconAnchor: [16, 37],
-//  popupAnchor: [0, -28]
-//});
-
 var selectedWaypointMarker = "";
 var selectedQueenMarker = "";
 var allMarkers = {};
@@ -77,9 +48,7 @@ socket.on('connect', () => {
 //test_button.id = 'test_button';
 //test_button.innerHTML = 'socket.io test';
 //base.appendChild(test_button);
-//
-//
-//
+
 //test_button.addEventListener('click', () => {
 //    // On a given event (button click for example), emit a socket message
 //    // This name has to match the name on the client!
@@ -123,45 +92,6 @@ $.ajax({
    },
 });
 
-// runs every 5sec to read from entire db and draw all markers again
-//setInterval(function(){
-//    $.ajax({
-//        url: '/all',
-//        type: 'GET',
-//        success: function(data) {
-//            processAllPoints(data);
-//            if (selectedQueenMarker) {
-//                allMarkers[selectedQueenMarker].setIcon(selectedQueenIcon);
-//            } else if (selectedWaypointMarker) {
-//                allMarkers[selectedWaypointMarker].setIcon(selectedWaypointIcon);        
-//            }
-//            if ($(".menuTitle").length > 0) {
-//                if ($('.submenuBack').length > 0) {
-//                    var id = $('.menuTitle')[0].innerText;
-//                    $.ajax({
-//                        url: '/allQueenWaypoints',
-//                        type: 'GET',
-//                        headers: {"queenid": id},
-//                        success: function(data) {
-//                            fillWaypointMenu(data);
-//                       },
-//                    }); 
-//                } else {
-//                    $.ajax({
-//                        url: '/allQueens',
-//                        type: 'GET',
-//                        success: function(queendata) {
-//                            fillQueenMenu(queendata);
-//                       },
-//                    });   
-//                }                
-//            }
-//       },
-//    });    
-//            
-//},5000);
-
-
 ////////// All the map related functions //////////////////////
 var processAllPoints = function (allPoints, isInitialize) {
     for (var i = 0; i < allPoints.length; i++) {
@@ -202,13 +132,13 @@ var updateCurrentLocation = function(newPoint) {
     helperCurrent(newPoint);
 }
 
-var helperCurrent = function(p) { //null
+var helperCurrent = function(p) {
     if (p.queen) {
+        var queenIcon = getQueenIcon(p.queen, false);
         var queenMarker = L.marker([p.latitude, p.longitude], {icon: queenIcon}).addTo(mymap);
         queenMarker._icon.id = p.queen;
         queenMarker._icon.classList.add('queen-marker');
         console.log("added queen");
-//        queenMarker._icon.html = '<img src="images/emo.png">';
         allMarkers[p.queen] = queenMarker;                    
     } else if (p.scout){
         var scoutMarker = L.marker([p.latitude, p.longitude], {icon: scoutIcon}).addTo(mymap);
@@ -217,11 +147,6 @@ var helperCurrent = function(p) { //null
         allMarkers[p.scout] = scoutMarker;
         console.log("added scout");
     } 
-//    if (selectedQueenMarker) {
-//        allMarkers[selectedQueenMarker].setIcon(selectedQueenIcon);        
-//    } else if (selectedWaypointMarker) {
-//        allMarkers[selectedWaypointMarker].setIcon(selectedWaypointIcon);        
-//    }
 }
 
 // populates side menu with all waypoints associated with a given queen
@@ -297,6 +222,7 @@ var selectQueenMarker = function(markerid) {
     }
     deselectMarker();
     mymap.panTo(allMarkers[markerid].getLatLng());
+    var selectedQueenIcon = getQueenIcon(markerid, true);
     allMarkers[markerid].setIcon(selectedQueenIcon);
     selectedQueenMarker = markerid;
 }
@@ -308,9 +234,30 @@ var deselectMarker = function() {
         selectedWaypointMarker = "";        
     } else if (selectedQueenMarker.length > 0) {
         $('#menu' + selectedQueenMarker).css("background-color", "#fbe104");
+        var queenIcon = getQueenIcon(selectedQueenMarker, false);
         allMarkers[selectedQueenMarker].setIcon(queenIcon);
         selectedQueenMarker = "";        
     }
+}
+
+var getQueenIcon = function(queenid, isSelected) {
+    var markerLabel = queenid.replace(/\D/g,'');
+    if (isSelected) {
+        return L.divIcon({
+          className: 'queenMapIcon',
+          html: '<div class="selectedQueenMarker"><div class="queenMarkerLabel">' + markerLabel + '</div></div>',
+          iconSize: [37, 37],
+          iconAnchor: [16, 37],
+          popupAnchor: [0, -28]
+        });        
+    }
+    return L.divIcon({
+      className: 'queenMapIcon',
+      html: '<div class="queenMarker"><div class="queenMarkerLabel">' + markerLabel + '</div></div>',
+      iconSize: [37, 37],
+      iconAnchor: [16, 37],
+      popupAnchor: [0, -28]
+    }); 
 }
 
 //var dummydata = '[{ "_id": "2837hf3", "scout":"", "queen":"queen10", "isWaypoint":false, "isCurrent":true, "latitude":51.509, "longitude":-0.08, "description":"", "time":13, "needsTransmit":false },{ "_id": "3837hf3","scout":"scout2", "queen":"", "isWaypoint":false, "isCurrent":false, "latitude":51.508, "longitude":-0.09, "description":"", "time":13, "needsTransmit":false },{ "_id": "4837hf3","scout":"scout3", "queen":"", "isWaypoint":false, "isCurrent":true, "latitude":51.507, "longitude":-0.10, "description":"", "time":13, "needsTransmit":false }, { "_id": "5837hf3", "scout":"scout5", "queen":"queen1", "isWaypoint":true, "isCurrent":false, "latitude":51.505, "longitude":-0.12, "description":"", "time":13, "needsTransmit":false }, {"_id": "7837hf3", "scout":"scout5", "queen":"queen1", "isWaypoint":true, "isCurrent":false, "latitude":51.504, "longitude":-0.13, "description":"", "time":13, "needsTransmit":false }, { "_id": "8837hf3", "scout":"", "queen":"queen5", "isWaypoint":false, "isCurrent":true, "latitude":51.503, "longitude":-0.014, "description":"", "time":13, "needsTransmit":false }]';
