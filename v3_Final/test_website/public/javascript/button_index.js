@@ -83,5 +83,30 @@ var button_functions = function() {
     $('.form-inline').on("click", function(e) {
         e.stopPropagation();
     });
-
+    $('form').on("submit", function(e) {
+        e.preventDefault();
+//        var descriptionInput = this.find('descriptionInput').serialize();
+//        var waypoint_id = this.find('waypoint_id').serialize();
+        var descriptionInput = $(this).serializeArray()[0].value.toString();
+        var waypoint_id = $(this).serializeArray()[1].value;
+//        console.log(waypoint_id);
+        console.log(descriptionInput);
+        console.log(waypoint_id);
+        $.ajax({
+            url: '/addDescription',
+            type: 'POST',
+            headers: {"des": descriptionInput,
+                     "waypoint_id": waypoint_id},
+            success: function(data) {
+                $.ajax({
+                    url: '/allQueenWaypointsFromWaypoint',
+                    type: 'GET',
+                    headers: {"waypointid": waypoint_id},
+                    success: function(data) {
+                        fillWaypointMenu(data);
+                   },
+                });
+           },
+        }); 
+    });
 };
