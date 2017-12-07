@@ -7,13 +7,14 @@ module.exports = function (app) {
     });
 
     app.post('/addDescription', function(req, res) {
-        var description = req.body.descriptionInput;
-        var waypoint_id = req.body.waypoint_id;
-        console.log("adding description");
-        console.log(waypoint_id);
-        Point.addDescription(waypoint_id, description, function(err) {
+        var descriptionInput = req.headers.des;
+        var waypoint_id = req.headers.waypoint_id;
+        Point.addDescription(waypoint_id, descriptionInput, function(err) {
             handle_err();
-            return res.redirect('back'); // TODO: might want to not reload the entire thing
+            return res.send({
+                "description": descriptionInput, 
+                "waypoint_id": waypoint_id,
+            }); // TODO: might want to not reload the entire thing
         });
     });
 

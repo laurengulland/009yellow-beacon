@@ -105,6 +105,7 @@
 .form-control.descriptionInput {
     height: 30px;
     border: 2px solid #fbe104;
+    width: 80% !important;
 }
 .btn.descriptionButton {
     font-size: 30px;

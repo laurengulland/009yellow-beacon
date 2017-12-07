@@ -124,7 +124,7 @@ var updateCurrentLocation = function(newPoint) {
     var previousPoint;
     if (newPoint.queen) {
         previousPoint = allMarkers[newPoint.queen];
-        $('#menu' + previousPoint.queen + ' > .submenuTime').innerHTML = newPoint.time;
+        $('#menu' + previousPoint.queen + ' > .submenuTime')[0].innerHTML = newPoint.time;
     } else {
         previousPoint = allMarkers[newPoint.scout];
     }
@@ -170,7 +170,7 @@ var fillWaypointMenu = function(listWaypoints) {
             if (description || !isQueen) {
                 waypointContent += "<div class ='submenuContent submenuText'>" + description + "</div>";
             } else {
-                waypointContent += '<form class="form-inline" action="addDescription" method="post">';
+                waypointContent += '<form class="form-inline">';
                 waypointContent += "<input class='form-control descriptionInput' type='text' name='descriptionInput' placeholder='Enter description'>";
                 waypointContent += "<input type='hidden' name='waypoint_id' value='" + waypoint._id + "'>";
                 waypointContent +='<button type="submit" class="fa fa-check-square btn descriptionButton"></button>';

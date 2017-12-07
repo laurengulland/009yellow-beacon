@@ -59,7 +59,7 @@ var myButtonOptions = {
 			accessToken: 'pk.eyJ1IjoiMDA5eWVsbG93MTciLCJhIjoiY2phZnkwOHlsMTk1bjJ3cnoxNG4yaGxuNCJ9.ICzaK-eMacI1DF_b9YJcrw'
 		})
 
-		var mymap = L.map('mapid', {attributionControl: false, layers: [satLayer, topoLayer]}).setView([51.505, -0.09], 13);
+		var mymap = L.map('mapid', {attributionControl: false, layers: [satLayer, topoLayer]}).setView([42.358340, -71.094600], 13);
 
 		var baseMaps = {
     		"Satellite": satLayer,
