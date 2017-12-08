@@ -340,18 +340,25 @@
 	background: #fff;
 	border-radius: 5px;
 	}
-.leaflet-control-layers-toggle {
-	background-image: url(images/layers.png);
-	width: 36px;
-	height: 36px;
+
+	.leaflet-control-layers-toggle{
+	    width:auto;
+	    background-position:48% 47% ;
+			background-color: black;
+	    padding:3px;
+	    padding-left:0px;
+	    text-decoration:none;
+	    line-height:36px;
+		  border-radius: 2px;
 	}
-.leaflet-retina .leaflet-control-layers-toggle {
-	background-image: url(images/layers-2x.png);
-	background-size: 26px 26px;
+
+	.leaflet-retina .leaflet-control-layers-toggle {
+	background-image: url(images/yellowmap2.png);
+	background-size: 17px 17px;
 	}
 .leaflet-touch .leaflet-control-layers-toggle {
-	width: 44px;
-	height: 44px;
+	width: 30px;
+	height: 30px;
 	}
 .leaflet-control-layers .leaflet-control-layers-list,
 .leaflet-control-layers-expanded .leaflet-control-layers-toggle {

@@ -4,7 +4,7 @@
 
 var myButtonOptions = {
 			'text': 'MyButton',  // string
-			'iconUrl': '/images/baseball-marker.png',  // string
+			'iconUrl': '/images/savebutton2.png',  // string
 			'onClick': my_button_onClick,  // callback function
 			'hideText': true,  // bool
 			'maxWidth': 30,  // number
