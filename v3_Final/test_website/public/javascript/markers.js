@@ -3,33 +3,30 @@ var waypointIcon = L.icon({
   iconUrl: 'images/waypoint.png',
   iconSize: [37, 50],
   iconAnchor: [16, 37],
-  popupAnchor: [0, -28]
 });
 
 var selectedWaypointIcon = L.icon({
   iconUrl: 'images/selectedWaypoint.png',
   iconSize: [37, 50],
   iconAnchor: [16, 37],
-  popupAnchor: [0, -28]
 });
 
 var pastPosIcon = L.icon({
   iconUrl: 'images/black-dot.png',
   iconSize: [5, 5],
   iconAnchor: [2, 2],
-  popupAnchor: [0, -28]
 });
 
 var scoutIcon = L.icon({
   iconUrl: 'images/scout.png',
   iconSize: [20, 20],
-  iconAnchor: [16, 37],
-  popupAnchor: [0, -28]
+  iconAnchor: [10, 10],
 });
 
 var selectedWaypointMarker = "";
 var selectedQueenMarker = "";
 var allMarkers = {};
+var waypointOpen = false;
 
 ///////////// Point socket to our site //////////////////////
 const socket = io('http://localhost:3001');
@@ -40,6 +37,7 @@ socket.on('connect', () => {
 socket.on('mongo_update', msg => {
     console.log("mongo_update from server: ", msg);
     processAllPoints([msg], false);
+//    updateMenu();
 });
 
 
@@ -76,11 +74,14 @@ var updateCurrentLocation = function(newPoint) {
     var previousPoint;
     if (newPoint.queen) {
         previousPoint = allMarkers[newPoint.queen];
-        $('#menu' + previousPoint.queen + ' > .submenuTime')[0].innerHTML = newPoint.time;
+//        $('#menu' + newPoint.queen + ' > .submenuTime')[0].innerHTML = newPoint.time;
     } else {
         previousPoint = allMarkers[newPoint.scout];
     }
-    previousPoint.setIcon(pastPosIcon);    
+    if (previousPoint) {
+        previousPoint.setIcon(pastPosIcon);            
+    }
+
     helperCurrent(newPoint);
 }
 
@@ -103,6 +104,7 @@ var helperCurrent = function(p) {
 
 // populates side menu with all waypoints associated with a given queen
 var fillWaypointMenu = function(listWaypoints) {
+    waypointOpen = true;
     $("#leafletSideMenuContent").remove();
     var menuContent = "<div id='leafletSideMenuContent'>";
     if (listWaypoints) {
@@ -140,6 +142,7 @@ var fillWaypointMenu = function(listWaypoints) {
 
 // populates sidemenu with all queens in database
 var fillQueenMenu = function(listQueens) {
+    waypointOpen = true;
     $("#leafletSideMenuContent").remove();
     var menuContent = "<div id='leafletSideMenuContent'>";
     if (listQueens) {
