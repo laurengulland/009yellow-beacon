@@ -6,6 +6,8 @@
 var isQueen = true;
 var isHive = true;
 
+////////////////// renders markers on map ///////////////////
+//// runs once to initialize markers upon querying all data from mongo
 $.ajax({
     url: '/all',
     type: 'GET',
@@ -83,5 +85,26 @@ var button_functions = function() {
     $('.form-inline').on("click", function(e) {
         e.stopPropagation();
     });
-
+    
+    $('form').on("submit", function(e) {
+        e.preventDefault();
+        var descriptionInput = $(this).serializeArray()[0].value.toString();
+        var waypoint_id = $(this).serializeArray()[1].value;
+        $.ajax({
+            url: '/addDescription',
+            type: 'POST',
+            headers: {"des": descriptionInput,
+                     "waypoint_id": waypoint_id},
+            success: function(data) {
+                $.ajax({
+                    url: '/allQueenWaypointsFromWaypoint',
+                    type: 'GET',
+                    headers: {"waypointid": waypoint_id},
+                    success: function(data) {
+                        fillWaypointMenu(data);
+                   },
+                });
+           },
+        }); 
+    });
 };
