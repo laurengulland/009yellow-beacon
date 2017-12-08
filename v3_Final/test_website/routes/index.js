@@ -68,7 +68,7 @@ var handle_err = function(err) {
 };
 
 // makes scout1 current, past, past scout2 current
-// queen1 current past, past, queen 2 current
+// leader1 current past, past, queen 2 current
 // waypoint1, wpt2
 var placeholder = "9".repeat(60);
 var makeFakeData = function() {
@@ -131,7 +131,7 @@ var makeFakeData = function() {
         });
         point = new Point({ 
             scout: "", 
-            queen: "queen1",
+            queen: "leader1",
             isWaypoint: false,
             isCurrent:true, 
             latitude:51.506, 
@@ -145,7 +145,7 @@ var makeFakeData = function() {
         }); 
         point = new Point({ 
             scout: "", 
-            queen: "queen1",
+            queen: "leader1",
             isWaypoint: false,
             isCurrent:false, 
             latitude:51.507, 
@@ -159,7 +159,7 @@ var makeFakeData = function() {
         }); 
         point = new Point({ 
             scout: "", 
-            queen: "queen1",
+            queen: "leader1",
             isWaypoint: false,
             isCurrent:false, 
             latitude:51.508, 
@@ -173,7 +173,7 @@ var makeFakeData = function() {
         }); 
         point = new Point({ 
             scout: "", 
-            queen: "queen2",
+            queen: "leader2",
             isWaypoint: false,
             isCurrent:true, 
             latitude:51.509, 
@@ -187,7 +187,7 @@ var makeFakeData = function() {
         });
         point = new Point({ 
             scout: "scout1", 
-            queen: "queen1",
+            queen: "leader1",
             isWaypoint: true,
             isCurrent:false, 
             latitude:51.510, 
@@ -201,7 +201,7 @@ var makeFakeData = function() {
         }); 
         point = new Point({ 
             scout: "scout2", 
-            queen: "queen2",
+            queen: "leader2",
             isWaypoint: true,
             isCurrent:false, 
             latitude:51.511, 
