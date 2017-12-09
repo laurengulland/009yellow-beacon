@@ -37,7 +37,7 @@ socket.on('connect', () => {
 socket.on('mongo_update', msg => {
     console.log("mongo_update from server: ", msg);
     processAllPoints([msg], false);
-//    updateMenu();
+    updateMenu(msg);
 });
 
 
@@ -53,6 +53,7 @@ var processAllPoints = function (allPoints, isInitialize) {
             waypoint._icon.id = p._id;
             waypoint._icon.classList.add('waypoint-marker');
             allMarkers[p._id] = waypoint;
+            console.log("added waypoint");
         } else {
             if (p.isCurrent) {
                 var isStored = p.scout in allMarkers || p.queen in allMarkers;
@@ -67,19 +68,34 @@ var processAllPoints = function (allPoints, isInitialize) {
             }
         }
     }
-   var scout_id = "scout1";
-   $.ajax({
-      url: '/scoutTrack',
-      type: 'GET',
-      headers: {"scoutid": scout_id},
-      success: function(data) {
-          drawTracks(data);
-     },
-  });
+}
+
+var drawAllTracks = function() {
+    for (var moduleID in allMarkers) {
+        if (moduleID.includes("leader")) {
+            $.ajax({
+                url: '/queenTrack',
+                type: 'GET',
+                headers: {"queenid": moduleID},
+                success: function(data) {
+                    drawTracksHelper(data);
+                },
+            });            
+        } else if (moduleID.includes("scout")) {
+            $.ajax({
+                url: '/scoutTrack',
+                type: 'GET',
+                headers: {"scoutid": moduleID},
+                success: function(data) {
+                    drawTracksHelper(data);
+                },
+            });
+        }
+    }
 }
 
 // draws tracks between each of the scouts
-var drawTracks = function(pastPoints){
+var drawTracksHelper = function(pastPoints){
     console.log("drawing tracks")
     var pathCoords = [];
     for (var i = 0; i < pastPoints.length; i++) {
@@ -87,10 +103,15 @@ var drawTracks = function(pastPoints){
       y = pastPoints[i].longitude;
       pathCoords.push([x,y]);
     }
-   var pathLine = L.polyline(pathCoords).addTo(mymap);
-   pathLine.setStyle({color: 'grey'});
+   var pathLine = L.polyline(pathCoords, {
+        color: 'grey',
+        weight: 2,
+        smoothFactor: 3,       
+   }).addTo(mymap);
+//   pathLine.setStyle({color: 'grey'});
    console.log("drew tracks");
 }
+
 
 // runs to replace the current location of queens or scouts
 var updateCurrentLocation = function(newPoint) {
@@ -102,6 +123,13 @@ var updateCurrentLocation = function(newPoint) {
     }
     if (previousPoint) {
         previousPoint.setIcon(pastPosIcon);
+        var prevCoord = previousPoint.getLatLng();
+        var pathline = L.polyline(
+            [[prevCoord.lat, prevCoord.lng], [newPoint.latitude, newPoint.longitude]], {
+            color: 'grey',
+            weight: 2,
+            smoothFactor: 3,
+        }).addTo(mymap);
     }
 
     helperCurrent(newPoint);
@@ -110,7 +138,8 @@ var updateCurrentLocation = function(newPoint) {
 var updateMenu = function(newPoint) {
     if (newPoint.isWaypoint && waypointOpen) {
         // add waypoint menu
-
+        var newWaypoint = createWaypointSubmenu(newPoint);
+        $("queenmenublock"+ ":last-child").append(newWaypoint);
     } else if (newPoint.queen && !waypointOpen) {
         if ($('#menu' + newPoint.queen)) { // queen menu already exists
              $('#menu' + newPoint.queen + ' > .submenuTime')[0].innerHTML = newPoint.time;
@@ -156,24 +185,7 @@ var fillWaypointMenu = function(listWaypoints) {
         }
         menuContent += "<div class='menuTitle'>" + listWaypoints[0].queen + "</div></div>";
         for (var i = 0; i < listWaypoints.length; i++) {
-            var waypoint = listWaypoints[i];
-            var time = new Date(waypoint.time).toTimeString().split(' ')[0].substring(0, 5);
-            var description = waypoint.description.replace(new RegExp('9', 'g'), '');
-            var waypointContent = "<div class = 'queenmenublock waypoint-marker' id = 'menu" + waypoint._id +"'>";
-            waypointContent += "<div class = 'submenuName'>POI: " + waypoint.scout + "</div>";
-            waypointContent += "<div class = 'submenuContent submenuCoord'>" + waypoint.latitude + "°N, " +  waypoint.longitude + "°W</div>";
-            waypointContent += "<div class ='submenuContent submenuTime'>Time marked: " + time + "</div>";
-            if (description || !isQueen) {
-                waypointContent += "<div class ='submenuContent submenuText'>" + description + "</div>";
-            } else {
-                waypointContent += '<form class="form-inline">';
-                waypointContent += "<input class='form-control descriptionInput' type='text' name='descriptionInput' placeholder='Enter description'>";
-                waypointContent += "<input type='hidden' name='waypoint_id' value='" + waypoint._id + "'>";
-                waypointContent +='<button type="submit" class="fa fa-check-square btn descriptionButton"></button>';
-                waypointContent += "</form>";
-            }
-
-            menuContent += waypointContent + "</div>";
+            menuContent += createWaypointSubmenu(listWaypoints[i]);
         }
     }
     menuContent += "</div>";
@@ -239,6 +251,25 @@ var deselectMarker = function() {
         selectedQueenMarker = "";
     }
 }
+var createWaypointSubmenu = function(waypoint) {
+    var time = new Date(waypoint.time).toTimeString().split(' ')[0].substring(0, 5);
+    var description = waypoint.description.replace(new RegExp('9', 'g'), '');
+    var waypointContent = "<div class = 'queenmenublock waypoint-marker' id = 'menu" + waypoint._id +"'>";
+    waypointContent += "<div class = 'submenuName'>POI: " + waypoint.scout + "</div>";
+    waypointContent += "<div class = 'submenuContent submenuCoord'>" + waypoint.latitude + "°N, " +  waypoint.longitude + "°W</div>";
+    waypointContent += "<div class ='submenuContent submenuTime'>Time marked: " + time + "</div>";
+    if (description || !isQueen) {
+        waypointContent += "<div class ='submenuContent submenuText'>" + description + "</div>";
+    } else {
+        waypointContent += '<form class="form-inline">';
+        waypointContent += "<input class='form-control descriptionInput' type='text' name='descriptionInput' placeholder='Enter description'>";
+        waypointContent += "<input type='hidden' name='waypoint_id' value='" + waypoint._id + "'>";
+        waypointContent +='<button type="submit" class="fa fa-check-square btn descriptionButton"></button>';
+        waypointContent += "</form>";
+    }
+    return waypointContent + "</div>";
+}
+
 
 var getQueenIcon = function(queenid, isSelected) {
     var markerLabel = queenid.replace(/\D/g,'');

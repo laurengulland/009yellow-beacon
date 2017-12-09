@@ -13,6 +13,7 @@ $.ajax({
     type: 'GET',
     success: function(data) {
         processAllPoints(data, true);
+        drawAllTracks();
         if (isHive) {
             $.ajax({
                 url: '/allQueens',

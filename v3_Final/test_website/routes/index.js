@@ -58,7 +58,7 @@ module.exports = function (app) {
     
     app.get('/queenTrack', function(req, res) {
         var queenid = req.headers.queenid;
-        Point.getQueenTracks(scoutid, function(err, data) {
+        Point.getQueenTracks(queenid, function(err, data) {
             handle_err(err);
             return res.send(data);
         });
