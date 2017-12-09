@@ -2,6 +2,8 @@ import pymongo
 
 class DataPoint(object):
     def __init__(self, scout, queen, is_poi, is_current, latitude, longitude, description, time, needs_transmit):
+        if description is None:
+            description = '9'*60
         self.scout = scout
         self.queen = queen
         self.is_waypoint = is_poi
