@@ -57,7 +57,7 @@ var processAllPoints = function (allPoints, isInitialize) {
             if (p.isCurrent) {
                 var isStored = p.scout in allMarkers || p.queen in allMarkers;
                 if (isInitialize || !isStored) {
-                    helperCurrent(p);  
+                    helperCurrent(p);
                 } else {
                     updateCurrentLocation(p);
                 }              
@@ -67,6 +67,30 @@ var processAllPoints = function (allPoints, isInitialize) {
             }
         }
     }
+//    var scout_id = "scout1";
+//    $.ajax({
+//       url: '/scoutTrack',
+//       type: 'GET',
+//       headers: {"scoutid": scout_id},
+//       success: function(data) {
+//           drawTracks(data);
+//      },
+//   });
+}
+
+// draws tracks between each of the scouts
+var drawTracks = function(pastPoints){
+    console.log("drawing tracks")
+    console.log(pastPoints.length);
+    var pathCoords = [];
+    for (var i = 0; i < pastPoints.length-1; i++)
+        console.log(i);
+        console.log(pastPoints[i]);
+        x = pastPoints[i].latitude
+        y = pastPoints[i].longitude
+        pathCoords.push([x,y])
+   pathLine = L.polyline(pathCoords).addTo(mymap)
+   console.log("drew tracks")
 }
 
 // runs to replace the current location of queens or scouts

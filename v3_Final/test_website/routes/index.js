@@ -47,6 +47,22 @@ module.exports = function (app) {
             return res.send(data);
         });
     });
+    
+    app.get('/scoutTrack', function(req, res) {
+        var scoutid = req.headers.scoutid;
+        Point.getScoutTracks(scoutid, function(err, data) {
+            handle_err(err);
+            return res.send(data);
+        });
+    });
+    
+    app.get('/queenTrack', function(req, res) {
+        var queenid = req.headers.queenid;
+        Point.getQueenTracks(scoutid, function(err, data) {
+            handle_err(err);
+            return res.send(data);
+        });
+    });
 
     app.get('/all', function(req, res) {
         Point.getAll(function(err, data) {
