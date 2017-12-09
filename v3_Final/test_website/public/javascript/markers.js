@@ -1,96 +1,45 @@
-// vars for icons
+///////// stored vars for markers ////////////////////
 var waypointIcon = L.icon({
   iconUrl: 'images/waypoint.png',
   iconSize: [37, 50],
   iconAnchor: [16, 37],
-  popupAnchor: [0, -28]
 });
 
 var selectedWaypointIcon = L.icon({
   iconUrl: 'images/selectedWaypoint.png',
   iconSize: [37, 50],
   iconAnchor: [16, 37],
-  popupAnchor: [0, -28]
 });
 
 var pastPosIcon = L.icon({
   iconUrl: 'images/black-dot.png',
   iconSize: [5, 5],
   iconAnchor: [2, 2],
-  popupAnchor: [0, -28]
 });
 
 var scoutIcon = L.icon({
   iconUrl: 'images/scout.png',
   iconSize: [20, 20],
-  iconAnchor: [16, 37],
-  popupAnchor: [0, -28]
+  iconAnchor: [10, 10],
 });
 
 var selectedWaypointMarker = "";
 var selectedQueenMarker = "";
 var allMarkers = {};
+var waypointOpen = false;
 
-//////////////////////////////////
-/////  Socket Stuff
-//////////////////////////////////
-
-// Point socket to our site
+///////////// Point socket to our site //////////////////////
 const socket = io('http://localhost:3001');
-// This runs when it connects to the server-side library
 socket.on('connect', () => {
     console.log("connected on client");
-});
-
-// Make a button here for a quick example
-//const base = document.getElementsByClassName('leaflet-menu-contents')[0];
-//const test_button = document.createElement('button');
-//test_button.id = 'test_button';
-//test_button.innerHTML = 'socket.io test';
-//base.appendChild(test_button);
-
-//test_button.addEventListener('click', () => {
-//    // On a given event (button click for example), emit a socket message
-//    // This name has to match the name on the client!
-//    // This shows sending a JSON object 
-//    let data = {val: 'hello from client'}
-//    socket.emit('socket_from_client', data)
-//}, false)
-
-// Listen for our message from the server
-// Remember, the names need to match!
-socket.on('socket_from_server', msg => {
-    console.log("message from server: ", msg)
 });
 
 socket.on('mongo_update', msg => {
     console.log("mongo_update from server: ", msg);
     processAllPoints([msg], false);
+//    updateMenu();
 });
 
-//////////////////////////////////
-/////  End of Socket Stuff
-//////////////////////////////////
-
-
-
-
-////////////////// renders markers on map ///////////////////
-//// runs once to initialize markers upon querying all data from mongo
-//$.ajax({
-//    url: '/all',
-//    type: 'GET',
-//    success: function(data) {
-//        processAllPoints(data, true);
-//        $.ajax({
-//            url: '/allQueens',
-//            type: 'GET',
-//            success: function(queendata) {
-//                fillQueenMenu(queendata);
-//           },
-//        });
-//   },
-//});
 
 ////////// All the map related functions //////////////////////
 var processAllPoints = function (allPoints, isInitialize) {
@@ -106,7 +55,8 @@ var processAllPoints = function (allPoints, isInitialize) {
             allMarkers[p._id] = waypoint;
         } else {
             if (p.isCurrent) {
-                if (isInitialize) {
+                var isStored = p.scout in allMarkers || p.queen in allMarkers;
+                if (isInitialize || !isStored) {
                     helperCurrent(p);  
                 } else {
                     updateCurrentLocation(p);
@@ -124,11 +74,14 @@ var updateCurrentLocation = function(newPoint) {
     var previousPoint;
     if (newPoint.queen) {
         previousPoint = allMarkers[newPoint.queen];
-        $('#menu' + previousPoint.queen + ' > .submenuTime')[0].innerHTML = newPoint.time;
+//        $('#menu' + newPoint.queen + ' > .submenuTime')[0].innerHTML = newPoint.time;
     } else {
         previousPoint = allMarkers[newPoint.scout];
     }
-    previousPoint.setIcon(pastPosIcon);    
+    if (previousPoint) {
+        previousPoint.setIcon(pastPosIcon);            
+    }
+
     helperCurrent(newPoint);
 }
 
@@ -151,6 +104,7 @@ var helperCurrent = function(p) {
 
 // populates side menu with all waypoints associated with a given queen
 var fillWaypointMenu = function(listWaypoints) {
+    waypointOpen = true;
     $("#leafletSideMenuContent").remove();
     var menuContent = "<div id='leafletSideMenuContent'>";
     if (listWaypoints) {
@@ -188,6 +142,7 @@ var fillWaypointMenu = function(listWaypoints) {
 
 // populates sidemenu with all queens in database
 var fillQueenMenu = function(listQueens) {
+    waypointOpen = true;
     $("#leafletSideMenuContent").remove();
     var menuContent = "<div id='leafletSideMenuContent'>";
     if (listQueens) {
@@ -262,15 +217,3 @@ var getQueenIcon = function(queenid, isSelected) {
       popupAnchor: [0, -28]
     }); 
 }
-
-//var dummydata = '[{ "_id": "2837hf3", "scout":"", "queen":"queen10", "isWaypoint":false, "isCurrent":true, "latitude":51.509, "longitude":-0.08, "description":"", "time":13, "needsTransmit":false },{ "_id": "3837hf3","scout":"scout2", "queen":"", "isWaypoint":false, "isCurrent":false, "latitude":51.508, "longitude":-0.09, "description":"", "time":13, "needsTransmit":false },{ "_id": "4837hf3","scout":"scout3", "queen":"", "isWaypoint":false, "isCurrent":true, "latitude":51.507, "longitude":-0.10, "description":"", "time":13, "needsTransmit":false }, { "_id": "5837hf3", "scout":"scout5", "queen":"queen1", "isWaypoint":true, "isCurrent":false, "latitude":51.505, "longitude":-0.12, "description":"", "time":13, "needsTransmit":false }, {"_id": "7837hf3", "scout":"scout5", "queen":"queen1", "isWaypoint":true, "isCurrent":false, "latitude":51.504, "longitude":-0.13, "description":"", "time":13, "needsTransmit":false }, { "_id": "8837hf3", "scout":"", "queen":"queen5", "isWaypoint":false, "isCurrent":true, "latitude":51.503, "longitude":-0.014, "description":"", "time":13, "needsTransmit":false }]';
-//
-//var dp = '{ "_id": "6837hf3", "scout":"scout3", "queen":"", "isWaypoint":false, "isCurrent":true, "latitude":51.506, "longitude":-0.11, "description":"", "time":13, "needsTransmit":false }';
-//
-//var listq = '[{ "_id": "2837hf3", "scout":"", "queen":"QueenLatifah", "isWaypoint":false, "isCurrent":true, "latitude":51.509, "longitude":-0.08, "description":"", "time":13, "needsTransmit":false }]';
-//
-//processAllPoints(JSON.parse(dummydata));
-////updateCurrentLocation("scout1", JSON.parse(dp));
-//fillQueenMenu(JSON.parse(listq));
-//fillQueenMenu(JSON.parse(dummydata));
-//console.log("finsih parsing");
