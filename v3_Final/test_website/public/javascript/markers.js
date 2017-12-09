@@ -60,37 +60,36 @@ var processAllPoints = function (allPoints, isInitialize) {
                     helperCurrent(p);
                 } else {
                     updateCurrentLocation(p);
-                }              
+                }
             } else {
                 var pastPos = L.marker([p.latitude, p.longitude], {icon: pastPosIcon}).addTo(mymap);
                 console.log("add past point");
             }
         }
     }
-//    var scout_id = "scout1";
-//    $.ajax({
-//       url: '/scoutTrack',
-//       type: 'GET',
-//       headers: {"scoutid": scout_id},
-//       success: function(data) {
-//           drawTracks(data);
-//      },
-//   });
+   var scout_id = "scout1";
+   $.ajax({
+      url: '/scoutTrack',
+      type: 'GET',
+      headers: {"scoutid": scout_id},
+      success: function(data) {
+          drawTracks(data);
+     },
+  });
 }
 
 // draws tracks between each of the scouts
 var drawTracks = function(pastPoints){
     console.log("drawing tracks")
-    console.log(pastPoints.length);
     var pathCoords = [];
-    for (var i = 0; i < pastPoints.length-1; i++)
-        console.log(i);
-        console.log(pastPoints[i]);
-        x = pastPoints[i].latitude
-        y = pastPoints[i].longitude
-        pathCoords.push([x,y])
-   pathLine = L.polyline(pathCoords).addTo(mymap)
-   console.log("drew tracks")
+    for (var i = 0; i < pastPoints.length; i++) {
+      x = pastPoints[i].latitude;
+      y = pastPoints[i].longitude;
+      pathCoords.push([x,y]);
+    }
+   var pathLine = L.polyline(pathCoords).addTo(mymap);
+   pathLine.setStyle({color: 'grey'});
+   console.log("drew tracks");
 }
 
 // runs to replace the current location of queens or scouts
@@ -102,7 +101,7 @@ var updateCurrentLocation = function(newPoint) {
         previousPoint = allMarkers[newPoint.scout];
     }
     if (previousPoint) {
-        previousPoint.setIcon(pastPosIcon);            
+        previousPoint.setIcon(pastPosIcon);
     }
 
     helperCurrent(newPoint);
@@ -135,14 +134,14 @@ var helperCurrent = function(p) {
         queenMarker._icon.id = p.queen;
         queenMarker._icon.classList.add('queen-marker');
         console.log("added queen");
-        allMarkers[p.queen] = queenMarker;                    
+        allMarkers[p.queen] = queenMarker;
     } else if (p.scout){
         var scoutMarker = L.marker([p.latitude, p.longitude], {icon: scoutIcon}).addTo(mymap);
         scoutMarker._icon.id = p.scout;
         scoutMarker._icon.classList.add('scout-marker');
         allMarkers[p.scout] = scoutMarker;
         console.log("added scout");
-    } 
+    }
 }
 
 // populates side menu with all waypoints associated with a given queen
@@ -153,7 +152,7 @@ var fillWaypointMenu = function(listWaypoints) {
     if (listWaypoints) {
         menuContent += "<div class='menuContainer'>";
         if (isHive) {
-            menuContent += "<i class='fa fa-chevron-left fa-2 submenuBack'></i>";            
+            menuContent += "<i class='fa fa-chevron-left fa-2 submenuBack'></i>";
         }
         menuContent += "<div class='menuTitle'>" + listWaypoints[0].queen + "</div></div>";
         for (var i = 0; i < listWaypoints.length; i++) {
@@ -173,9 +172,9 @@ var fillWaypointMenu = function(listWaypoints) {
                 waypointContent +='<button type="submit" class="fa fa-check-square btn descriptionButton"></button>';
                 waypointContent += "</form>";
             }
-            
+
             menuContent += waypointContent + "</div>";
-        }        
+        }
     }
     menuContent += "</div>";
     $(".leaflet-menu-contents").append(menuContent);
@@ -198,7 +197,7 @@ var fillQueenMenu = function(listQueens) {
             queenContent += "<div class = 'submenuContent submenuCoord'>" + queen.latitude + "°N, " +  queen.longitude + "°W</div>";
             queenContent += "<div class ='submenuContent submenuTime'>Last received: " + time + "</div>";
             menuContent += queenContent + "</div>";
-        }        
+        }
     }
     menuContent += "</div>";
     $(".leaflet-menu-contents").append(menuContent);
@@ -232,12 +231,12 @@ var deselectMarker = function() {
     if (selectedWaypointMarker.length > 0) {
         $('#menu' + selectedWaypointMarker).css("background-color", "#fbe104");
         allMarkers[selectedWaypointMarker].setIcon(waypointIcon);
-        selectedWaypointMarker = "";        
+        selectedWaypointMarker = "";
     } else if (selectedQueenMarker.length > 0) {
         $('#menu' + selectedQueenMarker).css("background-color", "#fbe104");
         var queenIcon = getQueenIcon(selectedQueenMarker, false);
         allMarkers[selectedQueenMarker].setIcon(queenIcon);
-        selectedQueenMarker = "";        
+        selectedQueenMarker = "";
     }
 }
 
@@ -250,7 +249,7 @@ var getQueenIcon = function(queenid, isSelected) {
           iconSize: [37, 37],
           iconAnchor: [16, 37],
           popupAnchor: [0, -28]
-        });        
+        });
     }
     return L.divIcon({
       className: 'queenMapIcon',
@@ -258,5 +257,5 @@ var getQueenIcon = function(queenid, isSelected) {
       iconSize: [37, 37],
       iconAnchor: [16, 37],
       popupAnchor: [0, -28]
-    }); 
+    });
 }
