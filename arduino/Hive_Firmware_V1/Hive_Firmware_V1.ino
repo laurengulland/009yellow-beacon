@@ -11,6 +11,7 @@ ZBRxResponse rx = ZBRxResponse();
 #define TabletSerial Serial                                       //USB Serial
 
 int statusLed = 13;
+uint8_t payload[83] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 void setup() {
   // put your setup code here, to run once:
@@ -18,19 +19,24 @@ void setup() {
   SXxbee.setSerial(SXSerial);
   TabletSerial.begin(9600);
   pinMode(statusLed,OUTPUT);
+  flashLed(statusLed,3,50);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   SXxbee.readPacket();
-  if(xbee.getResponse().getApiId() == ZB_RX_RESPONSE){          //Check that we have an appropriate response
-    xbee.getResponse().getZBRxResponse(rx);                     //Read response
-    flashLed(statusLed,5,50);
+  if(SXxbee.getResponse().getApiId() == ZB_RX_RESPONSE){          //Check that we have an appropriate response
+    SXxbee.getResponse().getZBRxResponse(rx);                     //Read response
     for(int i = 0; i < rx.getDataLength(); i++){
-      TabletSerial.write(rx.getData()[i]);                             //Read payload into array
+      payload[i] = rx.getData()[i];                             //Read payload into array
     }
+      for(int i = 0; i < 83; i++){
+        TabletSerial.write(payload[i]);                             //Read payload into array
+      }
+    
+   
   }
-  
+  delay(50);
 }
 
 //Debug function to flash onboard Teensy LED

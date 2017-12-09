@@ -21,7 +21,7 @@
 
 //Variable Definition - Define variables to be used in the rest of the program
 //int scoutSerials[1][2] = {{0x13A200,0x4164D65A}};               //Serial numbers of all scout devices connected to queen, form of [SH,SL] (Breadboard)
-int scoutSerials[1][2] = {{0x13A200,0x4151A85D}};                 //Serial numbers of all scout devices connected to queen, form of [SH,SL] (PCB Scout)
+int scoutSerials[1][2] = {{0x13A200,0x4151A85B}};                 //Serial numbers of all scout devices connected to queen, form of [SH,SL] (PCB Scout)
 uint8_t accumlatedScoutData[83];                                  //Tablet sends single package of accumulated data
 uint8_t requestSX[83];                                            //Tablet requests SX transmission routine
 

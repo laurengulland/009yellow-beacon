@@ -23,9 +23,11 @@
 //Variable Definition - Define variables to be used in the rest of the program
 //int scoutSerials[1][2] = {{0x13A200,0x4164D65A}};               //Serial numbers of all scout devices connected to queen, form of [SH,SL] (Breadboard)
 //int scoutSerials[1][2] = {{0x13A200,0x4151A85D}};                 //Serial numbers of all scout devices connected to queen, form of [SH,SL] (PCB Scout)
-int scoutSerials[1][2] = {{0x13A200,0x4151A85B}}; 
+int scoutSerials[2][2] = {{0x13A200,0x4151A85B},{0x13A200,0x4151A864}}; 
 uint8_t accumlatedScoutData[83];                                  //Tablet sends single package of accumulated data
 uint8_t requestSX[83];                                            //Tablet requests SX transmission routine
+uint32_t hiveSH = 0x0013A200;
+uint32_t hiveSL = 0x415D5089;
 
 int countdebug = 0;
 int count = 0; //Counter to track repetitions of searching cycles
@@ -52,6 +54,7 @@ uint32_t timer = millis();
 uint32_t timerStale = millis();
 
 uint8_t queenPayload[17] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+uint8_t startCommand[3] = {0,0,0};
 
 //GPS Initialization
 #define GPSSerial Serial2 //Teensy Ports 9/RX2 and 10/TX2
@@ -69,7 +72,7 @@ XBee xbee = XBee();                                               //Create XBee 
 XBee SXxbee = XBee();
 XBeeResponse response = XBeeResponse();
 
-XBeeAddress64 hiveAddr64 = XBeeAddress64(0x0013A200,0x414FF2A7);
+XBeeAddress64 hiveAddr64 = XBeeAddress64(hiveSH,hiveSL);
 
 //Tablet Preamble
 #define TabletSerial Serial                                       //USB Serial
@@ -90,20 +93,33 @@ void setup() {
   pinMode(statusLed,OUTPUT);
   pinMode(resetPin,OUTPUT);
   digitalWrite(resetPin,HIGH);
+  flashLed(statusLed,3,50);
+  while(true){
+    while(TabletSerial.available()<3){
+      delay(5);
+    }
+    for(int i=0;i<3;i++){
+      startCommand[i]=TabletSerial.read();
+    }
+    if(startCommand[2]==0xC8){
+      break;
+    }
+  }
 }
 
 void loop() {
   //***QUERY SCOUTS FOR LOCATION DATA***
-  for(int i=0;i<1;i++){
-    queryScout(scoutSerials[i][0],scoutSerials[i][1]);  //Pass each serial number of scout into queryScout function
-    countdebug += 1;
-    if(countdebug == 25){
-      digitalWrite(resetPin, LOW);
-      delay(300);
-      digitalWrite(resetPin, HIGH);
-      delay(500);
-      countdebug = 0;
-    }
+  for(int k=0;k<2;k++){
+    queryScout(scoutSerials[k][0],scoutSerials[k][1]);  //Pass each serial number of scout into queryScout function
+//    countdebug += 1;
+//    if(countdebug == 25){
+//      digitalWrite(resetPin, LOW);
+//      delay(300);
+//      digitalWrite(resetPin, HIGH);
+//      delay(500);
+//      countdebug = 0;
+//    }
+    delay(30);
   }
   //***END QUERY***  
 
@@ -180,9 +196,8 @@ void loop() {
   //***END QUEEN GPS
   
   //***SEND DATA TO HIVE OVER SX***
-  if(count == 3){
+  if(count == 1){
     while(true){                                        //Maintain loop until broken when request is returned by an empty packet
-      
       sendTeensy({},REQUEST_TABLET,EMPTY);              //Request SX packet from Tablet
       uint8_t payload[83];
       while(TabletSerial.available()<83){
@@ -204,7 +219,7 @@ void loop() {
       ZBTxStatusResponse txStatus = ZBTxStatusResponse();
   
       SXxbee.send(zbTx);
-      delay(100);
+      delay(1000);
     }
     count = 0;
   }

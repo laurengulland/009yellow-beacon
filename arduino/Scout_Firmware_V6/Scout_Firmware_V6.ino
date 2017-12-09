@@ -11,6 +11,9 @@
 #include <XBee.h> //XBee library
 #include <Adafruit_GPS.h> //Adafruit GPS library
 
+uint32_t QueenSH = 0x0013A200;
+uint32_t QueenSL = 0x4151A856;
+
 //Byte Definition - Define several commonly used bytes to improve readablity
 #define EMPTY 0x00
 #define START_BYTE 0x7E
@@ -48,8 +51,7 @@ int buttonPin = 11;
 XBee xbee = XBee(); //Create XBee object
 XBeeResponse response = XBeeResponse();
 ZBRxResponse rx = ZBRxResponse();
-XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x41515876); //Breadboard
-//XBeeAddress64 addr64 = XBeeAddress64(0x13A200, 0x4151A855); //PCB
+XBeeAddress64 addr64 = XBeeAddress64(QueenSH, QueenSL); //PCB
 ZBTxRequest zbTx = ZBTxRequest(addr64, payload, sizeof(payload));
 ZBTxStatusResponse txStatus = ZBTxStatusResponse();
 
@@ -62,6 +64,7 @@ Adafruit_GPS GPS(&GPSSerial);
 // Set to 'true' if you want to debug and listen to the raw GPS sentences
 #define GPSECHO false
 
+uint32_t timer;
 uint32_t timerStale = millis();
 
 void setup() {
@@ -134,6 +137,8 @@ void loop() {
     }
     latTX = (long) 42358340;
     lonTX = (long) 71094600;
+    latdir = 0x01;
+    longdir = 0x02;
   }
   Serial.println(lonTX);
   Serial.println(latTX);
@@ -156,7 +161,7 @@ void loop() {
           payload[7] = (lonTX >> 16) & 255;
           payload[8] = (lonTX >> 24) & 255;
           payload[9] = longdir;
-          payload[10] = 0x01;               //Scout ID
+          payload[10] = 0x02;               //Scout ID
           payload[11] = unixTime & 255;
           payload[12] = (unixTime >> 8) & 255;  
           payload[13] = (unixTime >> 16) & 255;
