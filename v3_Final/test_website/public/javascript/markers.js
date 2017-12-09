@@ -26,7 +26,7 @@ var scoutIcon = L.icon({
 var selectedWaypointMarker = "";
 var selectedQueenMarker = "";
 var allMarkers = {};
-var waypointOpen = false;
+var waypointOpen = false; //TODO: should be isQueen
 
 ///////////// Point socket to our site //////////////////////
 const socket = io('http://localhost:3001');
@@ -98,7 +98,6 @@ var updateCurrentLocation = function(newPoint) {
     var previousPoint;
     if (newPoint.queen) {
         previousPoint = allMarkers[newPoint.queen];
-//        $('#menu' + newPoint.queen + ' > .submenuTime')[0].innerHTML = newPoint.time;
     } else {
         previousPoint = allMarkers[newPoint.scout];
     }
@@ -107,6 +106,26 @@ var updateCurrentLocation = function(newPoint) {
     }
 
     helperCurrent(newPoint);
+}
+
+var updateMenu = function(newPoint) {
+    if (newPoint.isWaypoint && waypointOpen) {
+        // add waypoint menu
+
+    } else if (newPoint.queen && !waypointOpen) {
+        if ($('#menu' + newPoint.queen)) { // queen menu already exists
+             $('#menu' + newPoint.queen + ' > .submenuTime')[0].innerHTML = newPoint.time;
+        } else {
+            // create queen menu
+            $.ajax({
+                url: '/allQueens',
+                type: 'GET',
+                success: function(queendata) {
+                    fillQueenMenu(queendata);
+               },
+            }); 
+        }
+    }
 }
 
 var helperCurrent = function(p) {
