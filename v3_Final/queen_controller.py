@@ -13,7 +13,8 @@ import model
 class Controller(object):
 	def __init__(self):
 		#initialize serial communication
-		self.port = serial.Serial('COM10') #MUST SELECT CORRECT PORT ON TABLE
+		self.port = serial.Serial('COM4') #MUST SELECT CORRECT PORT ON TABLE
+		self.port.write(bytearray([0x7e,0x01,0xc8]))
 		self.id = str(0) #necessary for queen
 		self.model = model.Model()
 
