@@ -22,8 +22,7 @@
 
 //Variable Definition - Define variables to be used in the rest of the program
 //int scoutSerials[1][2] = {{0x13A200,0x4164D65A}};               //Serial numbers of all scout devices connected to queen, form of [SH,SL] (Breadboard)
-//int scoutSerials[1][2] = {{0x13A200,0x4151A85D}};                 //Serial numbers of all scout devices connected to queen, form of [SH,SL] (PCB Scout)
-int scoutSerials[1][2] = {{0x13A200,0x4151A85B}}; 
+int scoutSerials[1][2] = {{0x13A200,0x4151A85B}};                 //Serial numbers of all scout devices connected to queen, form of [SH,SL] (PCB Scout)
 uint8_t accumlatedScoutData[83];                                  //Tablet sends single package of accumulated data
 uint8_t requestSX[83];                                            //Tablet requests SX transmission routine
 
@@ -69,7 +68,7 @@ XBee xbee = XBee();                                               //Create XBee 
 XBee SXxbee = XBee();
 XBeeResponse response = XBeeResponse();
 
-XBeeAddress64 hiveAddr64 = XBeeAddress64(0x0013A200,0x414FF2A7);
+XBeeAddress64 hiveAddr64 = XBeeAddress64(0x0013A200,0x415D5089);
 
 //Tablet Preamble
 #define TabletSerial Serial                                       //USB Serial
@@ -82,6 +81,7 @@ void setup() {
   delay(1000);
   GPSSerial.println(PMTK_Q_RELEASE);
   //Open Serial Ports with Baud rate of 9600 and attach to relevant XBee objects
+  //Open Serial Ports with Baud rate of 9600 and attach to relevant XBee objects
   XBeeSerial.begin(9600);
   xbee.setSerial(XBeeSerial);
   SXSerial.begin(9600);
@@ -90,6 +90,17 @@ void setup() {
   pinMode(statusLed,OUTPUT);
   pinMode(resetPin,OUTPUT);
   digitalWrite(resetPin,HIGH);
+//  while(true){
+//    while(TabletSerial.available()<3){
+//      delay(5);
+//    }
+//    for(int i=0;i<3;i++){
+//      startCommand[i]=TabletSerial.read();
+//    }
+//    if(startCommand[2]==0xC8){
+//      break;
+//    }
+//  }
 }
 
 void loop() {
@@ -107,13 +118,12 @@ void loop() {
   }
   //***END QUERY***  
 
-  //***QUEEN GPS QUERY
   timer = millis();
   while(millis()-timer < 500){
     char c = GPS.read();
     if (GPS.newNMEAreceived()) {
-      if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag to false
-        return; // we can fail to parse a sentence in which case we should just wait for another
+//      if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag to false
+////        return; // we can fail to parse a sentence in which case we should just wait for another
     }
   }
   int dateYear = GPS.year;
@@ -177,7 +187,6 @@ void loop() {
   queenPayload[16] = 0x00;
 
   sendTeensy(queenPayload,QUEEN_DATA,0x17);
-  //***END QUEEN GPS
   
   //***SEND DATA TO HIVE OVER SX***
   if(count == 3){
@@ -189,6 +198,11 @@ void loop() {
         delay(5);                                       //Wait until 83 bytes have accumlated in the serial buffer to ensure complete message read
       }
 
+//      byte discard = TabletSerial.read();
+//      byte lengthByte = TabletSerial.read();
+//      byte typeByte = TabletSerial.read();
+
+      
       for(int i = 0;i<83;i++){                          //Run through all bytes and insert into array
           payload[i] = TabletSerial.read();
       }
@@ -204,7 +218,7 @@ void loop() {
       ZBTxStatusResponse txStatus = ZBTxStatusResponse();
   
       SXxbee.send(zbTx);
-      delay(100);
+      delay(1000);
     }
     count = 0;
   }

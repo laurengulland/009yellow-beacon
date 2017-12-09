@@ -13,7 +13,7 @@ count = 0
 
 packetqueue = []
 
-port = serial.Serial('COM9',9600)
+port = serial.Serial('COM6',9600)
 while 1==1:
     packet = port.read(83)
     print('Read')
