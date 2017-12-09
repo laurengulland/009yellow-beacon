@@ -85,7 +85,7 @@ void setup() {
 }
 
 void loop() {
-  timer = millis();
+  int timer = millis();
   while(millis()-timer < 500){
   char c = GPS.read();
   if (GPSECHO)

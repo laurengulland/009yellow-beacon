@@ -1,8 +1,46 @@
+/////////////////////////////////////////////////////////
+/////  Initializes map with all markers from mongo
+/////////////////////////////////////////////////////////
+
+// for debugging, set both to true
+var isQueen = true;
+var isHive = true;
+
+////////////////// renders markers on map ///////////////////
+//// runs once to initialize markers upon querying all data from mongo
+$.ajax({
+    url: '/all',
+    type: 'GET',
+    success: function(data) {
+        processAllPoints(data, true);
+        if (isHive) {
+            $.ajax({
+                url: '/allQueens',
+                type: 'GET',
+                success: function(queendata) {
+                    fillQueenMenu(queendata);
+               },
+            }); 
+        } else {
+            $.ajax({
+                url: '/allWaypoints',
+                type: 'GET',
+                success: function(data) {
+                    fillWaypointMenu(data);
+               },
+            });            
+        }
+   },
+});
+
+
+/////////////////////////////////////////////////////////
+/////  Button functionality
+/////////////////////////////////////////////////////////
 $(document).ready(function () {
     button_functions();
 });
 
-// ensures all buttons have desired functionality
 var button_functions = function() {
 
     // if click on current queen, show list of POI
@@ -47,24 +85,26 @@ var button_functions = function() {
     $('.form-inline').on("click", function(e) {
         e.stopPropagation();
     });
-
-//  $('.keyboard').keyboard({
-//  });
-//    $('.keyboard').bind('accepted', function(e, keyboard, el){
-//        console.log(el.value);
-//        $.ajax({
-//            url: '/addDescription',
-//            type: 'GET',
-//            headers: {"description": el.value, "waypoint_id": keyboard.id},
-//            success: function() {
-//              var polygon = L.polygon([
-//                  [51.509, -0.08],
-//                  [51.503, -0.06],
-//                  [51.51, -0.047],
-//                  [51.50, -0.048]
-//              ]).addTo(mymap);
-//           },
-//        });    
-//    });
-
+    
+    $('form').on("submit", function(e) {
+        e.preventDefault();
+        var descriptionInput = $(this).serializeArray()[0].value.toString();
+        var waypoint_id = $(this).serializeArray()[1].value;
+        $.ajax({
+            url: '/addDescription',
+            type: 'POST',
+            headers: {"des": descriptionInput,
+                     "waypoint_id": waypoint_id},
+            success: function(data) {
+                $.ajax({
+                    url: '/allQueenWaypointsFromWaypoint',
+                    type: 'GET',
+                    headers: {"waypointid": waypoint_id},
+                    success: function(data) {
+                        fillWaypointMenu(data);
+                   },
+                });
+           },
+        }); 
+    });
 };

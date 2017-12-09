@@ -13,7 +13,8 @@ import model
 class Controller(object):
 	def __init__(self):
 		#initialize serial communication
-		self.port = serial.Serial('COM10') #MUST SELECT CORRECT PORT ON TABLE
+		self.port = serial.Serial('COM4') #MUST SELECT CORRECT PORT ON TABLE
+		self.port.write(bytearray([0x7e,0x01,0xc8]))
 		self.id = str(0) #necessary for queen
 		self.model = model.Model()
 
@@ -57,9 +58,9 @@ class Controller(object):
 		'''
 		qlat = self.get_signed_coord(content[0:5])
 		qlon = self.get_signed_coord(content[5:10])
-		queen_id = content[11]
-		queen_time = self.get_time_from_bytes(content[12:16])
-		self.model.add_location_data_point(None,str(queen_id),qlat,qlon,queen_time, None)
+		queen_id = content[10]
+		queen_time = self.get_time_from_bytes(content[11:15])
+		self.model.add_location_data_point(None,str(queen_id),qlat,qlon,queen_time)
 
 	def transmit_data(self):
 		packet = self.location_data_packet()
@@ -168,7 +169,8 @@ class Controller(object):
 		])
 
 	def run(self):
-		while True:
+		for i in range(100):
+			print(i)
 			self.parse_inputs()
 
 if __name__ == '__main__':

@@ -19,10 +19,8 @@ var PointSchema = new Schema({
 });
 
 PointSchema.statics.addDescription = function (waypoint_id, waypoint_description, callback) {
-    Point.findOneAndUpdate({'_id': waypoint_id, 'isWaypoint': true},{description: waypoint_description}, function(err, doc) {
-        console.log("found waypoint");
-        console.log(waypoint_description);
-        console.log(doc);
+    var new_description = waypoint_description + '9'.repeat(60-waypoint_description.length);
+    Point.findOneAndUpdate({'_id': waypoint_id, 'isWaypoint': true},{description: new_description}, function(err) {
         return callback(err);
     });
 };
@@ -39,14 +37,32 @@ PointSchema.statics.getAllCurrentQueenLocations = function (callback) {
     });
 };
 
+//PointSchema.statics.getScoutTracks = function (scout_id, callback) {
+//    Point.find({ 'scout': scout_id, 'isWaypoint': false }).sort({'time',-1}).exec(function (err, docs) {
+//        return callback(err, docs);
+//    });
+//};
+//
+//PointSchema.statics.getQueenTracks = function (queen_id, callback) {
+//    Point.find({ 'queen': queen_id, 'isWaypoint': false }).sort({'time',-1}).exec(function (err, docs) {
+//        return callback(err, docs);
+//    });
+//};
+
 PointSchema.statics.getScoutTracks = function (scout_id, callback) {
-    Point.find({ 'scout': scout_id, 'isCurrent': false , 'isWaypoint': false }, function (err, docs) {
+    Point.find({ 'scout': scout_id, 'isWaypoint': false }, function (err, docs) {
+        docs.sort(function (a, b) { // sorts in descending order
+            return b[1] - a[1];
+        });
         return callback(err, docs);
     });
 };
 
 PointSchema.statics.getQueenTracks = function (queen_id, callback) {
-    Point.find({ 'queen': queen_id, 'isCurrent': false , 'isWaypoint': false }, function (err, docs) {
+    Point.find({ 'queen': queen_id, 'isWaypoint': false }, function (err, docs) {
+        docs.sort(function (a, b) { // sorts in descending order
+            return b[1] - a[1];
+        });
         return callback(err, docs);
     });
 };

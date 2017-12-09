@@ -3,6 +3,31 @@
     src: url('/css/fonts/AzoSans.otf') format('opentype');
 }
 
+.queenMarker {
+  width: 37px;
+  height: 37px;
+  background-image: url('/images/queen.png');
+  background-size: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selectedQueenMarker {
+  width: 37px;
+  height: 37px;
+  background-image: url('/images/selectedQueen.png');
+  background-size: contain;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.queenMarkerLabel {
+  font-size: 16px;
+  color: black;
+}
+
 .menuTitle{
   background-color: black;
   color: #fbe104;
@@ -34,7 +59,7 @@
 .submenuContent {
   margin-left: 10px;
   margin-bottom: 0px;
-  font-size: 12px; 
+  font-size: 12px;
 }
 
 .form-inline {
@@ -79,6 +104,17 @@
 
 .form-control.descriptionInput {
     height: 30px;
+    border: 2px solid #fbe104;
+    width: 80% !important;
+}
+.btn.descriptionButton {
+    font-size: 30px;
+    padding: 0px 0px 0px 5px;
+    border: none;
+    background-color: transparent;
+}
+.btn.descriptionButton:hover {
+    color: #f8ba00;
 }
 
 .bottomQueenMenu {
