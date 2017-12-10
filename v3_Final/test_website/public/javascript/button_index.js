@@ -27,7 +27,7 @@ $.ajax({
                 url: '/allWaypoints',
                 type: 'GET',
                 success: function(data) {
-                    fillWaypointMenu(data);
+                    fillWaypointMenu(data); //need queenid
                },
             });            
         }
@@ -52,7 +52,7 @@ var button_functions = function() {
             type: 'GET',
             headers: {"queenid": id},
             success: function(data) {
-                fillWaypointMenu(data);
+                fillWaypointMenu(data, id);
                 selectQueenMarker(id);
            },
         });
