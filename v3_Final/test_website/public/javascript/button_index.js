@@ -45,7 +45,7 @@ $(document).ready(function () {
 var button_functions = function() {
 
     // if click on current queen, show list of POI
-    $('.queen-marker').click(function () {
+    $(document).on('click', '.queen-marker', function() {
         var id = this.id.replace("menu", "");
         $.ajax({
             url: '/allQueenWaypoints',
@@ -59,7 +59,7 @@ var button_functions = function() {
     });
     
     // if click on poi, show list of POI with poi highlights
-    $('.waypoint-marker').click(function() {
+    $(document).on('click', '.waypoint-marker', function() {
         var id = this.id.replace("menu", "");
         $.ajax({
             url: '/allQueenWaypointsFromWaypoint',
@@ -73,7 +73,7 @@ var button_functions = function() {
     });
 
     // when you click back on submenu
-    $('.submenuBack').click(function () {
+    $(document).on('click', '.submenuBack', function() {
         $.ajax({
             url: '/allQueens',
             type: 'GET',
@@ -83,11 +83,12 @@ var button_functions = function() {
         });
     });
     
-    $('.form-inline').on("click", function(e) {
+    $(document).on('click', '.form-inline', function(e) {
         e.stopPropagation();
     });
     
-    $('form').on("submit", function(e) {
+//    $('form').on("submit", function(e) {
+    $(document).on('submit', 'form', function(e) {
         e.preventDefault();
         var descriptionInput = $(this).serializeArray()[0].value.toString();
         var waypoint_id = $(this).serializeArray()[1].value;
