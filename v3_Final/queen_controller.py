@@ -42,7 +42,7 @@ class Controller(object):
 		slon = self.get_signed_coord(content[5:10])
 		scout_id = content[10]
 		scout_time = self.get_time_from_bytes(content[11:15])
-		self.model.add_location_data_point(str(scout_id),None,slat,slon,scout_time)
+		self.model.add_location_data_point('searcher' + str(scout_id),None,slat,slon,scout_time)
 		is_stale = content[15] == 1
 		has_poi = content[16]==1
 		if has_poi:
@@ -50,7 +50,7 @@ class Controller(object):
 			plon = self.get_signed_coord(content[22:27])
 			#scout_id = content[27] this is redundant
 			poi_time = self.get_time_from_bytes(content[28:32])
-			self.model.add_poi_data_point(str(scout_id),str(self.id),plat,plon,poi_time,None)
+			self.model.add_poi_data_point('searcher' + str(scout_id),'lead' + str(self.id),plat,plon,poi_time,None)
 
 	def parse_queen_input(self, content):
 		'''
@@ -60,7 +60,7 @@ class Controller(object):
 		qlon = self.get_signed_coord(content[5:10])
 		queen_id = content[10]
 		queen_time = self.get_time_from_bytes(content[11:15])
-		self.model.add_location_data_point(None,str(queen_id),qlat,qlon,queen_time)
+		self.model.add_location_data_point(None,'lead' + str(queen_id),qlat,qlon,queen_time)
 
 	def transmit_data(self):
 		packet = self.location_data_packet()
@@ -102,14 +102,14 @@ class Controller(object):
 		if queen is None:
 			packet[4] = 0xFF
 		else:
-			packet[4]=int(queen)
+			packet[4]=int(queen[4:])
 		packet[5:10]=self.get_coord_bytes(data['latitude'])
 		packet[10:15] = self.get_coord_bytes(data['longitude'])
 		scout = data['scout']
 		if scout is None:
 			packet[15]=0xFF
 		else:
-			packet[15]=int(scout)
+			packet[15]=int(scout[7:])
 		timestamp = data['time']
 		packet[16:20] = self.time_int_to_bytearray(timestamp)
 		for i in range(len(descbytes)):
@@ -129,8 +129,12 @@ class Controller(object):
 			cbyte = 0
 		if scout_id is None:
 			scout_id = 0xFF
+		else:
+			scout_id = scout_id[7:]
 		if queen_id is None:
 			queen_id = 0xFF
+		else:
+			queen_id = queen_id[4:]
 		return bytearray([int(queen_id)])+self.get_coord_bytes(lat)+self.get_coord_bytes(lon)+bytearray([int(scout_id)])+self.time_int_to_bytearray(timestamp)+bytearray([cbyte])
 
 	def get_time_from_bytes(self, timebytes):

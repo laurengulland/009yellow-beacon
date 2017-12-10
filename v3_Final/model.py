@@ -47,7 +47,7 @@ class Model(object):
         self.points.insert_one(data.mongo_dict())
 
     def add_hive_data_point(self, scout, queen, is_poi, is_current, latitude, longitude, description, time):
-        point = self.points.find_one({'scout': scout, 'queen':queen,'isWaypoint': is_poi,'latitude':latitude,'longitude': longitude})
+        point = self.points.find_one({'scout': scout, 'queen':queen,'isWaypoint': is_poi,'latitude':latitude,'longitude': longitude, 'time': time})
         data = DataPoint(scout, queen, is_poi, is_current, latitude, longitude, description, time, None)
         if point is None:
             self.points.insert_one(data.mongo_dict())
