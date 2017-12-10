@@ -8,7 +8,10 @@ class Controller(object):
         self.model = model.Model()
 
     def run(self):
-        for i in range(6):
+        i=0
+        while True:
+            print(i)
+            i+=1
             data = self.port.read(83)
             self.store_data(data[3:])
 
@@ -19,20 +22,20 @@ class Controller(object):
         if queen == 0xFF:
             queen = None
         else:
-            queen = str(queen)
+            queen = 'lead' + str(queen)
         latitude = self.get_signed_coord(content[2:7])
         longitude = self.get_signed_coord(content[7:12])
         scout = content[12]
         if scout == 0xFF:
             scout = None
         else:
-            scout = str(scout)
+            scout = 'searcher' + str(scout)
         timestamp = self.get_time_from_bytes(content[13:17])
         is_current = (content[17]==0x01)
         done = False
         description_end = 18
         while not done:
-            if content[description_end] == 0:
+            if description_end == len(content) or content[description_end] == 0:
                 done = True
             else:
                 description_end +=1
@@ -40,6 +43,7 @@ class Controller(object):
             description = None
         else:
             description = content[18:description_end]
+            description = str(description, 'ascii')
         self.model.add_hive_data_point(scout, queen, is_poi,is_current,latitude,longitude, description,timestamp)
 
     def get_time_from_bytes(self, timebytes):
