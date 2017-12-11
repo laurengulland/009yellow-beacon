@@ -52,7 +52,7 @@ var myButtonOptions = {
 		})
 
 		var topoLayer = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiMDA5eWVsbG93MTciLCJhIjoiY2phZnkwOHlsMTk1bjJ3cnoxNG4yaGxuNCJ9.ICzaK-eMacI1DF_b9YJcrw', {
-			maxZoom: 20,
+			maxZoom: 25,
 			minZoom: 13,
 			subdomains: 'abc',
 			id: 'mapbox.outdoors',//Alternatively, 'mapbox.satellite, mapbox.streets, mapbox.outdoors'

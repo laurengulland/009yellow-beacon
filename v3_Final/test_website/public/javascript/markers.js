@@ -1,26 +1,35 @@
 ///////// stored vars for markers ////////////////////
+var iconSize;
+var pathWeight;
+if (makeIconsBigger) {
+    iconSize = 100;
+    pathWeight = 10;
+} else {
+    iconSize = 40;
+    pathWeight = 5;
+}
 var waypointIcon = L.icon({
   iconUrl: 'images/waypoint.png',
-  iconSize: [37, 50],
-  iconAnchor: [18.5, 0],
+  iconSize: [iconSize, iconSize*1.3],
+  iconAnchor: [iconSize/2, 0],
 });
 
 var selectedWaypointIcon = L.icon({
   iconUrl: 'images/selectedWaypoint.png',
-  iconSize: [37, 50],
-  iconAnchor: [18.5, 0],
+  iconSize: [iconSize, iconSize*1.3],
+  iconAnchor: [iconSize/2, 0],
 });
 
 var pastPosIcon = L.icon({
   iconUrl: 'images/black-dot.png',
-  iconSize: [5, 5],
-  iconAnchor: [2.5, 2.5],
+  iconSize: [iconSize/10, iconSize/10],
+  iconAnchor: [iconSize/20, iconSize/20],
 });
 
 var scoutIcon = L.icon({
   iconUrl: 'images/scout.png',
-  iconSize: [20, 20],
-  iconAnchor: [10, 10],
+  iconSize: [iconSize/2, iconSize/2],
+  iconAnchor: [iconSize/4, iconSize/4],
 });
 
 var selectedWaypointMarker = "";
@@ -104,7 +113,7 @@ var drawTracksHelper = function(pastPoints){
     }
    var pathLine = L.polyline(pathCoords, {
         color: 'black',
-        weight: 5,
+        weight: pathWeight,
         smoothFactor: 3,       
    }).addTo(mymap);
 }
@@ -124,7 +133,7 @@ var updateCurrentLocation = function(newPoint) {
         var pathline = L.polyline(
             [[prevCoord.lat, prevCoord.lng], [newPoint.latitude, newPoint.longitude]], {
             color: 'black',
-            weight: 5,
+            weight: pathWeight,
             smoothFactor: 3,
         }).addTo(mymap);
     }
@@ -306,15 +315,15 @@ var getQueenIcon = function(queenid, isSelected) {
         return L.divIcon({
           className: 'queenMapIcon',
           html: '<div class="queenMarker selectedQueenMarker"><div class="queenMarkerLabel">' + markerLabel + '</div></div>',
-          iconSize: [37, 37],
-          iconAnchor: [18.5, 18.5],
+          iconSize: [iconSize, iconSize],
+          iconAnchor: [iconSize/2, iconSize/2],
         });
     }
     return L.divIcon({
       className: 'queenMapIcon',
       html: '<div class="queenMarker"><div class="queenMarkerLabel">' + markerLabel + '</div></div>',
-      iconSize: [37, 37],
-      iconAnchor: [18.5, 18.5],
+      iconSize: [iconSize, iconSize],
+      iconAnchor: [iconSize/2, iconSize/2],
     });
 }
 
