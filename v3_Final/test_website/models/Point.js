@@ -37,18 +37,6 @@ PointSchema.statics.getAllCurrentQueenLocations = function (callback) {
     });
 };
 
-//PointSchema.statics.getScoutTracks = function (scout_id, callback) {
-//    Point.find({ 'scout': scout_id, 'isWaypoint': false }).sort({'time',-1}).exec(function (err, docs) {
-//        return callback(err, docs);
-//    });
-//};
-//
-//PointSchema.statics.getQueenTracks = function (queen_id, callback) {
-//    Point.find({ 'queen': queen_id, 'isWaypoint': false }).sort({'time',-1}).exec(function (err, docs) {
-//        return callback(err, docs);
-//    });
-//};
-
 PointSchema.statics.getScoutTracks = function (scout_id, callback) {
     Point.find({ 'scout': scout_id, 'isWaypoint': false }, function (err, docs) {
         docs.sort(function (a, b) { // sorts in descending order

@@ -26,7 +26,7 @@ var scoutIcon = L.icon({
 var selectedWaypointMarker = "";
 var selectedQueenMarker = "";
 var allMarkers = {};
-var waypointOpen = false; //TODO: should be isQueen
+var waypointOpen = !isHive; //TODO: should be isQueen
 
 ///////////// Point socket to our site //////////////////////
 const socket = io('http://localhost:3001');
@@ -38,7 +38,6 @@ socket.on('mongo_update', msg => {
     console.log("mongo_update from server: ", msg);
     processAllPoints([msg], false);
     updateMenu(msg);
-//    button_functions();
 });
 
 
@@ -69,7 +68,6 @@ var processAllPoints = function (allPoints, isInitialize) {
             }
         }
     }
-//    button_functions();
 }
 
 var drawAllTracks = function() {
@@ -205,7 +203,7 @@ var fillWaypointMenu = function(listWaypoints, queenid) {
             if (candidateQueen.length) {
                 menuQueenTitle = candidateQueen[0];
             } else {
-                menuQueenTitle = "No leads detected";
+                menuQueenTitle = "No waypoints received";
             }
         }
 
@@ -218,7 +216,6 @@ var fillWaypointMenu = function(listWaypoints, queenid) {
     menuContent += "</div>";
     $(".leaflet-menu-contents").append(menuContent);
     $('#menu' + selectedWaypointMarker).css("background-color", "white");
-//    button_functions();
 }
 
 // populates sidemenu with all queens in database
@@ -226,7 +223,7 @@ var fillQueenMenu = function(listQueens) {
     waypointOpen = false;
     $("#leafletSideMenuContent").remove();
     var menuContent = "<div id='leafletSideMenuContent'>";
-    if (listQueens) {
+    if (listQueens.length) {
         menuContent += "<div class='menuContainer'><div class='menuTitle'>List of Leads</div></div>";
         for (var i = 0; i < listQueens.length; i++) {
             var queen = listQueens[i];
@@ -237,6 +234,8 @@ var fillQueenMenu = function(listQueens) {
             queenContent += "<div class ='submenuContent submenuTime'>Last received: " + time + "</div>";
             menuContent += queenContent + "</div>";
         }
+    } else {
+        menuContent += "<div class='menuContainer'><div class='menuTitle'>No leads found</div></div>";
     }
     menuContent += "</div>";
     $(".leaflet-menu-contents").append(menuContent);

@@ -2,10 +2,6 @@
 /////  Initializes map with all markers from mongo
 /////////////////////////////////////////////////////////
 
-// for debugging, set both to true
-var isQueen = true;
-var isHive = true;
-
 ////////////////// renders markers on map ///////////////////
 //// runs once to initialize markers upon querying all data from mongo
 $.ajax({
