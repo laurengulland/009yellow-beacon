@@ -2,8 +2,22 @@
     font-family: azonsansbold;
     src: url('/css/fonts/AzoSans.otf') format('opentype');
 }
+@font-face {
+    font-family: allerbold;
+    src: url('/css/fonts/Aller_Bd.ttf') format('truetype');
+}
+@font-face {
+    font-family: aller;
+    src: url('/css/fonts/Aller_Rg.ttf') format('truetype');
+}
 
+.leaflet-buttons-control-img {
+    margin-bottom: 10px;
+}
 .queenMarker {
+  font-family: allerbold;
+  font-size: 25px;
+  color: black;
   width: 37px;
   height: 37px;
   background-image: url('/images/queen.png');
@@ -23,24 +37,19 @@
   justify-content: center;
 }
 
-.queenMarkerLabel {
-  font-size: 16px;
-  color: black;
-}
-
 .menuTitle{
   background-color: black;
   color: #fbe104;
-  padding-left: 10px;
-  font-size: 20px;
+  font-size: 25px;
   display: inline-block;
   float: left;
+  font-family: allerbold;
 }
 
 .menuContainer {
     width: 100%;
     height: 30px;
-    padding-left: 10px;
+    padding-left: 15px;
 }
 
 .queenmenublock{
@@ -52,18 +61,20 @@
 
 .submenuName{
   margin-left: 10px;
-  margin-bottom: 5px;
-  font-size: 16px;
+  font-size: 20px;
+  font-family: allerbold;
 }
 
 .submenuContent {
   margin-left: 10px;
   margin-bottom: 0px;
-  font-size: 12px;
+  font-size: 14px;
+  font-family: aller;
 }
 
 .form-inline {
-  margin: 5px 0px 5px 10px;
+  margin: 5px 10px;
+  font-family: aller;
 }
 
 .queencoord{
@@ -105,7 +116,9 @@
 .form-control.descriptionInput {
     height: 30px;
     border: 2px solid #fbe104;
-    width: 80% !important;
+}
+.form-control.descriptionInput:focus {
+    border: 2px solid #f8ba00;
 }
 .btn.descriptionButton {
     font-size: 30px;
@@ -119,8 +132,16 @@
 
 .bottomQueenMenu {
     color: #fbe104;
-    padding: 10px 30px;
-    font-family: azonsansbold;
+    margin: 0 auto;
+    width: 178px;
+    font-family: allerbold;
+    font-size: 25px;
+}
+.bottomQueenMenu:hover {
+    color: #f8ba00;
+}
+.fa.fa-chevron-up.fa-2 {
+    padding: 10px 0px 10px 10px;
 }
 .leaflet-control-attribution, .leaflet-control-scale-line{
   padding: 2.5px;
@@ -145,6 +166,10 @@
     color: #fbe104;
     cursor: pointer;
     font-size: 14pt;
+    width: 30%;
+}
+.leaflet-bottom.leaflet-right{
+    width: 100%;
 }
 
 .leaflet-menu{

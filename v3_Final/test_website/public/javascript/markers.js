@@ -38,6 +38,7 @@ socket.on('mongo_update', msg => {
     console.log("mongo_update from server: ", msg);
     processAllPoints([msg], false);
     updateMenu(msg);
+//    button_functions();
 });
 
 
@@ -68,11 +69,12 @@ var processAllPoints = function (allPoints, isInitialize) {
             }
         }
     }
+//    button_functions();
 }
 
 var drawAllTracks = function() {
     for (var moduleID in allMarkers) {
-        if (moduleID.includes("leader")) {
+        if (moduleID.includes("lead")) {
             $.ajax({
                 url: '/queenTrack',
                 type: 'GET',
@@ -81,7 +83,7 @@ var drawAllTracks = function() {
                     drawTracksHelper(data);
                 },
             });            
-        } else if (moduleID.includes("scout")) {
+        } else if (moduleID.includes("searcher")) {
             $.ajax({
                 url: '/scoutTrack',
                 type: 'GET',
@@ -139,8 +141,8 @@ var updateMenu = function(newPoint) {
         $("#leafletSideMenuContent").append(newWaypoint);
     } else if (newPoint.queen && !waypointOpen) {
         if ($('#menu' + newPoint.queen).length) { // queen menu already exists
+            console.log("update existing queen");
             var newTime = new Date(newPoint.time*1000).toTimeString().split(' ')[0].substring(0, 5);
-            console.log(newTime);
             $('#menu' + newPoint.queen + ' > .submenuTime')[0].innerHTML = newTime;
         } else {
             // create queen menu
@@ -153,6 +155,14 @@ var updateMenu = function(newPoint) {
                },
             }); 
         }
+    } else if (newPoint.queen && waypointOpen) {
+        $.ajax({
+            url: '/allWaypoints',
+            type: 'GET',
+            success: function(data) {
+                fillWaypointMenu(data, newPoint.queen);
+           },
+        }); 
     }
 }
 
@@ -186,20 +196,21 @@ var fillWaypointMenu = function(listWaypoints, queenid) {
     if (queenid) {
         menuQueenTitle = queenid;
     } else {
-        if (listWaypoints) {
+        if (listWaypoints.length) {
             menuQueenTitle = listWaypoints[0].queen;           
         } else {
             var candidateQueen = Object.keys(allMarkers).filter(function(marker) {
-                return marker.includes("leader");
+                return marker.includes("lead");
             });
-            if (candidateQueen) {
-                menuQueenTitle = candidateQueen;
+            if (candidateQueen.length) {
+                menuQueenTitle = candidateQueen[0];
             } else {
-                menuQueenTitle = "No leaders detected";
+                menuQueenTitle = "No leads detected";
             }
         }
 
     }
+    menuQueenTitle = capitalize(menuQueenTitle);
     menuContent += "<div class='menuTitle'>" + menuQueenTitle + "</div></div>";
     for (var i = 0; i < listWaypoints.length; i++) {
         menuContent += createWaypointSubmenu(listWaypoints[i]);
@@ -207,7 +218,7 @@ var fillWaypointMenu = function(listWaypoints, queenid) {
     menuContent += "</div>";
     $(".leaflet-menu-contents").append(menuContent);
     $('#menu' + selectedWaypointMarker).css("background-color", "white");
-    button_functions();
+//    button_functions();
 }
 
 // populates sidemenu with all queens in database
@@ -216,7 +227,7 @@ var fillQueenMenu = function(listQueens) {
     $("#leafletSideMenuContent").remove();
     var menuContent = "<div id='leafletSideMenuContent'>";
     if (listQueens) {
-        menuContent += "<div class='menuContainer'><div class='menuTitle'>List of Leaders</div></div>";
+        menuContent += "<div class='menuContainer'><div class='menuTitle'>List of Leads</div></div>";
         for (var i = 0; i < listQueens.length; i++) {
             var queen = listQueens[i];
             var time = new Date(queen.time).toTimeString().split(' ')[0].substring(0, 5);
@@ -230,28 +241,29 @@ var fillQueenMenu = function(listQueens) {
     menuContent += "</div>";
     $(".leaflet-menu-contents").append(menuContent);
     $('#menu' + selectedQueenMarker).css("background-color", "white");
-    button_functions();
 }
 
 var selectWaypointMarker = function(markerid) {
-    if (markerid.length < 1) {
+    if (!markerid) {
         return;
     }
     deselectMarker();
     mymap.panTo(allMarkers[markerid].getLatLng());
     $('#menu' + markerid).css("background-color", "white");
     allMarkers[markerid].setIcon(selectedWaypointIcon);
+    allMarkers[markerid]._icon.classList.add('waypoint-marker');
     selectedWaypointMarker = markerid;
 }
 
 var selectQueenMarker = function(markerid) {
-    if (markerid.length < 1) {
+    if (!markerid) {
         return;
     }
     deselectMarker();
     mymap.panTo(allMarkers[markerid].getLatLng());
     var selectedQueenIcon = getQueenIcon(markerid, true);
     allMarkers[markerid].setIcon(selectedQueenIcon);
+//    allMarkers[markerid]._icon.classList.add('queen-marker');
     selectedQueenMarker = markerid;
 }
 
@@ -259,11 +271,13 @@ var deselectMarker = function() {
     if (selectedWaypointMarker.length > 0) {
         $('#menu' + selectedWaypointMarker).css("background-color", "#fbe104");
         allMarkers[selectedWaypointMarker].setIcon(waypointIcon);
+        allMarkers[selectedWaypointMarker]._icon.classList.add('waypoint-marker');
         selectedWaypointMarker = "";
     } else if (selectedQueenMarker.length > 0) {
         $('#menu' + selectedQueenMarker).css("background-color", "#fbe104");
         var queenIcon = getQueenIcon(selectedQueenMarker, false);
         allMarkers[selectedQueenMarker].setIcon(queenIcon);
+        allMarkers[selectedQueenMarker]._icon.classList.add('queen-marker');
         selectedQueenMarker = "";
     }
 }
@@ -292,7 +306,7 @@ var getQueenIcon = function(queenid, isSelected) {
     if (isSelected) {
         return L.divIcon({
           className: 'queenMapIcon',
-          html: '<div class="selectedQueenMarker"><div class="queenMarkerLabel">' + markerLabel + '</div></div>',
+          html: '<div class="queenMarker selectedQueenMarker"><div class="queenMarkerLabel">' + markerLabel + '</div></div>',
           iconSize: [37, 37],
           iconAnchor: [18.5, 18.5],
         });
@@ -303,4 +317,8 @@ var getQueenIcon = function(queenid, isSelected) {
       iconSize: [37, 37],
       iconAnchor: [18.5, 18.5],
     });
+}
+
+var capitalize = function(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
 }
